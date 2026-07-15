@@ -1,0 +1,20 @@
+{
+  "name": "gtm-plugins",
+  "owner": {
+    "name": "cegtec",
+    "email": "info@cegtec.net"
+  },
+  "description": "GTM Automation plugins for Claude Code — the gtm CLI, operating skills, and the wired workspace MCP connection so your agent can build and run GTM plays in your own workspace.",
+  "plugins": [
+    {
+      "name": "gtm",
+      "source": "./gtm",
+      "description": "Operate and build GTM Automation plays from Claude Code: the gtm CLI, the gtm-operate + build-gtm-workflow skills, a guided setup skill, and the workspace MCP connection.",
+      "version": "0.1.0",
+      "author": {
+        "name": "cegtec",
+        "email": "info@cegtec.net"
+      }
+    }
+  ]
+}

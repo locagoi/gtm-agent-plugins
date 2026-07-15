@@ -1,0 +1,28 @@
+{
+  "name": "gtm",
+  "displayName": "GTM Automation",
+  "version": "0.1.0",
+  "description": "Operate and build GTM Automation plays from Claude Code. Ships the gtm-operate + build-gtm-workflow skills, a guided setup skill, and a wired MCP connection to your GTM Automation workspace. Requires a workspace on the Growth plan or higher.",
+  "author": {
+    "name": "cegtec",
+    "email": "info@cegtec.net",
+    "url": "https://app.cegtec.net"
+  },
+  "homepage": "https://app.cegtec.net",
+  "keywords": ["gtm", "sales", "outbound", "enrichment", "cegtec"],
+  "mcpServers": {
+    "gtm": {
+      "type": "http",
+      "url": "https://app.cegtec.net/api/mcp/${user_config.workspace_mcp_key}"
+    }
+  },
+  "userConfig": {
+    "workspace_mcp_key": {
+      "type": "string",
+      "title": "GTM Automation workspace MCP key",
+      "description": "Your per-workspace MCP key from the app: Erweiterungen/Extensions -> MCP. Growth plan or higher. Stored in secure storage, never in a plain settings file.",
+      "sensitive": true,
+      "required": true
+    }
+  }
+}
