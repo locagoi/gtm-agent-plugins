@@ -20,19 +20,22 @@ There are two surfaces this plugin sets up, and they share the same key and the 
 
 ## Step 1 — Install the `gtm` CLI
 
-The published package is the target end state:
+Install the published package globally (Node 18+ required):
 
 ```bash
-npm i -g @cegtec/gtm     # (sobald veröffentlicht / once published)
+npm i -g gtm-goat-cli
 ```
 
-> **Honest status:** `@cegtec/gtm` is **not on npm yet**. Until it is published, the command above will 404.
-> Use the working fallback below — build from the CLI source in the main product repo.
+This puts the `gtm` binary on your PATH. Verify it's reachable:
 
-**Working fallback (build from source, works today):**
+```bash
+gtm --help               # command groups + global flags
+```
 
-The CLI source lives in the main GTM Automation repo under `cli/`. Its full usage reference is `cli/README.md`.
-Build and link it:
+> The npm package is `gtm-goat-cli`; the command it installs is `gtm`.
+
+**Fallback (build from source):** if you can't install from npm (e.g. offline, or you want a local dev build),
+the CLI source lives in the main GTM Automation repo under `cli/` (full reference: `cli/README.md`):
 
 ```bash
 # from a checkout of the main GTM Automation repo
@@ -40,14 +43,7 @@ cd cli
 npm install
 npm run build            # compiles to dist/, produces the `gtm` bin
 npm link                 # puts `gtm` on your PATH
-# …or run without linking:
-node dist/index.js --help
-```
-
-Verify the binary is reachable:
-
-```bash
-gtm --help               # command groups + global flags
+# …or run without linking: node dist/index.js --help
 ```
 
 ## Step 2 — Log in with the workspace MCP key
