@@ -43,9 +43,6 @@ When the plugin is enabled, Claude Code prompts for your **workspace MCP key** (
 it is stored in secure storage and used to connect the `gtm` MCP server at
 `https://app.cegtec.net/api/mcp/<your-key>`. No key is ever hardcoded in this repo.
 
-> The repo is private during rollout. If `/plugin marketplace add` can't reach it, make sure your GitHub
-> account has access to `locagoi/gtm-agent-plugins`.
-
 ## First run
 
 Ask your agent to run the **setup** skill (or say "set up gtm"). It will:
