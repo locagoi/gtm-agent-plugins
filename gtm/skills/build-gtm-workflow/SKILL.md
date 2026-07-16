@@ -60,7 +60,7 @@ Rows must carry `entity_id` (a lead/company) or a bound column's dry-run sees em
 
 - `workspace_table_cascade_preview` — worst-case rows × per-cell cost.
 - A live paid run REQUIRES a `max_credits` ceiling; cells over the cap are skipped `max_credits_reached`, the run finalizes cleanly. Money-audit is built in — never run an unbounded paid column.
-- Scale: for large N, prefer the provider's BULK path where available (bulk enrichment is a fast-follow — WB2). The job queue batches + is resumable (per-cell status; re-run only touches pending/failed; no auto-retry).
+- Scale: for large N, prefer the provider's BULK path where available (bulk enrichment is a fast-follow). The job queue batches + is resumable (per-cell status; re-run only touches pending/failed; no auto-retry).
 
 ## 6. Run it
 
@@ -75,12 +75,12 @@ Once the workflow is clean:
 
 This is the replicability loop: **build once → save_as_template → from_template → identical deterministic workflow.**
 
-## Gotchas (baked in from shipping M1/M2/WB1)
+## Gotchas (learned from shipping)
 
 - **Read `workspace_schema_get` first.** Don't invent column keys or table ids.
 - **Formula stores its template in `config.expression`** (not `config.formula`) — the dependency graph + cascade read `expression`.
 - **`{{asset.X}}` needs a bound/pinned Wissen asset** on the playbook, else it resolves empty.
-- **Cross-workspace insights are admin-only** — no `{{marketplace.*}}`/`{{platform.*}}`; a column only ever sees THIS workspace's data (OrgScope).
+- **Cross-workspace insights are admin-only** — no `{{marketplace.*}}`/`{{platform.*}}`; a column only ever sees THIS workspace's data.
 - **Deleting a referenced column is blocked** — remove the `{{cell.X}}`/run_condition references first (`workspace_table_delete_column` enforces this).
 - **Terminal SEND is gated** — the tool sink refuses send categories without the contactability path (Phase-1 is non-sending; CRM/neutral only).
 - **Verify before claiming done** — check the cells actually succeeded (values present, status succeeded) via the grid or a query; a green enqueue is not a green result.
