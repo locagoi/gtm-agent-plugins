@@ -50,20 +50,20 @@ it is stored in secure storage and used to connect the `gtm` MCP server at
 
 Ask your agent to run the **setup** skill (or say "set up gtm"). It will:
 
-1. Install the `gtm` CLI (`npm i -g @cegtec/gtm` **once published**; until then, build from the CLI source at
-   the main repo's `cli/` — see `cli/README.md`).
+1. Install the `gtm` CLI (`npm i -g gtm-goat-cli`; or build from the CLI source at the main repo's `cli/` —
+   see `cli/README.md`).
 2. `gtm login --key <workspace MCP key> --url https://app.cegtec.net`
 3. Validate with `gtm whoami` (no credits spent) and `gtm tools`.
 
 After that, **your agent knows the product** via the `gtm-operate` skill — it can read your tables and Wissen,
 source and enrich rows, run columns within a credit cap, and build plays with `build-gtm-workflow`.
 
-## The `gtm` CLI (npm publish pending)
+## The `gtm` CLI
 
 The CLI speaks MCP over HTTP to your workspace's `/api/mcp/<key>` endpoint — no SDK, no extra backend.
 
-- **Published package (target):** `npm i -g @cegtec/gtm` — **not on npm yet**; this is the intended end state.
-- **Working today (fallback):** build from source in the main GTM Automation repo under `cli/`
+- **Install:** `npm i -g gtm-goat-cli` (Node 18+). The npm package is `gtm-goat-cli`; the command is `gtm`.
+- **Fallback (build from source):** in the main GTM Automation repo under `cli/`
   (`npm install && npm run build && npm link`). Full reference: the main repo's `cli/README.md`.
 
 Common commands:
