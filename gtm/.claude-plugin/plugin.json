@@ -2,7 +2,7 @@
   "name": "gtm",
   "displayName": "GTM Automation",
   "version": "0.1.0",
-  "description": "Operate and build GTM Automation plays from Claude Code. Ships the gtm-operate + build-gtm-workflow skills, a guided setup skill, and a wired MCP connection to your GTM Automation workspace. Requires a workspace on the Growth plan or higher.",
+  "description": "Operate and build GTM Automation plays from Claude Code. Ships the draft-gtm-play + gtm-operate + build-gtm-workflow skills, a guided setup skill, and a wired MCP connection to your GTM Automation workspace. Requires a workspace on the Growth plan or higher.",
   "author": {
     "name": "cegtec",
     "email": "info@cegtec.net",
