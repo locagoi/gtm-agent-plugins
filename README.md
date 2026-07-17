@@ -13,6 +13,8 @@ The marketplace `gtm-plugins` ships one plugin, `gtm`, which bundles:
 
 - **`gtm-operate`** skill — the agent operating guide: the object model, the CLI-vs-MCP choice, exact
   commands/tool names/args, copyable recipes, and the spend/send guardrails.
+- **`draft-gtm-play`** skill — the campaign methodology: draft the strategy first (ICP -> persona -> offer ->
+  proof -> signals as Wissen assets), then the playbook (channels + automations), then the deterministic table.
 - **`build-gtm-workflow`** skill — build a repeatable play as a workspace table (create table -> module
   columns -> cascade -> save as template) and replay it deterministically.
 - **`setup`** skill — a guided first-run: install the CLI, log in with your workspace MCP key, and validate.
@@ -90,6 +92,7 @@ gtm/
   .claude-plugin/plugin.json        # plugin manifest + MCP server + userConfig (workspace_mcp_key)
   skills/
     setup/SKILL.md                  # guided first-run
+    draft-gtm-play/SKILL.md         # campaign methodology (strategy -> playbook -> table)
     gtm-operate/SKILL.md            # operate the workspace
     build-gtm-workflow/SKILL.md     # build a play as a table
 ```
