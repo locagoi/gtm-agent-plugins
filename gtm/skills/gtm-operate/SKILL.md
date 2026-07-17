@@ -13,7 +13,7 @@ You are an agent driving ONE workspace of the GTM Automation platform. Everythin
 ## The object model (9 primitives, short)
 
 - **Workspace** — the tenant boundary. Every call is scoped to one.
-- **Wissen** — versioned knowledge Assets (ICP, Persona, Offer, Positioning, Messaging Angle, Proof) + Learnings that propose Asset revisions through approval.
+- **Wissen** — the workspace knowledge base (rolling out, first stage available per-workspace toggle): versioned **Assets** (ICP, Persona, Offer, Positioning, Messaging Angle, Proof), **Learnings** (structured insights the system distills from what actually books meetings and gets replies — copy patterns, objection handling, ICP/signal/channel effects — each proposed into an approval queue and only injected into prompts once approved), and **Speicher** (self-maintaining markdown memory of how the workspace operates). The old Sales Blueprint is being consolidated into Wissen (transitional).
 - **Tabelle / Spalte / Zelle** (table / column / cell) — a column is a typed action per row; a cell carries value, status, cost, provenance. The platform's core operating surface.
 - **Workflow** — a deterministic, named, dry-run-able process (same input → same steps → same output).
 - **Run** — one record shape for every execution (pipeline/chain/job/sourcing): status, item counts, credits.
@@ -88,9 +88,11 @@ Discovery-first, same as the CLI. Then the core surface:
   - `mode: 'dry_run'` → **free, synchronous, no writes**; returns `{ rows, estimated_credits, sample_inputs }`. Always do this first for `ai`/`enrichment` columns.
   - `mode: 'live'` (default) → executes. **A live run of a paid (ai/enrichment) column REQUIRES `max_credits`** (> 0, a hard per-run cap). Without it the tool refuses and hands back the estimate. Live runs are async (returns a `job_id` — poll with `workspace_table_get`). Over the cap, remaining cells are skipped `max_credits_reached` and the run finalizes cleanly. **No automatic retries.**
 
-**Wissen (read as context):**
-- `wissen_asset_list({ kind? })` — metadata only (id, kind, name, status, revision).
+**Wissen (read as context, review the Learnings queue) — rolling out, first stage available per-workspace toggle:**
+- `wissen_asset_list({ kind?, status? })` — metadata only (id, kind, name, status, revision). Pass `status: 'proposed'` to find Learnings the system has distilled from booked meetings and replies and queued for approval.
 - `wissen_asset_get({ asset_id })` — the current revision's typed content + history.
+- `wissen_asset_create` / `wissen_asset_revise` — author or version an Asset (immutable revisions).
+- `wissen_asset_approve({ asset_id, decision: 'approve' | 'reject' })` — the gate: a proposed Learning only starts feeding prompts (qualification, copy) once approved; `reject` discards it. Nothing distilled is injected into a prompt automatically — a human (or you, on their behalf) reviews the queue first.
 
 **Author tables/columns** (build-time — see build-gtm-workflow for the full flow): `workspace_table_create`, `workspace_table_add_column`, `workspace_table_update_column` (run_condition + config), `workspace_table_update`, `workspace_table_delete_column`, `workspace_table_dependencies`, `workspace_table_cascade_preview`.
 
@@ -130,12 +132,20 @@ gtm wissen list --kind icp --json
 gtm wissen get <assetId> --json       # current ICP revision content
 ```
 
+### 5. Review the Learnings approval queue (rolling out)
+```bash
+gtm call wissen_asset_list --input '{"status":"proposed"}' --json          # what the system distilled, awaiting review
+gtm call wissen_asset_get --input '{"asset_id":"<id>"}' --json             # read the proposed content before deciding
+gtm call wissen_asset_approve --input '{"asset_id":"<id>","decision":"approve"}' --json   # or "decision":"reject"
+```
+> A proposed Learning sits inert until approved — approval is what lets it start feeding qualification/copy prompts. This is a first-stage rollout with a per-workspace toggle — confirm Wissen/Learnings is enabled for the workspace before relying on it being there.
+
 ## Guardrails (non-negotiable)
 
 - **Paid runs need a budget.** A live `ai`/`enrichment` run without `max_credits` is refused by design. Preview with `dry_run` first. Never run an unbounded paid column.
 - **No auto-retry.** Runs never silently retry and burn credits — a re-run is a deliberate act.
 - **Outreach sends are gated.** Terminal `tool`-column send categories (email/linkedin/whatsapp/voice) are REFUSED at run time in Phase 1 — only CRM / read-only / neutral categories execute. Don't fire a send speculatively; propose it for approval.
-- **Mutations are proposals.** Any live, paid, or external-write action assumes a human approves consequential changes.
+- **Mutations are proposals.** Any live, paid, or external-write action assumes a human approves consequential changes. The same applies to Learnings: a distilled insight is a proposal until `wissen_asset_approve` accepts it.
 - **Never cross workspaces.** Every call is scoped to the workspace behind your key. There is no `{{marketplace.*}}`/`{{platform.*}}`; a column only ever sees THIS workspace's data. Cross-workspace insight is admin-only.
 - **Resolve integrations by CATEGORY, never a vendor id** — the connected adapter can change under you.
 - **Verify before claiming done** — read the cells/rows back; check status, not just a queued job.
