@@ -10,6 +10,13 @@ You are an agent driving ONE workspace of the GTM Automation platform. Everythin
 
 **To build a repeatable play** (a workflow encoded as a table you wire once and replay), read `build-gtm-workflow` — it covers create-table → module columns → cascade → save-as-template. This skill is the broader *operating* guide (discover, read, source, enrich, run, spend) and the CLI-vs-MCP choice.
 
+## Two things to do first (current model)
+- **Discover, don't guess** — call `workspace_capabilities` (also in the CLI-advertised set): it returns the exact catalog this workspace can build (sources · enrichments · tools · agents, each with connected state + its create tool). Anything shippable is listed there — use it before reaching for a tool name.
+- **Read a lead holistically** — `get_lead_intelligence` returns ONE complete lead+company picture (profile · firmographics · signals + provenance · score/heat · enrichment · engagement · conversations + sentiment · CRM/deal · relevant Wissen). Prefer it over the older `get_lead_context` (a thin subset). Every surface — call-hints, meeting-prep, copy, and the lead brain — reasons over this same object; so should you.
+
+## Product profile (v2 vs classic)
+Workspaces carry `settings.product_version`. **v2** (new workspaces) = the lean product: **Tabellen** + **CRM Kanban as the lead surface** + **strategic-paper Playbook** (pinned Wissen assets + referenced Tabellen + automations) + **Wissen**. v2 has **no pipeline, no old playbook form, no phone agent**, and legacy pipeline/phone tools are **not advertised** on its surface — so trust `gtm tools` / `workspace_capabilities` for what's actually available rather than assuming a tool exists. **classic** workspaces keep the full legacy surface (pipeline included). Don't hardcode either — read what the workspace exposes.
+
 ## The object model (9 primitives, short)
 
 - **Workspace** — the tenant boundary. Every call is scoped to one.
