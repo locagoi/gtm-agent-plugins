@@ -10,6 +10,8 @@ Build a **repeatable, deterministic** GTM workflow as a workspace **table**: eac
 
 **Mental model (read once):** a *workflow* = the table's frozen column config. A *column* = a typed action per row (`source`/`enrichment`/`ai`/`tool`/`formula`/`relation`). *Inputs* = `{{cell.X}}` (sibling column) · `{{entity.X}}`/`{{company.X}}`/`{{lead.X}}` (linked entity) · `{{asset.X}}` (bound Wissen asset). *Output* = the column's `output_schema` (the predictability contract — every row conforms or is `failed`, never garbage). Build-time = the agent wires; run-time = deterministic replay, no agent, no guessing.
 
+**Where the table lives (v2 product):** the table is the deterministic-execution layer of a **Playbook** — the strategic paper that references its Wissen assets + Tabellen + automations. In v2 workspaces the surfaces are Playbook (strategy) · Tabellen (execution) · **CRM Kanban** (the prioritized lead surface) · Wissen (knowledge). Qualification/copy columns should reference the playbook's Wissen assets via `{{asset.icp}}`/`{{asset.offer}}`/`{{asset.messaging_angle}}`; source columns can act on the **`signal` Wissen asset class** (buying signals referencing ICP/Offer) to keep the table filled with *hot* rows. See `draft-gtm-play` for the strategy-first sequencing.
+
 All operations are the `workspace_table_*` / `wissen_*` MCP tools (flag `workspace_tables_enabled`). Do them in order.
 
 > For the broader **operating** guide — the CLI-vs-MCP choice, the `gtm` CLI commands (`cli/README.md`), reading/sourcing/enriching, and the paid-run guardrails — see the **gtm-operate** skill. This skill is the narrower "build a repeatable play as a table → save as template" flow.
