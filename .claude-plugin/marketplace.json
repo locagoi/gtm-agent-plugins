@@ -9,7 +9,7 @@
     {
       "name": "gtm",
       "source": "./gtm",
-      "description": "Operate and build GTM Automation plays from Claude Code: the gtm CLI, the gtm-operate + build-gtm-workflow skills, a guided setup skill, and the workspace MCP connection.",
+      "description": "Operate and build GTM Automation plays from Claude Code: the gtm CLI, the gtm-operate + build-gtm-workflow + gtm-handoffs skills, a guided setup skill, and the workspace MCP connection.",
       "version": "0.1.0",
       "author": {
         "name": "cegtec",
