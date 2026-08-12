@@ -30,7 +30,7 @@ All operations are the `workspace_table_*` / `wissen_*` MCP tools (flag `workspa
 
 Rows must carry `entity_id` (a lead/company) or a bound column's dry-run sees empty inputs.
 - **From the playbook's existing companies/leads:** `workspace_table_import_from_playbook({ table, playbook, max_rows })` — materializes them as ENTITY-BOUND rows (idempotent by natural key).
-- **From a source module** (GMaps/Apify etc.): a `source` column / the source-run path fills rows entity-linked.
+- **From a source module** (maps/company search/social — whatever this workspace has): a `source` column / the source-run path fills rows entity-linked. `workspace_capabilities` lists the sources actually available here.
 - `workspace_table_add_row` exists but creates an UNBOUND row — only for a quick manual test, not for a real play.
 
 ## 3. Add the module columns (the workflow steps)
@@ -48,7 +48,7 @@ Rows must carry `entity_id` (a lead/company) or a bound column's dry-run sees em
 **Rules that matter:**
 - **`output_schema` is mandatory for predictability** on ai/enrichment — it's the typed contract sent to the provider (jsonMode) + validated on return; off-schema → cell `failed`, never garbage. Same shape at 40 or 4000 rows.
 - **Inputs via `{{...}}`** — reference upstream columns (`{{cell.owner}}`), the linked entity (`{{company.name}}`), or a bound Wissen asset (`{{asset.icp}}`). The dependency graph reads these → cascade order. Only referenced keys are injected (cheap).
-- **Adapter-agnostic** — resolve by CATEGORY, never a vendor id. Outreach/enrichment/CRM EXECUTION runs through the connected **provider MCP** (Instantly/HeyReach/FullEnrich/…); our columns orchestrate.
+- **Adapter-agnostic** — resolve by CATEGORY, never a vendor id. Outreach/enrichment/CRM EXECUTION runs through whichever **provider is connected for that category** in this workspace; our columns orchestrate. Call `list_integrations` to see what that is here — never hardcode a provider.
 - **Bind Wissen for context** — pin an asset to the playbook (`playbook_asset_pin`) so `{{asset.icp}}` resolves the versioned ICP; provenance records the revision.
 
 ## 4. Wire the cascade (make it run itself)
@@ -84,7 +84,8 @@ This is the replicability loop: **build once → save_as_template → from_templ
 - **`{{asset.X}}` needs a bound/pinned Wissen asset** on the playbook, else it resolves empty.
 - **Cross-workspace insights are admin-only** — no `{{marketplace.*}}`/`{{platform.*}}`; a column only ever sees THIS workspace's data.
 - **Deleting a referenced column is blocked** — remove the `{{cell.X}}`/run_condition references first (`workspace_table_delete_column` enforces this).
-- **Terminal SEND is gated** — the tool sink refuses send categories without the contactability path (Phase-1 is non-sending; CRM/neutral only).
+- **Terminal SEND is gated, not absent** — a GENERIC tool column hard-refuses every send category (fail-closed: no adapter is even resolved). Sending runs through the dedicated **outreach terminal column**, which routes into the shipped, gated enroll machinery before that refusal applies. It sends only in its own run, never on create, and `auto_run` is rejected for it.
+- **The seams between the bricks are their own guide** — which handoffs exist (Wissen → Playbook → Tabelle → Sequenz, the Workflow's three), what creates each, and which ones do NOT exist: see **gtm-handoffs**, or read `handoffs.legend` from `workspace_schema_get` for the live version.
 - **Verify before claiming done** — check the cells actually succeeded (values present, status succeeded) via the grid or a query; a green enqueue is not a green result.
 
 ## The two surfaces

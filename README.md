@@ -17,6 +17,9 @@ The marketplace `gtm-plugins` ships one plugin, `gtm`, which bundles:
   proof -> signals as Wissen assets), then the playbook (channels + automations), then the deterministic table.
 - **`build-gtm-workflow`** skill — build a repeatable play as a workspace table (create table -> module
   columns -> cascade -> save as template) and replay it deterministically.
+- **`gtm-handoffs`** skill — how the pieces connect: which handoff links Wissen, Playbook, Quelle, Tabelle,
+  Sequenz and Workflow, what creates each one, how a Workflow runs (trigger -> steps -> dry run -> live),
+  and the connections that do NOT exist. Read it before wiring a motion end to end.
 - **`setup`** skill — a guided first-run: install the CLI, log in with your workspace MCP key, and validate.
 - **A wired MCP connection** — the `gtm` MCP server, pointed at your workspace endpoint. Claude Code prompts
   for your workspace MCP key when the plugin is enabled and stores it in secure storage (never in a plain file).
