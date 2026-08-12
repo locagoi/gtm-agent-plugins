@@ -84,7 +84,8 @@ This is the replicability loop: **build once → save_as_template → from_templ
 - **`{{asset.X}}` needs a bound/pinned Wissen asset** on the playbook, else it resolves empty.
 - **Cross-workspace insights are admin-only** — no `{{marketplace.*}}`/`{{platform.*}}`; a column only ever sees THIS workspace's data.
 - **Deleting a referenced column is blocked** — remove the `{{cell.X}}`/run_condition references first (`workspace_table_delete_column` enforces this).
-- **Terminal SEND is gated** — the tool sink refuses send categories without the contactability path (Phase-1 is non-sending; CRM/neutral only).
+- **Terminal SEND is gated, not absent** — a GENERIC tool column hard-refuses every send category (fail-closed: no adapter is even resolved). Sending runs through the dedicated **outreach terminal column**, which routes into the shipped, gated enroll machinery before that refusal applies. It sends only in its own run, never on create, and `auto_run` is rejected for it.
+- **The seams between the bricks are their own guide** — which handoffs exist (Wissen → Playbook → Tabelle → Sequenz, the Workflow's three), what creates each, and which ones do NOT exist: see **gtm-handoffs**, or read `handoffs.legend` from `workspace_schema_get` for the live version.
 - **Verify before claiming done** — check the cells actually succeeded (values present, status succeeded) via the grid or a query; a green enqueue is not a green result.
 
 ## The two surfaces
