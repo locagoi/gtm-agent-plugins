@@ -82,4 +82,4 @@ This document is the map; the workspace is the territory. Two calls give you the
 - **`workspace_schema_get`** → `handoffs.edges` (what is wired in THIS workspace) · `handoffs.dangling` (**configured handoffs whose target is missing or archived — dead config that looks alive**; check it before extending a motion) · `handoffs.legend` (the same matrix as above, served by the platform).
 - **`explain_system`** → `handoffs` with every rule and every myth as structured data.
 
-The platform's copy is generated from `src/lib/mcp/handoffs.ts` and guarded by a test that fails if a named tool disappears from the registry or an edge kind drifts. **Where this file and the tool disagree, the tool is right** — and the disagreement is a bug worth reporting.
+The platform serves that legend from a single source, guarded by a test that fails if a named tool disappears from the registry or an edge kind drifts. **Where this file and the tool disagree, the tool is right** — and the disagreement is a bug worth reporting.
