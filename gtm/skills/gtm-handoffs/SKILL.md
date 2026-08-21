@@ -46,6 +46,15 @@ Wissen ──pin──▶ Playbook ──bindet──▶ Tabelle ──terminale
 - **The enroll column is the LAST column, never a middle one.** It sends only in its own run, never on create, and `auto_run: true` is rejected for it. Enrollment is always a deliberate act.
 - **A schedule turns a source into recurring cost.** Always: attach → one manual run with a small `max_results` → then the schedule.
 - **External campaign targets are honest fog.** With `campaign_id` the target lives inside the vendor; the platform will not pretend to know its steps. That is a feature, not a gap.
+- **One Sequenz per Playbook per channel.** A second email sequence on the same playbook is
+  rejected by a unique constraint — edit the existing one or pick another channel.
+- **An empty Sequenz is the quietest failure there is.** It accepts the enroll wiring, sends
+  nothing, and errors never. Across the platform 45 of 88 sequences have zero steps. Call
+  `get_sequence` and read the step list before you call a motion built.
+- **Enrollment dedup has a release valve.** An existing enrollment blocks a second one, but
+  the terminal states `cancelled`, `failed`, `skipped` and `expired` free the lead again —
+  and `enroll_preflight` checks neither this nor contactability. A clean preflight is not
+  permission.
 
 ## The handoffs that do NOT exist
 
@@ -68,6 +77,17 @@ A Workflow is the **event** dimension (Tabelle = per row, Sequenz = per lead ove
 5. **Watch it** — `list_runs`, `get_workflow_history`, and `diagnose_workflow_run` for one failed run.
 
 **Workflow or Agent?** *Can you write the steps down → Workflow. Does each case need judgment → an Agent step inside the Workflow, bounded and gated.*
+
+## Where the guides fit
+
+| You are… | Read |
+|---|---|
+| setting up a workspace from scratch | **gtm-quickstart** — the whole build order |
+| deciding what to build | **outbound-playbook** |
+| drafting the strategy | **draft-gtm-play** |
+| building the brick | **build-gtm-workflow** (+ `three-table-play.md`) |
+| writing the touch plan | **sequences** (+ `copy-patterns.md`) |
+| running it day to day | **gtm-operate** |
 
 ## Building the Tabelle itself
 

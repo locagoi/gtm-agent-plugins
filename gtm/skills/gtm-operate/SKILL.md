@@ -8,11 +8,25 @@ allowed-tools: Bash, Read, Grep, Glob
 
 You are an agent driving ONE workspace of the GTM Automation platform. Everything you touch — tables, columns, cells, Wissen — is scoped to that single workspace. This guide gets you from "connected" to "did the thing" without guessing.
 
-**To build a repeatable play** (a workflow encoded as a table you wire once and replay), read `build-gtm-workflow` — it covers create-table → module columns → cascade → save-as-template. This skill is the broader *operating* guide (discover, read, source, enrich, run, spend) and the CLI-vs-MCP choice.
+**Setting a workspace up from scratch?** Read `gtm-quickstart` — the complete build order from empty to a live campaign. **Building a repeatable play** as a table? `build-gtm-workflow`. **Writing the touch plan?** `sequences`. **Deciding what to build at all?** `outbound-playbook`. This skill is the broader *operating* guide — discover, read, source, enrich, run, spend — and the CLI-vs-MCP choice.
 
 ## Two things to do first (current model)
 - **Discover, don't guess** — call `workspace_capabilities` (also in the CLI-advertised set): it returns the exact catalog this workspace can build (sources · enrichments · tools · agents, each with connected state + its create tool). Anything shippable is listed there — use it before reaching for a tool name.
 - **Read a lead holistically** — `get_lead_intelligence` returns ONE complete lead+company picture (profile · firmographics · signals + provenance · score/heat · enrichment · engagement · conversations + sentiment · CRM/deal · relevant Wissen). Prefer it over the older `get_lead_context` (a thin subset). Every surface — call-hints, meeting-prep, copy, and the lead brain — reasons over this same object; so should you.
+
+## The tool list is curated — the catalogue is not
+
+What `gtm tools` (and an MCP client's tool list) shows is a **curated core** of roughly 70
+verbs. Everything else the workspace has is still **callable by name** — only the listing is
+trimmed, so nothing lost reachability:
+
+- `find_tools({query})` — search the unadvertised rest, returns names + descriptions
+- `call_tool({name, args})` — execute any of them (the CLI's `gtm call <name>` does the same)
+
+Practical consequence: if a skill names a tool that is not in your list — `create_playbook`,
+`playbook_asset_pin`, `playbook_table_link`, `add_workflow_step`,
+`workspace_table_save_as_template`, `wissen_asset_revise` — **call it anyway**. Do not
+conclude the feature is missing because the verb is not advertised.
 
 ## Product profile (v2 vs classic)
 Workspaces carry `settings.product_version`. **v2** (new workspaces) = the lean product: **Tabellen** + **CRM Kanban as the lead surface** + **strategic-paper Playbook** (pinned Wissen assets + referenced Tabellen + automations) + **Wissen**. v2 has **no pipeline, no old playbook form, no phone agent**, and legacy pipeline/phone tools are **not advertised** on its surface — so trust `gtm tools` / `workspace_capabilities` for what's actually available rather than assuming a tool exists. **classic** workspaces keep the full legacy surface (pipeline included). Don't hardcode either — read what the workspace exposes.
@@ -133,13 +147,21 @@ gtm call workspace_table_import_from_playbook --input '{"table":"Leads","playboo
 # then run the enrichment column on the fresh rows (preview → capped live), as in recipe 2
 ```
 
-### 4. Read Wissen for context
+### 4. Check a sequence actually has steps
+```bash
+gtm call list_sequences --json
+gtm call get_sequence --input '{"sequence_id":"<id>"}' --json   # READ the step list
+```
+> Across the platform, 45 of 88 sequences contain ZERO steps — created, wired to an enroll
+> column, and believed to be live. An empty sequence sends nothing and reports no error.
+
+### 5. Read Wissen for context
 ```bash
 gtm wissen list --kind icp --json
 gtm wissen get <assetId> --json       # current ICP revision content
 ```
 
-### 5. Review the Learnings approval queue (rolling out)
+### 6. Review the Learnings approval queue (rolling out)
 ```bash
 gtm call wissen_asset_list --input '{"status":"proposed"}' --json          # what the system distilled, awaiting review
 gtm call wissen_asset_get --input '{"asset_id":"<id>"}' --json             # read the proposed content before deciding
@@ -151,7 +173,7 @@ gtm call wissen_asset_approve --input '{"asset_id":"<id>","decision":"approve"}'
 
 - **Paid runs need a budget.** A live `ai`/`enrichment` run without `max_credits` is refused by design. Preview with `dry_run` first. Never run an unbounded paid column.
 - **No auto-retry.** Runs never silently retry and burn credits — a re-run is a deliberate act.
-- **Outreach sends are gated.** Terminal `tool`-column send categories (email/linkedin/whatsapp/voice) are REFUSED at run time in Phase 1 — only CRM / read-only / neutral categories execute. Don't fire a send speculatively; propose it for approval.
+- **Sends are gated, not absent.** A GENERIC `tool` column hard-refuses every send category (fail-closed — no adapter is even resolved). Sending runs through the dedicated **outreach terminal column**, which routes into the shipped, gated enroll machinery before that refusal applies: contactability (unsubscribe + blacklist) is checked deny-only and fails closed, it sends only in its own run, and `auto_run` is rejected for it. "A tool column cannot send" is true; "the platform cannot send" is not. See **sequences** and **gtm-handoffs**.
 - **Mutations are proposals.** Any live, paid, or external-write action assumes a human approves consequential changes. The same applies to Learnings: a distilled insight is a proposal until `wissen_asset_approve` accepts it.
 - **Never cross workspaces.** Every call is scoped to the workspace behind your key. There is no `{{marketplace.*}}`/`{{platform.*}}`; a column only ever sees THIS workspace's data. Cross-workspace insight is admin-only.
 - **Resolve integrations by CATEGORY, never a vendor id** — the connected adapter can change under you.
