@@ -120,12 +120,16 @@ left of the one it depends on, and never gate on a column further right.
 
 ## 5. Preview cost + cascade BEFORE a live paid run
 
-- `workspace_table_preflight` — **does the chain run at all when a new row arrives?** Free,
-  deterministic, no data: same column config, same verdict. It reports the four failures that
-  are otherwise silent — no entry column on `auto_run` under `auto_advance`, a gate pointing
-  right or at a deleted column, an enroll column that is not last, and a `{{cell.x}}` in the
-  bound sequence that no column feeds. Run it before every source schedule; from then on rows
-  arrive with nobody watching.
+- `workspace_table_preflight({ table, expect?, max_credits? })` — **does the chain run at all
+  when a new row arrives?** Read-only and free. One call, three answers: findings on the column
+  graph, the cost of a full run, and the resolved inputs of the first rows. Among the findings
+  are the ones that otherwise fail silently — no entry column on `auto_run` under
+  `auto_advance`, a gate pointing right or at a deleted column, an enroll column that is not
+  last, and a `{{cell.x}}` in the bound sequence that no column feeds.
+
+  Name your goals in `expect` (`fills_itself` · `runs_daily` · `enrolls_leads` ·
+  `complete_data`) and it also reports what is missing for them. It reports and never blocks.
+  Run it before every source schedule; from then on rows arrive with nobody watching.
 - `workspace_table_cascade_preview` — worst-case rows × per-cell cost.
 - A live paid run REQUIRES a `max_credits` ceiling; cells over the cap are skipped `max_credits_reached`, the run finalizes cleanly. Money-audit is built in — never run an unbounded paid column.
 - Scale: for large N, prefer the provider's BULK path where available. The job queue batches and is resumable (per-cell status; a re-run only touches pending/failed; no auto-retry).
