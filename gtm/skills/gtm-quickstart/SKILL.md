@@ -25,7 +25,7 @@ campaign built on invented positioning still fails in week two.
 | 2 | Wissen assets | ICP · persona · offer · proof · angle · signals | `draft-gtm-play` |
 | 3 | Playbook | the strategy, bound | `draft-gtm-play` |
 | 4 | Senders & channel | one channel, verified, within limits | `sequences` |
-| 5 | The table | source → qualify → enrich → copy | `build-gtm-workflow` |
+| 5 | The table | source → qualify → enrich → copy | `plays` · `build-gtm-workflow` |
 | 6 | The sequence | the touch plan the lead experiences | `sequences` |
 | 7 | The enroll column | the one handoff that sends | `gtm-handoffs` |
 | 8 | First bounded run | 20 rows read by a human | `outbound-playbook` |
@@ -166,6 +166,11 @@ daily limit and what your planned volume is against it.
 ---
 
 ## Stage 5 — The table
+
+**Check `plays` first.** If the motion has a name — local business outreach, post engagers,
+keyword signals, job openings, inbound, website visitors, lost deals — there is a ready-made
+template with its sources, columns, gates and tool calls already written. Building from it
+beats building from scratch.
 
 The table is where the campaign is actually assembled: one row per company or lead, one
 column per step. Build it with **`build-gtm-workflow`**; the canonical shape is in
@@ -340,6 +345,7 @@ replay everywhere: that is what turns the second campaign into an hour of work.
 |---|---|
 | Decide what to build, with the numbers | **outbound-playbook** (+ `benchmarks.md`) |
 | Draft the strategy asset by asset | **draft-gtm-play** |
+| Build a named motion from a template | **plays** — nine of them |
 | Build the table properly | **build-gtm-workflow** (+ `three-table-play.md`) |
 | Write the touch plan and the copy | **sequences** (+ `copy-patterns.md`) |
 | Understand how the pieces connect | **gtm-handoffs** |
