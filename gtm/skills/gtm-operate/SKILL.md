@@ -101,7 +101,7 @@ Discovery-first, same as the CLI. Then the core surface:
 - `workspace_table_get({ table, limit?, offset? })` — a table's columns + a page of rows (limit default 50, cap 200).
 
 **Write rows / cells:**
-- `workspace_table_add_row({ table, values })` — one row; `values` keys must already exist as columns. Creates an UNBOUND row (no entity spine) — good for a quick test, not a real play. For entity-bound rows use `workspace_table_import_from_playbook({ table, playbook, max_rows })` or a source column.
+- `workspace_table_add_row({ table, values })` — one row; `values` keys must already exist as columns (an unknown key is rejected with the list of valid ones). On a **company-bound** table the row does come back with an `entity_id` and `{{company.name}}`/`{{company.domain}}` resolve from it (verified live) — so it is usable for a real test, not only a dummy. For bulk entity-bound rows still use `workspace_table_import_from_playbook({ table, playbook, max_rows })` or a source column.
 - `workspace_table_update_cell({ table, row_id, column_key, value })` — only `manual`/`relation` cells; computed cells (ai/enrichment/formula/tool/system) are refused so you can't overwrite a run's output.
 
 **Run columns (the paid contract):**
@@ -173,7 +173,7 @@ gtm call wissen_asset_approve --input '{"asset_id":"<id>","decision":"approve"}'
 
 - **Paid runs need a budget.** A live `ai`/`enrichment` run without `max_credits` is refused by design. Preview with `dry_run` first. Never run an unbounded paid column.
 - **No auto-retry.** Runs never silently retry and burn credits — a re-run is a deliberate act.
-- **Sends are gated, not absent.** A GENERIC `tool` column hard-refuses every send category (fail-closed — no adapter is even resolved). Sending runs through the dedicated **outreach terminal column**, which routes into the shipped, gated enroll machinery before that refusal applies: contactability (unsubscribe + blacklist) is checked deny-only and fails closed, it sends only in its own run, and `auto_run` is rejected for it. "A tool column cannot send" is true; "the platform cannot send" is not. See **sequences** and **gtm-handoffs**.
+- **Sends are gated, not absent.** A GENERIC `tool` column hard-refuses every send category (fail-closed — no adapter is even resolved). Sending runs through the dedicated **outreach terminal column**, which routes into the shipped, gated enroll machinery before that refusal applies: contactability (unsubscribe + blacklist) is checked deny-only and fails closed, and it sends only in its own run (`auto_run` on it is opt-in and requires a `run_condition`). "A tool column cannot send" is true; "the platform cannot send" is not. See **sequences** and **gtm-handoffs**.
 - **Mutations are proposals.** Any live, paid, or external-write action assumes a human approves consequential changes. The same applies to Learnings: a distilled insight is a proposal until `wissen_asset_approve` accepts it.
 - **Never cross workspaces.** Every call is scoped to the workspace behind your key. There is no `{{marketplace.*}}`/`{{platform.*}}`; a column only ever sees THIS workspace's data.
 - **Resolve integrations by CATEGORY, never a vendor id** — the connected adapter can change under you.

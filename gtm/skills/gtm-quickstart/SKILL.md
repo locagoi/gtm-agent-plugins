@@ -25,8 +25,8 @@ campaign built on invented positioning still fails in week two.
 | 2 | Wissen assets | ICP · persona · offer · proof · angle · signals | `draft-gtm-play` |
 | 3 | Playbook | the strategy, bound | `draft-gtm-play` |
 | 4 | Senders & channel | one channel, verified, within limits | `sequences` |
-| 5 | The sequence | the touch plan, and the variable inventory it defines | `sequences` |
-| 6 | The table | source → qualify → enrich → fill exactly those variables | `plays` · `build-gtm-workflow` |
+| 5 | The sequence | the touch plan, built-in slots first | `sequences` |
+| 6 | The table | source → qualify → enrich → fill exactly those slots | `plays` · `build-gtm-workflow` |
 | 7 | The enroll column | the one handoff that sends | `gtm-handoffs` |
 | 8 | First bounded run | 20 rows read by a human | `outbound-playbook` |
 | 9 | Measure and rebuild | the loop that compounds | `outbound-playbook` |
@@ -191,6 +191,12 @@ Four rules that decide whether this sequence is any good:
 Cadence day 1 → 4 → 9 → 16 → 25, maximum five touches, each carrying a **different angle**. A
 reply pauses every channel. Nothing sends on create.
 
+**Use the built-in slots for now.** `{{first_name}}`, `{{company_name}}`, `{{industry}}`,
+`{{location}}`, `{{sender_name}}` and friends work immediately. **`{{cell.<column>}}` does not
+yet** — the platform refuses a placeholder nothing can fill, and the connection that makes cell
+slots valid is the enroll column you add in stage 7. You come back here after that and finish
+the copy with `update_sequence`.
+
 Then take the inventory, because it is the input to the next stage:
 
 ```bash
@@ -235,12 +241,24 @@ Five rules that decide whether this works at 4,000 rows:
 - **Gate the expensive columns.** Contact enrichment costs 25 credits a row against 1 for
   qualification. The `run_condition` is where the bill is decided.
 - **Closed lists, never free text**, for anything you will count later.
-- **No empty variables.** Gate the enroll column on every fill: `anrede.confidence >= 0.8 AND
-  hook.usable == true`. An unresolved slot resolves empty and sends a message with a hole in it.
+- **No empty variables.** Gate the enroll column on every fill:
+  `{ "all": [ { "column": "anrede.confidence", "op": "gte", "value": 0.8 },
+  { "column": "hook.usable", "op": "equals", "value": true } ] }`. The gate is a structured
+  object, not an expression string, and dotted paths into a JSON cell do work. Prove it with a
+  dry run: the response reports `rows_skipped_by_condition`.
 
-**Checkpoint:** `workspace_table_dependencies` shows the graph you intended with no cycles, a
-`dry_run` of each paid column returns a sane count and cost, and every variable in the
-inventory has exactly one column feeding it.
+**Checkpoint** — two calls, both free:
+
+```bash
+gtm call workspace_table_dependencies --input '{"table_id":"<id>"}' --json   # the graph you intended, no cycles
+gtm call workspace_table_preflight --input '{"table_id":"<id>"}' --json      # does a NEW row run through?
+```
+
+`workspace_table_preflight` is deterministic: same column config, same verdict, no data and no
+cost. It reports the four failures that are otherwise silent — nothing runs on a new row, a
+gate that can never open, an enroll column that is not last, and a sequence slot no column
+feeds. `ok: true` and a `dry_run` with a sane count and cost per paid column, and the stage is
+done.
 
 ## Stage 7 — The enroll column: the one handoff that sends
 
@@ -257,7 +275,8 @@ Four properties of this column, all deliberate:
 
 - It is the **last** column, never a middle one.
 - It **sends only in its own run** — never on create.
-- `auto_run: true` is **rejected** for it. Enrollment is always a deliberate act.
+- `auto_run: true` needs a `run_condition` beside it, or it is refused. Leave it off for the first
+  campaign: enrollment should be a deliberate act until the qualification has proven itself.
 - Every enrollment passes the contactability gates: unsubscribe and blacklist are checked
   first, and the check **fails closed** — if the lead cannot be loaded reliably, nothing goes
   out.
@@ -268,7 +287,16 @@ cascade. Read **`gtm-handoffs`** before wiring anything unusual, and check
 `workspace_schema_get` → `handoffs.dangling` for configured handoffs whose target is missing —
 dead config that looks alive.
 
-**Checkpoint:** the enroll column exists, is last, and `auto_run` is off.
+**Now finish the sequence.** With the enroll column in place, `{{cell.<column>}}` becomes
+valid — go back and `update_sequence` with the real copy:
+
+```bash
+gtm call update_sequence --input '{"sequence_id":"<id>","steps":[ … {{cell.anrede}} … {{cell.hook}} … ]}' --json
+```
+
+**Checkpoint:** the enroll column exists, is last, `auto_run` is off, the sequence carries its
+`{{cell.*}}` slots, and `workspace_schema_get` → `handoffs.edges` shows the
+`table → sequence via enroll_column` edge with `dangling: []`.
 
 ---
 
@@ -290,6 +318,10 @@ recipient's competitor?* If yes, it is a mail merge, not personalisation.
 
 **Never run 4,000 rows before someone has read 20.** This is the most expensive mistake
 available in the product, and the easiest to avoid.
+
+And before you put a **schedule** on the source, run `workspace_table_preflight` once more. From
+that moment rows arrive without anybody watching, and a chain that quietly does nothing looks
+identical to a chain with nothing to do.
 
 **Checkpoint:** a human has approved the sample. Only now run the enroll column, capped.
 
