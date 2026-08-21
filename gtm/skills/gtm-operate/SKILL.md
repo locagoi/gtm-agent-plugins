@@ -101,7 +101,7 @@ Discovery-first, same as the CLI. Then the core surface:
 - `workspace_table_get({ table, limit?, offset? })` — a table's columns + a page of rows (limit default 50, cap 200).
 
 **Write rows / cells:**
-- `workspace_table_add_row({ table, values })` — one row; `values` keys must already exist as columns. Creates an UNBOUND row (no entity spine) — good for a quick test, not a real play. For entity-bound rows use `workspace_table_import_from_playbook({ table, playbook, max_rows })` or a source column.
+- `workspace_table_add_row({ table, values })` — one row; `values` keys must already exist as columns (an unknown key is rejected with the list of valid ones). On a **company-bound** table the row does come back with an `entity_id` and `{{company.name}}`/`{{company.domain}}` resolve from it (verified live) — so it is usable for a real test, not only a dummy. For bulk entity-bound rows still use `workspace_table_import_from_playbook({ table, playbook, max_rows })` or a source column.
 - `workspace_table_update_cell({ table, row_id, column_key, value })` — only `manual`/`relation` cells; computed cells (ai/enrichment/formula/tool/system) are refused so you can't overwrite a run's output.
 
 **Run columns (the paid contract):**

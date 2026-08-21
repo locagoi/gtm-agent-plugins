@@ -48,8 +48,13 @@ a contact you never enrich.
 
 **The gates:**
 
-- `run_condition` on 4–8: `icp_fit.fit == true`. Nothing else runs on a company that failed.
-- `run_condition` on 9: `icp_fit.fit == true AND signal_fresh != 'cold'`.
+- `run_condition` on 4–8: `{ "column": "icp_fit.fit", "op": "equals", "value": true }`. Nothing
+  else runs on a company that failed.
+- `run_condition` on 9: `{ "all": [ { "column": "icp_fit.fit", "op": "equals", "value": true },
+  { "column": "signal_fresh", "op": "not_equals", "value": "cold" } ] }`
+
+The gate is a structured object, dotted sub-field paths into a JSON cell work, and a dry run
+reports `rows_skipped_by_condition` so you can prove it before spending.
 
 **`icp_fit` returns a reason, always.** A boolean alone is unauditable — when the fit rate
 comes out at 30 % you need to read twenty reasons to know whether the ICP is wrong or the
@@ -100,7 +105,9 @@ three months ago has a meaningful share of people who left. Writing to them wast
 Free text here produces "Head of Sales", "Sales Lead", "VP Sales" and "Vertriebsleiter" as
 four different personas, and every per-persona comparison afterwards is noise.
 
-**Gate:** `run_condition` on 5–7: `still_employed == true AND influence != 'low'`.
+**Gate:** `run_condition` on 5–7:
+`{ "all": [ { "column": "still_employed", "op": "equals", "value": true },
+{ "column": "influence", "op": "not_equals", "value": "low" } ] }`
 
 ---
 
@@ -124,7 +131,7 @@ that. Write the sequence first.
 on the same infrastructure: **0.4 % versus 7.7 % bounce**, a factor of 19. Domain damage
 starts around 5 % and a domain is effectively spent at 8 %.
 
-**Gate on 7:** `email_valid == 'valid'`. And the enroll column is last, sends only in its own
+**Gate on 7:** `{ "column": "email_valid", "op": "equals", "value": "valid" }`. And the enroll column is last, sends only in its own
 run, and `auto_run` is rejected for it.
 
 ---

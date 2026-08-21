@@ -74,8 +74,16 @@ description will be.
 ```bash
 gtm call workspace_table_update_column --input '{
   "table": "Accounts", "column": "find_contacts",
-  "run_condition": "icp_fit.fit_score >= 60"
+  "run_condition": { "column": "icp_fit.fit_score", "op": "gte", "value": 60 }
 }' --json
+```
+
+Verify the gate **before** spending, with a free dry run — it reports exactly how many rows the
+condition stops:
+
+```bash
+gtm call workspace_table_run_column --input '{"table":"Accounts","column_key":"owner","mode":"dry_run"}' --json
+# → { rows: 12, rows_in_scope: 40, rows_skipped_by_condition: 28, estimated_credits: 12 }
 ```
 
 Everything downstream carries this condition. This is the line that decides the bill.
@@ -88,7 +96,7 @@ For local businesses the owner is rarely on LinkedIn but almost always in the im
 gtm call workspace_table_add_column --input '{
   "table": "Accounts", "key": "owner", "kind": "enrichment",
   "config": { "category": "research_people", "module": "base:research_people" },
-  "run_condition": "icp_fit.fit_score >= 60"
+  "run_condition": { "column": "icp_fit.fit_score", "op": "gte", "value": 60 }
 }' --json
 ```
 
@@ -103,7 +111,7 @@ gtm call workspace_table_add_column --input '{
   "table": "Accounts", "key": "create_contact", "kind": "enrichment",
   "config": { "category": "create_lead", "module": "base:create_lead",
               "target_table_id": "<Contacts table id>" },
-  "run_condition": "icp_fit.fit_score >= 60"
+  "run_condition": { "column": "icp_fit.fit_score", "op": "gte", "value": 60 }
 }' --json
 ```
 
@@ -125,14 +133,14 @@ gtm call workspace_table_add_column --input '{
 gtm call workspace_table_add_column --input '{
   "table": "Contacts", "key": "contact_data", "kind": "enrichment",
   "config": { "category": "contact_enrichment" },
-  "run_condition": "persona_fit.matches_persona == true"
+  "run_condition": { "column": "persona_fit.matches_persona", "op": "equals", "value": true }
 }' --json
 
 # 3. validate before you ever send
 gtm call workspace_table_add_column --input '{
   "table": "Contacts", "key": "email_valid", "kind": "enrichment",
   "config": { "category": "email_validation" },
-  "run_condition": "contact_data.email != null"
+  "run_condition": { "column": "contact_data.email", "op": "is_not_empty" }
 }' --json
 ```
 

@@ -185,10 +185,13 @@ references and variables nobody filled.
 
 The six rules that hold in all nine plays:
 
-1. **Sequence first, then its variables.** Two variables is the target, three the ceiling.
+1. **Sequence first, then its variables.** Two is the target, three the ceiling. Write it with
+   built-in slots, add the enroll column, then `update_sequence` to put `{{cell.*}}` in — the
+   platform only accepts cell slots once an enroll column can feed them.
 2. **Gate before you spend.** `run_condition` on every column that costs more than 1 credit.
-3. **No empty variables.** Gate the enroll column on every fill, and prove it on 20 rows
-   including a sparse one. An unresolved slot resolves empty and sends a hole.
+3. **No empty variables.** Gate the enroll column on every fill — a structured
+   `{ column, op, value }` object, not an expression string — and prove it with a free dry run,
+   which reports `rows_skipped_by_condition`. Then read 20 rows including a sparse one.
 4. **Closed lists, never free text**, for anything you will count later.
 5. **Twenty rows, read by a human**, before the first enrollment.
 6. **The enroll column is last**, sends only in its own run, and `auto_run` is rejected.
