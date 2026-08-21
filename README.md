@@ -46,12 +46,36 @@ Start at **`gtm-quickstart`** and it walks you through all nine.
 | **`draft-gtm-play`** | The strategy layer, asset by asset: ICP → persona → offer → proof → angle → signals, with the quality bars. |
 | **`build-gtm-workflow`** | Build a play as a table: columns, output schemas, gates, cascade, template. Includes `three-table-play.md` — the canonical accounts → people → outreach layout. |
 | **`sequences`** | The touch plan: seven step kinds, cadence, slots, senders, enrollment, stop rules. Includes `copy-patterns.md` — per-channel copy structure and the pre-send check. |
+| **`plays`** | **Nine ready-to-run motions**, each with its sources, columns, gates and tool calls: local business outreach · own-post engagers · keyword signals · job openings · inbound qualification · website visitors · lost-deal reactivation · CRM blacklist sync · CRM mining. |
 | **`gtm-handoffs`** | How the pieces connect — and the connections that do **not** exist. Read before wiring a motion end to end. |
 | **`gtm-operate`** | Day-to-day operating: read, source, enrich, run columns, spend safely. |
 
 Plus **a wired MCP connection** — the `gtm` MCP server pointed at your workspace. Claude Code
 prompts for your key when the plugin is enabled and stores it in secure storage, never in a
 file.
+
+## Nine plays, ready to run
+
+Name the motion and the agent builds it — no "which tool does that?" round trip:
+
+| Play | Starts from |
+|---|---|
+| **Local business outreach** | Maps → qualify → find the owner → validate email → sequence |
+| **Own-post engagers** | your LinkedIn posts → everyone who reacted → warm LinkedIn sequence |
+| **Keyword / competitor signals** | public discussion of the problem → who engaged → quote them |
+| **Job openings** | Indeed discovery, plus a standing watch on your accounts' career pages |
+| **Inbound lead qualification** | a webhook → qualified in seconds → routed, or a Feed card |
+| **Website visitor outreach** | de-anonymisation tool → webhook → email + LinkedIn in 48 h |
+| **Lost deal reactivation** | the CRM graveyard → what changed → a message that names the old reason |
+| **CRM blacklist reconciliation** | the guard that stops outbound shadowing an open deal |
+| **CRM mining for the ICP** | won deals → the ICP, written as Wissen → the free lookalike source |
+
+Plus five **installable platform workflows** — reply-to-meeting, reply triage, post-engagers,
+CRM auto-enrich, deliverability watch — which the agent installs rather than rebuilds.
+
+Every play carries the cost gate that matters: contact enrichment costs 25 credits a row
+against 1 for qualification, so qualification always runs first and the expensive column is
+gated on its verdict.
 
 ## Some of what is inside
 
@@ -151,6 +175,10 @@ gtm/
                       three-table-play.md   # accounts → people → outreach
     sequences/SKILL.md              # the touch plan
              copy-patterns.md       #   per-channel copy structure
+    plays/SKILL.md                  # the source + module catalogue, and how to run a play
+         local-business-outreach.md · own-post-engagers.md · keyword-signals.md
+         job-openings.md · inbound-qualification.md · web-visitor-outreach.md
+         lost-deal-reactivation.md · crm-blacklist-sync.md · crm-mining.md
     gtm-operate/SKILL.md            # day-to-day operating
     gtm-handoffs/SKILL.md           # how the pieces connect
 ```

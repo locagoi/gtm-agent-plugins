@@ -9,8 +9,8 @@
     {
       "name": "gtm",
       "source": "./gtm",
-      "description": "Zero to a live outbound campaign: the gtm-quickstart build path, the outbound-playbook method with measured benchmarks, and the operate/build/sequence/handoff skills — plus the gtm CLI and the workspace MCP connection.",
-      "version": "0.2.0",
+      "description": "Zero to a live outbound campaign, plus nine ready-to-run plays (local business, post engagers, keyword signals, job openings, inbound, website visitors, lost-deal reactivation, blacklist sync, CRM mining) — the gtm-quickstart build path, the outbound-playbook method with benchmarks, the gtm CLI and the workspace MCP connection.",
+      "version": "0.3.0",
       "author": {
         "name": "cegtec",
         "email": "info@cegtec.net"
