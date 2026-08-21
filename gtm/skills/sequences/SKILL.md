@@ -15,20 +15,39 @@ most useful fact about sequences and the one most often misread as "it isn't wor
 
 ## Build the sequence FIRST, then fill its variables
 
-**Order matters, and most people get it backwards.** Write the sequence before you build the
-table that feeds it.
+**Order matters, and most people get it backwards.** The sequence leads; the table exists to
+fill what the sequence asks for.
+
+There is one wrinkle, and it is enforced by the platform: **`{{cell.<column>}}` slots are only
+accepted once an enroll column connects this sequence to a table.** Until then the validator
+refuses them, because nothing would fill them. So the buildable order is:
 
 ```
-1. Write the sequence   →  as short as possible, as few variables as possible
-2. List its variables   →  the inventory. Usually two: {{anrede}} and {{hook}}
-3. Build ONE column per variable, and no others
-4. Run 20 rows and prove every variable is filled
-5. THEN enrol
+1. Write the sequence   →  as short as possible, built-in slots only
+2. Build the table      →  identity block, qualification, gate
+3. Add the enroll column with this sequence_id   ← this is what unlocks {{cell.*}}
+4. update_sequence      →  now put {{cell.anrede}} / {{cell.hook}} into the copy
+5. Build ONE column per slot, and no others
+6. Run 20 rows and prove every slot is filled
+7. THEN enrol
 ```
 
-The reason is mechanical. The sequence decides which variables exist. Build the table first and
-you get columns nobody references, variables nobody filled, and a message that goes out with a
-hole in it. Build the sequence first and the table has exactly the columns the copy needs.
+Steps 1 and 4 are the same sequence: you write it first and finish its slots once the table can
+feed them. What you must **not** do is build the table first and discover afterwards which
+variables the copy actually needed.
+
+**The built-in slots**, available from the start and in every sequence:
+
+`{{first_name}}` · `{{last_name}}` · `{{company_name}}` · `{{domain}}` · `{{industry}}` ·
+`{{job_title}}` · `{{location}}` · `{{pain_points}}` · `{{relevance_summary}}` ·
+`{{solution_fit}}` · `{{sender_name}}`
+
+Everything else is `{{cell.<column>}}`, and it has to exist as a column on the table the
+enrollment comes from.
+
+**The validator is on your side here.** Write an unknown placeholder and the call is refused
+with the list of what is available, rather than accepted and parked at send time. Read the
+error: it names the table it checked against.
 
 **The variable inventory is a real step, not a formality.** After writing the sequence, list
 every `{{...}}` across every step:
@@ -37,8 +56,8 @@ every `{{...}}` across every step:
 gtm call get_sequence --input '{"sequence_id":"<id>"}' --json | grep -o '{{[^}]*}}' | sort -u
 ```
 
-Then one column per entry. If the list has more than three, the copy is over-personalised. Go
-back to step 1 and cut it, rather than building three more columns to feed it.
+Then one column per `{{cell.*}}` entry. If the list has more than three, the copy is
+over-personalised. Go back and cut it, rather than building three more columns to feed it.
 
 ### No empty variables, ever
 
@@ -51,7 +70,10 @@ Two defences, and you need both:
 1. **Gate the enrollment on every variable.** `run_condition` on the enroll column:
    `anrede.confidence >= 0.8 AND hook.usable == true`. A row missing a fill is held back, not
    sent with a gap.
-2. **Prove it on 20 real rows before enrolling** — including a deliberately sparse one. The row
+2. **Let the preflight find the missing column.** `workspace_table_preflight` reads every
+   `{{cell.x}}` in the bound sequence and reports any slot no column feeds — free, deterministic
+   and before a single row is spent.
+3. **Prove it on 20 real rows before enrolling** — including a deliberately sparse one. The row
    that breaks the template is never the row you spot-checked.
 
 Fewer variables is the real protection. Two variables have two failure modes; six have six, and
@@ -108,12 +130,12 @@ Facts that decide whether this call succeeds:
   sequence back to draft does not stop it.
 - **`delay_days` is measured from the previous step**, and `0` means "immediately on
   enrollment".
-- **A stored branching graph does not run by itself.** `update_sequence({graph})` validates it,
-  renders it on the canvas and lets you dry-run it with `get_sequence({simulate})` — but with
-  `graph_mode` **off** it is authoring and preview only, and the linear `steps` stepper keeps
-  walking. Flip `graph_mode` on and NEW enrollments snapshot the graph instead; in-flight leads
-  keep the plan they started on. Read `get_sequence` to see which mode a sequence is in before
-  telling anyone what a lead will experience.
+- **`graph_mode` decides which plan actually runs.** A new sequence is created with
+  `graph_mode: true` (verified on a live workspace), so branching executes natively for new
+  enrollments. But a stored `graph` on a sequence whose `graph_mode` is **off** is authoring and
+  preview only — it renders on the canvas and dry-runs via `get_sequence({simulate})` while the
+  linear `steps` stepper keeps walking. Read `get_sequence` and look at the flag before telling
+  anyone what a lead will experience; in-flight enrollments keep the plan they started on.
 - **Locked sequences**: one linked to an external vendor campaign cannot have its steps
   edited here, because the steps live in the vendor. Bindings stay editable.
 - Changing steps on an **active** sequence with live enrollments requires the explicit

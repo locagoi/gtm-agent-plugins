@@ -35,7 +35,7 @@ All operations are the `workspace_table_*` / `wissen_*` MCP tools. Do them in or
 Rows must carry `entity_id` (a lead/company) or a bound column's dry-run sees empty inputs.
 - **From the playbook's existing companies/leads:** `workspace_table_import_from_playbook({ table, playbook, max_rows })` — materializes them as ENTITY-BOUND rows (idempotent by natural key).
 - **From a source module** (maps/company search/social — whatever this workspace has): a `source` column / the source-run path fills rows entity-linked. `workspace_capabilities` lists the sources actually available here.
-- `workspace_table_add_row` exists but creates an UNBOUND row — only for a quick manual test, not for a real play.
+- `workspace_table_add_row` adds one row at a time; on a company-bound table it comes back with an `entity_id` and the `{{company.*}}` refs resolve (verified live). Fine for a controlled test, too slow for a real play.
 
 ## 3. Add the module columns (the workflow steps)
 
@@ -89,12 +89,43 @@ left of the one it depends on, and never gate on a column further right.
 ## 4. Wire the cascade (make it run itself)
 
 - `workspace_table_update_column({ ..., auto_run: true })` per column that should run automatically.
-- `workspace_table_update_column({ ..., run_condition })` — a Domino gate (e.g. run copy only if `icp_score` ≥ X).
+- `workspace_table_update_column({ ..., run_condition })` — the Domino gate. **It is a structured
+  object, not an expression string** (verified against a live workspace):
+
+  ```json
+  { "column": "icp_fit.fit_score", "op": "gte", "value": 60 }
+  ```
+
+  Ops: `is_empty` · `is_not_empty` · `equals` · `not_equals` · `contains` · `gt` · `lt` · `gte` ·
+  `lte`. Combine with `{ "all": [...] }` or `{ "any": [...] }`, nestable three levels.
+
+  **Dotted sub-field paths into a JSON cell work** — `icp_fit.fit_score` reads into the cell's
+  JSON, confirmed in both directions on live data.
+
+  What is checked and what is not: the **root** of the path is validated at write time, so
+  `gibtsnicht.foo` is refused with the list of valid keys. The **sub-field** is not, and cannot
+  be — the table does not know what a JSON cell will contain before it is filled. So
+  `icp_fit.fitscore` (typo) is accepted and then never matches, which looks exactly like "no
+  rows qualified".
+
+  Two ways to catch that: a dry run reports `rows_skipped_by_condition`, and
+  `workspace_table_preflight` reports a gate pointing at a column that no longer exists or that
+  is computed further right.
+
+  A `run_condition` also creates a **dependency edge** — gating `enroll` on `icp_fit` makes
+  `icp_fit` upstream of `enroll` in `workspace_table_dependencies`, even with no `{{cell.x}}`
+  reference between them.
 - `workspace_table_update({ table, auto_advance: true })` — a NEW row auto-runs the entry columns → the whole chain cascades.
 - `workspace_table_dependencies({ table })` — inspect the derived graph (edges, entry columns, cycles) before enabling.
 
 ## 5. Preview cost + cascade BEFORE a live paid run
 
+- `workspace_table_preflight` — **does the chain run at all when a new row arrives?** Free,
+  deterministic, no data: same column config, same verdict. It reports the four failures that
+  are otherwise silent — no entry column on `auto_run` under `auto_advance`, a gate pointing
+  right or at a deleted column, an enroll column that is not last, and a `{{cell.x}}` in the
+  bound sequence that no column feeds. Run it before every source schedule; from then on rows
+  arrive with nobody watching.
 - `workspace_table_cascade_preview` — worst-case rows × per-cell cost.
 - A live paid run REQUIRES a `max_credits` ceiling; cells over the cap are skipped `max_credits_reached`, the run finalizes cleanly. Money-audit is built in — never run an unbounded paid column.
 - Scale: for large N, prefer the provider's BULK path where available. The job queue batches and is resumable (per-cell status; a re-run only touches pending/failed; no auto-retry).
@@ -122,7 +153,7 @@ This is the replicability loop: **build once → save_as_template → from_templ
 - **`{{asset.X}}` needs a bound/pinned Wissen asset** on the playbook, else it resolves empty.
 - **No cross-workspace reads** — there is no `{{marketplace.*}}`/`{{platform.*}}`; a column only ever sees THIS workspace's data.
 - **Deleting a referenced column is blocked** — remove the `{{cell.X}}`/run_condition references first (`workspace_table_delete_column` enforces this).
-- **Terminal SEND is gated, not absent** — a GENERIC tool column hard-refuses every send category (fail-closed: no adapter is even resolved). Sending runs through the dedicated **outreach terminal column**, which routes into the shipped, gated enroll machinery before that refusal applies. It sends only in its own run, never on create, and `auto_run` is rejected for it.
+- **Terminal SEND is gated, not absent** — a GENERIC tool column hard-refuses every send category (fail-closed: no adapter is even resolved). Sending runs through the dedicated **outreach terminal column**, which routes into the shipped, gated enroll machinery before that refusal applies. It sends only in its own run, never on create; `auto_run` on it is opt-in and only accepted together with a `run_condition`.
 - **The seams between the bricks are their own guide** — which handoffs exist (Wissen → Playbook → Tabelle → Sequenz, the Workflow's three), what creates each, and which ones do NOT exist: see **gtm-handoffs**, or read `handoffs.legend` from `workspace_schema_get` for the live version.
 - **Verify before claiming done** — check the cells actually succeeded (values present, status succeeded) via the grid or a query; a green enqueue is not a green result.
 
