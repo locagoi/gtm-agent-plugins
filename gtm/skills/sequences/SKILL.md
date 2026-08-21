@@ -13,6 +13,75 @@ between them, copy with slots, and a per-lead enrollment state.
 **Nothing sends when you create one.** Sends begin only on **enrollment**. This is the single
 most useful fact about sequences and the one most often misread as "it isn't working".
 
+## Build the sequence FIRST, then fill its variables
+
+**Order matters, and most people get it backwards.** Write the sequence before you build the
+table that feeds it.
+
+```
+1. Write the sequence   →  as short as possible, as few variables as possible
+2. List its variables   →  the inventory. Usually two: {{anrede}} and {{hook}}
+3. Build ONE column per variable, and no others
+4. Run 20 rows and prove every variable is filled
+5. THEN enrol
+```
+
+The reason is mechanical. The sequence decides which variables exist. Build the table first and
+you get columns nobody references, variables nobody filled, and a message that goes out with a
+hole in it. Build the sequence first and the table has exactly the columns the copy needs.
+
+**The variable inventory is a real step, not a formality.** After writing the sequence, list
+every `{{...}}` across every step:
+
+```bash
+gtm call get_sequence --input '{"sequence_id":"<id>"}' --json | grep -o '{{[^}]*}}' | sort -u
+```
+
+Then one column per entry. If the list has more than three, the copy is over-personalised. Go
+back to step 1 and cut it, rather than building three more columns to feed it.
+
+### No empty variables, ever
+
+An unresolved slot does not fail loudly. It resolves **empty**, the message still sends, and
+the recipient reads a sentence with a hole in it. That is worse than a generic message, because
+it is visibly broken.
+
+Two defences, and you need both:
+
+1. **Gate the enrollment on every variable.** `run_condition` on the enroll column:
+   `anrede.confidence >= 0.8 AND hook.usable == true`. A row missing a fill is held back, not
+   sent with a gap.
+2. **Prove it on 20 real rows before enrolling** — including a deliberately sparse one. The row
+   that breaks the template is never the row you spot-checked.
+
+Fewer variables is the real protection. Two variables have two failure modes; six have six, and
+each one is a message you will not see go out wrong.
+
+### One form per sequence: Sie or Du
+
+Decide once, at the sequence, and hold it in **every step**: formal `Sie` throughout, or
+informal `Du` throughout. Never mixed, and never drifting between step one and the follow-up.
+
+DACH B2B default is `Sie`. `Du` is a deliberate choice for startups and peer audiences, made by
+the customer, not by the writer of step three.
+
+The salutation column has to match: `Sehr geehrter Herr Meier` for `Sie`, `Hi Max` for `Du`.
+And the whole body follows: `Ihnen` / `Ihre` against `Dir` / `Deine`. A message that opens
+formally and closes informally reads as two people wrote it, because effectively two did.
+
+### Always A/B, from the first version
+
+A sequence that exists in one version cannot be improved, only replaced. Create it with
+variants from the start:
+
+- **Across variants: different messaging angles.** The reason to care changes — the signal, the
+  cost of inaction, the proof, the peer comparison. This is the test that moves reply rates.
+- **Within a step: the CTA.** Same angle, same body, one closing line different.
+
+**One axis at a time.** Testing a different angle *and* a different CTA in the same run tells
+you that something changed, and nothing about what. Read `get_sequence_comparison` for the
+side-by-side.
+
 ## The shape
 
 ```bash

@@ -175,15 +175,23 @@ Never place a column left of the one it depends on, and never gate on a column f
 ## The shape every play shares
 
 ```
-source  →  qualify (cheap)  →  GATE  →  enrich (expensive)  →  copy  →  ENROLL (terminal)
+source  →  qualify (cheap)  →  GATE  →  enrich (expensive)  →  fill vars  →  ENROLL (terminal)
 ```
 
-And the four rules that hold in all nine:
+**And the sequence is written before any of it.** The sequence decides which variables exist;
+the table fills exactly those. Write it first, take the inventory of its `{{...}}` slots, then
+build one column per slot and no others. Building the table first produces columns nobody
+references and variables nobody filled.
 
-1. **Gate before you spend.** `run_condition` on every column that costs more than 1 credit.
-2. **Closed lists, never free text**, for anything you will count later.
-3. **Twenty rows, read by a human**, before the first enrollment.
-4. **The enroll column is last**, sends only in its own run, and `auto_run` is rejected.
+The six rules that hold in all nine plays:
+
+1. **Sequence first, then its variables.** Two variables is the target, three the ceiling.
+2. **Gate before you spend.** `run_condition` on every column that costs more than 1 credit.
+3. **No empty variables.** Gate the enroll column on every fill, and prove it on 20 rows
+   including a sparse one. An unresolved slot resolves empty and sends a hole.
+4. **Closed lists, never free text**, for anything you will count later.
+5. **Twenty rows, read by a human**, before the first enrollment.
+6. **The enroll column is last**, sends only in its own run, and `auto_run` is rejected.
 
 ## Running a play
 

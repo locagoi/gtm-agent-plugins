@@ -106,7 +106,9 @@ four different personas, and every per-persona comparison afterwards is noise.
 
 ## Table 3 — Outreach
 
-One row per contact you will actually write to.
+One row per contact you will actually write to. **Its fill columns come from the sequence's
+variable inventory** — one column per `{{...}}` slot the copy actually uses, and none beyond
+that. Write the sequence first.
 
 | # | Column | Kind | Job |
 |---|---|---|---|
