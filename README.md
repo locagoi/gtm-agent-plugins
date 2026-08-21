@@ -1,105 +1,160 @@
 # GTM Automation — Claude Code plugins
 
-A Claude Code **plugin marketplace** that connects your agent to a **GTM Automation** workspace.
-Install it and your Claude Code gets the **`gtm` CLI**, the **operating + build skills**, and a **wired MCP connection**
-to your own workspace — so your agent can build and run GTM plays (sourcing, enrichment, qualification,
-copy, enrollment) directly against your data.
+**The complete outbound setup guide, as a Claude Code plugin.** Install it and your agent
+knows how to take a GTM Automation workspace from empty to a live, sending campaign in one
+session — and, just as importantly, *what to build*: the ICP, the cadence, the copy rules and
+the limits that decide whether outbound produces meetings or burns domains.
+
+Free to install and free to read. The method inside is the same one used to run campaigns
+across every workspace on the platform.
 
 Brand: **GTM Automation / cegtec**. CLI: **`gtm`**. Endpoint: `https://app.cegtec.net/api/mcp/<your-key>`.
 
-## What you get
+---
 
-The marketplace `gtm-plugins` ships one plugin, `gtm`, which bundles:
+## What this actually gives you
 
-- **`gtm-operate`** skill — the agent operating guide: the object model, the CLI-vs-MCP choice, exact
-  commands/tool names/args, copyable recipes, and the spend/send guardrails.
-- **`draft-gtm-play`** skill — the campaign methodology: draft the strategy first (ICP -> persona -> offer ->
-  proof -> signals as Wissen assets), then the playbook (channels + automations), then the deterministic table.
-- **`build-gtm-workflow`** skill — build a repeatable play as a workspace table (create table -> module
-  columns -> cascade -> save as template) and replay it deterministically.
-- **`gtm-handoffs`** skill — how the pieces connect: which handoff links Wissen, Playbook, Quelle, Tabelle,
-  Sequenz and Workflow, what creates each one, how a Workflow runs (trigger -> steps -> dry run -> live),
-  and the connections that do NOT exist. Read it before wiring a motion end to end.
-- **`setup`** skill — a guided first-run: install the CLI, log in with your workspace MCP key, and validate.
-- **A wired MCP connection** — the `gtm` MCP server, pointed at your workspace endpoint. Claude Code prompts
-  for your workspace MCP key when the plugin is enabled and stores it in secure storage (never in a plain file).
+Built by hand, a customer outbound playbook is a two-to-four week engagement: discovery call,
+CRM analysis, ICP workshop, persona mapping, value props, sequence writing, QA. The plugin is
+that process — same stages, same quality bars — executed by your agent against your own
+workspace.
+
+**Nine stages, one session:**
+
+```
+0  Connect and orient          →  a verified connection, a read model
+1  Intake interview            →  answers you did not invent
+2  Wissen assets               →  ICP · persona · offer · proof · angle · signals
+3  Playbook                    →  the strategy, bound and pinned
+4  Senders & channel           →  one channel, verified, within limits
+5  The table                   →  source → qualify → enrich → copy
+6  The sequence                →  the touch plan the lead experiences
+7  The enroll column           →  the one handoff that sends
+8  First bounded run           →  20 rows read by a human
+9  Measure and rebuild         →  the loop that compounds
+```
+
+Start at **`gtm-quickstart`** and it walks you through all nine.
+
+## The skills
+
+| Skill | What it is |
+|---|---|
+| **`setup`** | Guided first run: install the CLI, log in with your workspace key, validate. |
+| **`gtm-quickstart`** | **Start here.** The nine stages above, with a checkpoint at the end of each. Includes `intake.md` — the discovery questions the build actually consumes. |
+| **`outbound-playbook`** | *What* to build: ICP breadth, channel choice, cadence, copy rules, volume, what to measure. Includes `benchmarks.md` — the numbers every rule rests on. |
+| **`draft-gtm-play`** | The strategy layer, asset by asset: ICP → persona → offer → proof → angle → signals, with the quality bars. |
+| **`build-gtm-workflow`** | Build a play as a table: columns, output schemas, gates, cascade, template. Includes `three-table-play.md` — the canonical accounts → people → outreach layout. |
+| **`sequences`** | The touch plan: seven step kinds, cadence, slots, senders, enrollment, stop rules. Includes `copy-patterns.md` — per-channel copy structure and the pre-send check. |
+| **`gtm-handoffs`** | How the pieces connect — and the connections that do **not** exist. Read before wiring a motion end to end. |
+| **`gtm-operate`** | Day-to-day operating: read, source, enrich, run columns, spend safely. |
+
+Plus **a wired MCP connection** — the `gtm` MCP server pointed at your workspace. Claude Code
+prompts for your key when the plugin is enabled and stores it in secure storage, never in a
+file.
+
+## Some of what is inside
+
+A sample of the rules, each with its evidence in `benchmarks.md`:
+
+- **Narrow beats broad by ~2×.** Playbooks naming ≤ 5 regions reply at 4.06 % against 2.23 %
+  for broader ones, measured over ~36,500 contacted leads.
+- **Rebuild the message before adding contacts.** The largest single improvement on the
+  platform: 5.28 % → 16.18 % reply rate on the *same* audience, at half the volume.
+- **15 cold emails per inbox per day.** Scale by adding inboxes, never by raising volume.
+  Thirty inboxes × fifteen = 450 clean sends a day.
+- **No links and no tracking in a cold body.** The single largest deliverability lever, and
+  the one that feels most like a lost conversion.
+- **Validate before import.** 0.4 % versus 7.7 % bounce on identical infrastructure — a factor
+  of 19.
+- **Five touches, days 1 → 4 → 9 → 16 → 25**, each carrying a new angle. A reply pauses every
+  channel.
+- **A signal is hot for 3–7 days.** After ~28 it is cold, and a late approach does more damage
+  than silence.
+- **Check your sequence has steps.** 45 of 88 sequences on the platform contain zero — built,
+  wired, believed live, sending nothing.
+
+Platform figures are anonymous aggregates across all workspaces; no customer, campaign or
+contact is identifiable. Operator figures come from cegtec's published practice at
+[cegtec.net/academy](https://www.cegtec.net/academy). Neither is a promise — they are
+reference points to argue with.
 
 ## Prerequisites
 
 1. A **GTM Automation workspace** on the **Growth plan or higher** (MCP access is plan-gated).
-2. Your **workspace MCP key** — see below.
-3. **Node 18+** (for the `gtm` CLI).
+2. Your **workspace MCP key** — in the app (`https://app.cegtec.net`): **Erweiterungen /
+   Extensions → MCP**. Per workspace and secret; treat it like a password.
+3. **Node 18+** for the `gtm` CLI.
 
-### Get your workspace MCP key
-
-In the app (`https://app.cegtec.net`): **Erweiterungen / Extensions -> MCP**. Copy the key for your workspace.
-It is per-workspace and secret — treat it like a password. You paste it at setup; it is never committed anywhere.
+No workspace yet? The skills are still worth reading — `outbound-playbook`,
+`sequences/copy-patterns.md` and `benchmarks.md` are method, not product documentation.
 
 ## Install
-
-In Claude Code:
 
 ```
 /plugin marketplace add locagoi/gtm-agent-plugins
 /plugin install gtm@gtm-plugins
 ```
 
-When the plugin is enabled, Claude Code prompts for your **workspace MCP key** (`workspace_mcp_key`). Paste it —
-it is stored in secure storage and used to connect the `gtm` MCP server at
+Claude Code prompts for your **workspace MCP key** (`workspace_mcp_key`) when the plugin is
+enabled. It is stored in secure storage and used to connect the `gtm` MCP server at
 `https://app.cegtec.net/api/mcp/<your-key>`. No key is ever hardcoded in this repo.
 
-## First run
-
-Ask your agent to run the **setup** skill (or say "set up gtm"). It will:
-
-1. Install the `gtm` CLI (`npm i -g gtm-goat-cli`; or build from the CLI source at the main repo's `cli/` —
-   see `cli/README.md`).
-2. `gtm login --key <workspace MCP key> --url https://app.cegtec.net`
-3. Validate with `gtm whoami` (no credits spent) and `gtm tools`.
-
-After that, **your agent knows the product** via the `gtm-operate` skill — it can read your tables and Wissen,
-source and enrich rows, run columns within a credit cap, and build plays with `build-gtm-workflow`.
+Then say **"set up gtm"** and your agent runs the `setup` skill, or **"build my first
+campaign"** for `gtm-quickstart`.
 
 ## The `gtm` CLI
 
-The CLI speaks MCP over HTTP to your workspace's `/api/mcp/<key>` endpoint — no SDK, no extra backend.
+Speaks MCP over HTTP to your workspace endpoint — no SDK, no extra backend.
 
-- **Install:** `npm i -g gtm-goat-cli` (Node 18+). The npm package is `gtm-goat-cli`; the command is `gtm`.
-- **Fallback (build from source):** in the main GTM Automation repo under `cli/`
-  (`npm install && npm run build && npm link`). Full reference: the main repo's `cli/README.md`.
-
-Common commands:
+- **Install:** `npm i -g gtm-goat-cli` (Node 18+). Package `gtm-goat-cli`, command `gtm`.
 
 ```bash
-gtm tools                                   # every tool on this workspace
-gtm tables list                             # every table
-gtm table schema                            # data model + Wissen assets
+gtm whoami                                              # verify the key, spends nothing
+gtm tools                                               # the curated core on this workspace
+gtm table schema                                        # data model + Wissen assets
 gtm column run <table> <column> --mode dry_run          # FREE cost preview
-gtm column run <table> <column> --max-credits 25        # live paid run (hard cap)
-gtm wissen list --kind icp
-gtm call <tool> --input '{...}' --json      # any tool, JSON in/out
+gtm column run <table> <column> --max-credits 25        # live paid run, hard cap
+gtm call <tool> --input '{...}' --json                  # any tool, JSON in/out
 ```
 
-## Guardrails (built in)
+**On the tool list:** `gtm tools` shows a curated core of ~70 verbs. The rest of the
+catalogue is still callable by name — only the listing is trimmed. `find_tools` returns the
+names; `gtm call <name>` runs them.
 
-- **Paid runs need a budget** — a live `ai`/`enrichment` run without `--max-credits` is refused; `--mode dry_run` first.
+## Guardrails, built in
+
+- **Paid runs need a budget** — a live `ai`/`enrichment` run without `--max-credits` is
+  refused; `--mode dry_run` first.
 - **No auto-retries** — a re-run is a deliberate act.
-- **Outreach sends are gated** — send categories are refused at run time; propose, don't fire.
-- **Single workspace** — every call is scoped to the workspace behind your key; there is no cross-workspace access.
+- **The enroll column is terminal** — last column, sends only in its own run, `auto_run`
+  rejected.
+- **Sends pass the gates** — unsubscribe and blacklist checked deny-only, fail closed.
+- **Single workspace** — every call is scoped to the workspace behind your key. There is no
+  cross-workspace access.
 
 ## Layout
 
 ```
-.claude-plugin/marketplace.json     # marketplace "gtm-plugins" -> plugin "gtm" (source ./gtm)
+.claude-plugin/marketplace.json     # marketplace "gtm-plugins" → plugin "gtm"
 gtm/
-  .claude-plugin/plugin.json        # plugin manifest + MCP server + userConfig (workspace_mcp_key)
+  .claude-plugin/plugin.json        # manifest + MCP server + userConfig (workspace_mcp_key)
   skills/
-    setup/SKILL.md                  # guided first-run
-    draft-gtm-play/SKILL.md         # campaign methodology (strategy -> playbook -> table)
-    gtm-operate/SKILL.md            # operate the workspace
+    setup/SKILL.md                  # connect and validate
+    quickstart/SKILL.md             # ← start here: zero to live campaign
+              intake.md             #   the discovery questions
+    outbound-playbook/SKILL.md      # what to build, and why
+                     benchmarks.md  #   the numbers behind every rule
+    draft-gtm-play/SKILL.md         # strategy, asset by asset
     build-gtm-workflow/SKILL.md     # build a play as a table
+                      three-table-play.md   # accounts → people → outreach
+    sequences/SKILL.md              # the touch plan
+             copy-patterns.md       #   per-channel copy structure
+    gtm-operate/SKILL.md            # day-to-day operating
+    gtm-handoffs/SKILL.md           # how the pieces connect
 ```
 
 ## Support
 
-info@cegtec.net · https://app.cegtec.net
+info@cegtec.net · https://app.cegtec.net · [Academy](https://www.cegtec.net/academy) ·
+[Docs](https://www.cegtec.net/gtm-goat/docs/)

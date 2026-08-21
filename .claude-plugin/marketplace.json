@@ -4,13 +4,13 @@
     "name": "cegtec",
     "email": "info@cegtec.net"
   },
-  "description": "GTM Automation plugins for Claude Code — the gtm CLI, operating skills, and the wired workspace MCP connection so your agent can build and run GTM plays in your own workspace.",
+  "description": "The complete outbound setup guide as a Claude Code plugin: take a GTM Automation workspace from empty to a live campaign in one session — intake, Wissen assets, playbook, table, sequence, enrollment — plus the go-to-market method and benchmarks behind it, the gtm CLI, and the wired workspace MCP connection.",
   "plugins": [
     {
       "name": "gtm",
       "source": "./gtm",
-      "description": "Operate and build GTM Automation plays from Claude Code: the gtm CLI, the gtm-operate + build-gtm-workflow + gtm-handoffs skills, a guided setup skill, and the workspace MCP connection.",
-      "version": "0.1.0",
+      "description": "Zero to a live outbound campaign: the gtm-quickstart build path, the outbound-playbook method with measured benchmarks, and the operate/build/sequence/handoff skills — plus the gtm CLI and the workspace MCP connection.",
+      "version": "0.2.0",
       "author": {
         "name": "cegtec",
         "email": "info@cegtec.net"

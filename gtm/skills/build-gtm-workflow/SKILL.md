@@ -14,7 +14,11 @@ Build a **repeatable, deterministic** GTM workflow as a workspace **table**: eac
 
 All operations are the `workspace_table_*` / `wissen_*` MCP tools (flag `workspace_tables_enabled`). Do them in order.
 
-> For the broader **operating** guide — the CLI-vs-MCP choice, the `gtm` CLI commands (`cli/README.md`), reading/sourcing/enriching, and the paid-run guardrails — see the **gtm-operate** skill. This skill is the narrower "build a repeatable play as a table → save as template" flow.
+> **Start with the shape, not the tools:** `three-table-play.md` next to this file is the
+> canonical layout — accounts → people → outreach, with a scored gate between each stage,
+> column by column, with the thresholds and the build order. Read it before you create the
+> first table. For the whole-workspace build order see `gtm-quickstart`; for the broader
+> operating guide (CLI-vs-MCP, sourcing, paid-run guardrails) see `gtm-operate`.
 
 ## 0. Read the model first — NEVER guess
 
@@ -50,6 +54,16 @@ Rows must carry `entity_id` (a lead/company) or a bound column's dry-run sees em
 - **Inputs via `{{...}}`** — reference upstream columns (`{{cell.owner}}`), the linked entity (`{{company.name}}`), or a bound Wissen asset (`{{asset.icp}}`). The dependency graph reads these → cascade order. Only referenced keys are injected (cheap).
 - **Adapter-agnostic** — resolve by CATEGORY, never a vendor id. Outreach/enrichment/CRM EXECUTION runs through whichever **provider is connected for that category** in this workspace; our columns orchestrate. Call `list_integrations` to see what that is here — never hardcode a provider.
 - **Bind Wissen for context** — pin an asset to the playbook (`playbook_asset_pin`) so `{{asset.icp}}` resolves the versioned ICP; provenance records the revision.
+- **Closed lists, never free text.** Any column whose output you will later count — a
+  qualification verdict, a disqualification reason, an industry label, a persona name, a case
+  study pick — must choose from an `enum` in its `output_schema`. Free text aggregates into
+  nothing: on the platform, recorded objection reasons are almost all unique strings and the
+  same industry appears under four names, so the obvious question ("what disqualifies most of
+  my list?") cannot be answered at all.
+- **Verdict columns return a reason.** A bare boolean is unauditable — when the fit rate comes
+  back at 30 % you need twenty reasons to know whether the ICP or the source is wrong.
+- **Gate the expensive columns.** A `run_condition` on enrichment (`icp_fit.fit == true`) is
+  where the credit bill is actually decided — you only pay to enrich what qualified.
 
 ## 4. Wire the cascade (make it run itself)
 
@@ -67,6 +81,9 @@ Rows must carry `entity_id` (a lead/company) or a bound column's dry-run sees em
 ## 6. Run it
 
 - Add rows (step 2) → with `auto_advance` the cascade runs. Or run one column: `workspace_table_run_column({ table, column, max_credits })` (enqueues a job; poll the grid / `list_jobs`).
+- **The first run is 20 rows, and a human reads the output.** Then 20 generated messages,
+  read before anything is enrolled. An unbounded first run is the most expensive mistake
+  available in the product.
 
 ## 7. Save as a TEMPLATE → replicate
 
