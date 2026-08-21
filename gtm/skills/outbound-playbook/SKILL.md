@@ -10,6 +10,10 @@ The platform will faithfully execute a bad campaign. This skill is what stops yo
 one — the go-to-market decisions that determine whether a workspace produces meetings, in
 the order you actually face them.
 
+Two files next to this one carry the evidence: **`benchmarks.md`** for the reference numbers,
+and **`learnings.md`** for the cross-workspace patterns as *patterns* — each with what to do
+about it, and with its confound named where one exists.
+
 Every rule here has evidence behind it. It lives in **`benchmarks.md`** next to this file:
 directional patterns aggregated across all campaigns on the platform, plus one operator's six
 years of published DACH outbound practice. Read it when a stakeholder wants to argue with a

@@ -71,9 +71,35 @@ Wissen ──pin──▶ Playbook ──bindet──▶ Tabelle ──terminale
 A Workflow is the **event** dimension (Tabelle = per row, Sequenz = per lead over time). Deterministic by construction: same input → same steps → same output.
 
 1. **Trigger** — `schedule`, `event`, `manual` or `webhook`, set on `create_workflow`. Without one it is a script nobody starts.
-2. **Steps**, appended with `add_workflow_step`. The deterministic set: `http_request` (one templated API call; the response lands under `output_key` as `{{key.body}}`/`{{key.status}}`) · `add_table_rows` · `enroll_sequence` · `feed_notify` · `tool_call` (one named custom/registry tool — the integration node) · `wait` (hours/days, max 30d; the run parks and resumes on the tick rather than blocking). An **agent** step is for the cases that need judgment — bounded, and gated.
+2. **Steps**, appended with `add_workflow_step`. Eleven deterministic kinds, plus the agent step:
+
+| Kind | Does |
+|---|---|
+| `http_request` | one templated API call, SSRF-guarded; response under `{{key.body}}`/`{{key.status}}` |
+| `add_table_rows` | push rows into a Tabelle and let the cascade run |
+| `enroll_sequence` | hand leads to a native Sequenz through the gated enroll executor |
+| `feed_notify` | post a card into the Feed |
+| `tool_call` | ONE named custom or registry tool; the tool's own gates stay in force |
+| `wait` | park hours/days, max 30d, resumes on the tick |
+| `transform` | reshape data with **no model** — free, deterministic |
+| `filter` | narrow a list with **no model** |
+| `switch` | multi-way branch, first match wins, **forward-only** jumps |
+| `approval` | human gate: the run parks, a card lands in the Feed's Freigeben lane |
+| `sub_workflow` | start another workflow as a hand-off with its own run |
+
+   **Use `transform` and `filter` instead of an agent step whenever no judgement is needed.**
+   They are free and deterministic; an agent step for reshaping data is cost and variance you
+   did not need. The **agent** step is for what genuinely needs judgement, bounded and gated.
+
+   **The step kind is not editable.** `update_workflow_step` changes a step's config in place;
+   turning a `http_request` into a `tool_call` means delete plus add.
 3. **Branch and control** — `set_workflow_step_condition`, `set_workflow_step_parallel_group`, `set_workflow_step_retry`, `set_workflow_max_concurrency`.
-4. **Dry run before it goes live.** `run_workflow` with a dry run shows the steps it would take without side effects. Then `set_workflow_enabled`.
+4. **Dry run before it goes live** — but know what a dry run actually simulates.
+   `run_workflow({dry_run:true})` no-ops only a **short, named list** of side-effecting tools
+   (the send/book/escalate family). **Any other side-effecting tool an agent step calls
+   executes for real during a rehearsal.** Read `automation_capabilities` →
+   `dry_run.simulated_tools` for the current list before you rehearse anything that writes.
+   Then `set_workflow_enabled`.
 5. **Watch it** — `list_runs`, `get_workflow_history`, and `diagnose_workflow_run` for one failed run.
 
 **Workflow or Agent?** *Can you write the steps down → Workflow. Does each case need judgment → an Agent step inside the Workflow, bounded and gated.*

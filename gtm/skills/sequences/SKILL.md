@@ -34,11 +34,17 @@ Facts that decide whether this call succeeds:
 - **One sequence per playbook per channel.** A second email sequence on the same playbook is
   rejected by a unique constraint — edit the existing one with `update_sequence`, or use a
   different channel.
-- **It starts as `draft`.** Draft is not the blocker for sending; enrollment is.
+- **`status` is not an execution gate.** Draft, approved, active: the stepper walks any
+  sequence its enrollments point at. **Enrollment existence decides, nothing else.** Setting a
+  sequence back to draft does not stop it.
 - **`delay_days` is measured from the previous step**, and `0` means "immediately on
   enrollment".
-- Branching runs **natively from the start**. Add conditions later with
-  `update_sequence({graph})` and they execute — there is no mode to switch on.
+- **A stored branching graph does not run by itself.** `update_sequence({graph})` validates it,
+  renders it on the canvas and lets you dry-run it with `get_sequence({simulate})` — but with
+  `graph_mode` **off** it is authoring and preview only, and the linear `steps` stepper keeps
+  walking. Flip `graph_mode` on and NEW enrollments snapshot the graph instead; in-flight leads
+  keep the plan they started on. Read `get_sequence` to see which mode a sequence is in before
+  telling anyone what a lead will experience.
 - **Locked sequences**: one linked to an external vendor campaign cannot have its steps
   edited here, because the steps live in the vendor. Bindings stay editable.
 - Changing steps on an **active** sequence with live enrollments requires the explicit
@@ -174,6 +180,7 @@ Nothing sends, nothing errors, and the motion looks finished.
 Then check, in this order:
 
 - [ ] Steps exist, with the delays you intended
+- [ ] `graph_mode` matches the plan you think is running
 - [ ] A real row resolves every slot in every step — no empty fills
 - [ ] The sender is verified, and your volume fits its daily limit
 - [ ] The enroll column is last and `auto_run` is off

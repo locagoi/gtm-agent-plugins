@@ -144,6 +144,34 @@ maintain. Before adding one, answer: *who reads this, and what do they do differ
 of it?* If the answer is "it might be useful later", it is not a column, it is clutter. A
 table a person can scan beats a table that knows everything.
 
+## Columns run left to right
+
+**Build the columns in the order they execute, and gate each one on the column to its left.**
+The grid is then readable as the process itself: identity, then the cheap verdict, then the
+gate, then the expensive work, then the copy, then the enrollment. A person scanning left to
+right sees where each row stopped and why.
+
+```
+identity  →  cheap qualification  →  GATE  →  enrichment  →  copy fills  →  ENROLL
+company_name   icp_fit                       contact_data   anrede         enroll
+country        signal                        email_valid    hook           (terminal)
+industry       persona_fit
+website
+size
+```
+
+Every column after the first verdict carries a `run_condition` referring to a column to its
+**left**, never to its right. Three consequences worth stating:
+
+- **Cost follows the gate.** A row that fails qualification never reaches the 25-credit column.
+- **Failure is visible.** An empty cell in column six with a filled gate in column three means
+  the gate held, not that something broke.
+- **The dependency graph matches the layout.** `workspace_table_dependencies` derives the run
+  order from the `{{cell.x}}` references; when the visual order and the derived order agree,
+  the table is comprehensible. When they disagree, somebody will misread it.
+
+Never place a column left of the one it depends on, and never gate on a column further right.
+
 ## The shape every play shares
 
 ```

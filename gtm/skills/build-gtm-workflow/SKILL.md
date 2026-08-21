@@ -74,6 +74,14 @@ useful later" is not an answer.
 - **Gate the expensive columns.** A `run_condition` on enrichment (`icp_fit.fit == true`) is
   where the credit bill is actually decided — you only pay to enrich what qualified.
 
+## 3b. Order the columns left to right
+
+Build them in the order they execute, and gate each on a column to its **left**: identity →
+cheap verdict → gate → expensive enrichment → copy fills → enroll. A person scanning the grid
+left to right then sees where each row stopped and why, and the visual order matches the order
+`workspace_table_dependencies` derives from the `{{cell.x}}` references. Never place a column
+left of the one it depends on, and never gate on a column further right.
+
 ## 4. Wire the cascade (make it run itself)
 
 - `workspace_table_update_column({ ..., auto_run: true })` per column that should run automatically.
