@@ -46,9 +46,10 @@ text that you wrote once, read once, and approved.
 
 {{hook}}                     ← the only per-lead sentence, tied to the signal
 
-<value prop: template, benefit-oriented, with a concrete reference>
+<challenge + consequence>    ← the pain in their words, and what it costs while unsolved
+<value prop + case study>    ← the benefit as a measurement, with a named customer
 
-<lead magnet: one attractive, zero-commitment offer>
+<soft CTA>                   ← validate the pain, or offer the lead magnet
 
 {{signatur}}
 ```
@@ -57,8 +58,9 @@ text that you wrote once, read once, and approved.
 |---|---|---|
 | `{{anrede}}` | yes | `Sehr geehrter Herr Meier` / `Sehr geehrte Frau Meier`, or `Hi Max`. Its own prompt column |
 | `{{hook}}` | yes | **one** sentence, references the signal, max 140 characters, no question |
-| Value prop | **no** | fixed text. Benefit-oriented, with a named reference and a number |
-| Lead magnet | **no** | fixed. One concrete, no-commitment offer |
+| Challenge + consequence | **no** | fixed text. Their pain, verbatim — plus what it costs while it stays unsolved |
+| Value prop + case study | **no** | fixed text. The benefit as amount, unit, timeframe, with a named comparable customer |
+| Soft CTA | **no** | fixed. A question that validates the pain, or the lead magnet — never a meeting demand |
 | `{{signatur}}` | per sender | fixed per sender, plain text |
 
 Two generated fields per message. Everything else is text a human wrote and approved.
@@ -126,6 +128,28 @@ If it reads like a brochure heading, it is the category's.
 Where the specific version comes from: the persona's challenges from the intake, in *their*
 words — never a paraphrase. That is why the intake asks for challenges verbatim.
 
+### Name the consequence, not just the pain
+
+A pain the reader already lives with is background noise. What moves them is the **cost of it
+staying unsolved** — stated plainly, in their own arithmetic:
+
+| Pain alone | Pain plus consequence |
+|---|---|
+| „Jede Anfrage wird zweimal erfasst." | „Jede Anfrage wird zweimal erfasst. Bei 400 im Monat sind das gut zwei Arbeitstage, die niemand abrechnet." |
+| „Drei SDRs recherchieren 20 Minuten pro Lead." | „Drei SDRs recherchieren 20 Minuten pro Lead — die Hälfte ihrer Woche geht für Arbeit drauf, die kein Gespräch erzeugt." |
+| „Vier von fünf Angeboten bekommen kein Nachfassen." | „Vier von fünf Angeboten bekommen kein Nachfassen. Bei Ihrem Volumen liegt der Unterschied im sechsstelligen Bereich pro Jahr." |
+
+Two rules keep this from tipping into pressure:
+
+1. **The consequence is arithmetic, not a threat.** „Zwei Arbeitstage im Monat" is a
+   calculation they can check. „Sie verlieren Marktanteile" is a scare, and it reads as one.
+2. **Stay inside what you can know.** Their volume, their team size, their posted roles — from
+   the row. Anything else is invented, and an invented consequence discredits the number that
+   follows it.
+
+The consequence is what makes the next sentence land: without it, a benefit answers a question
+nobody asked.
+
 ### The benefit is a number, a unit and a timeframe
 
 Not an adjective. Not a direction. A measurement:
@@ -166,21 +190,50 @@ prospect can check.
 ### The chain the reader walks
 
 ```
-pain they recognise  →  number that proves it is solvable  →  name that proves it is real
+pain they recognise → what it costs unsolved → number that proves it is solvable
+                    → name that proves it is real → a question that costs nothing to answer
 ```
 
-Break any link and the message reverts to a brochure. All three fit in two sentences:
+Break any link and the message reverts to a brochure. The whole chain fits in two short
+paragraphs:
 
 > {{anrede}},
 >
 > {{hook}}
 >
 > Bei Hausverwaltungen läuft jede Rechnung zweimal durch die Hand: einmal im Postfach, einmal
-> im ERP. Musterverwaltung Nord hat das auf einen Durchlauf gebracht und spart seit Januar
-> rund 12 Stunden pro Woche.
+> im ERP. Bei 400 Belegen im Monat sind das gut zwei Arbeitstage.
+>
+> Musterverwaltung Nord hat das auf einen Durchlauf gebracht und spart seit Januar rund 12
+> Stunden pro Woche. Läuft das bei Ihnen ähnlich?
 
-Pain in the reader's language, benefit as a measurement, reference by name. Then the lead
-magnet, then the signature.
+Pain in the reader's language, the consequence in their arithmetic, the benefit as a
+measurement, the reference by name — and a question they can answer with one word.
+
+## The CTA validates the pain — it does not ask for time
+
+Two forms, and neither is a meeting request. Both cost the reader almost nothing, which is why
+they get answered.
+
+**Form A — validate the pain.** One question, closed, answerable in a word:
+
+> Läuft das bei Ihnen ähnlich?
+> Spielt das bei {{company.name}} gerade eine Rolle?
+> Ist das bei Ihnen auch der Engpass, oder liegt er woanders?
+
+The third one is the strongest of the three: it offers a way to say „nein, woanders" — and that
+answer is worth as much as a yes, because it qualifies without costing you a meeting.
+
+**Form B — offer the lead magnet.** A deliverable, named, free of obligation:
+
+> Ich habe eine kurze Auswertung dazu vorbereitet. Soll ich sie schicken?
+
+**Never in a first message:** „Passen 15 Minuten am Donnerstag?", a calendar link, two
+questions stacked, or „Wann hätten Sie Zeit für ein kurzes Gespräch?". They ask for the one
+thing the reader has least of, before you have earned it.
+
+The A/B axis lives exactly here: same hook, same pain, same proof — only this line changes.
+That is why the CTA is the cheapest thing to test and the most worth testing.
 
 ## The lead magnet carries the CTA
 
@@ -386,28 +439,34 @@ tics.
 
 ## Worked example: email step 1
 
-Fixed template, two generated fields, three paragraphs, 61 words.
+Fixed template, two generated fields, three paragraphs, 74 words. The full chain: pain →
+consequence → benefit → reference → soft CTA.
 
 ```
 {{anrede}},
 
 {{hook}}
 
-Wir helfen Hausverwaltungen dabei, den Posteingang zu digitalisieren.
-Musterverwaltung Nord spart damit seit Januar rund 12 Stunden pro Woche
-in der Poststelle.
+bei Hausverwaltungen läuft jede Rechnung zweimal durch die Hand: einmal
+im Postfach, einmal im ERP. Bei 400 Belegen im Monat sind das gut zwei
+Arbeitstage.
 
-Ich habe eine kurze Auswertung vorbereitet, was das bei Ihrer Objektzahl
-bedeutet. Soll ich sie Ihnen schicken?
+Musterverwaltung Nord hat das auf einen Durchlauf gebracht und spart
+seit Januar rund 12 Stunden pro Woche. Läuft das bei Ihnen ähnlich?
 
 {{signatur}}
 ```
 
 - `{{anrede}}` → `Sehr geehrte Frau Krüger`
 - `{{hook}}` → `Sie haben im August zwei neue Objekte in Kassel übernommen.`
-- Value prop, reference, lead magnet and CTA: **fixed text**, written once, reviewed once.
-- The A/B variant changes exactly one line: `Soll ich sie Ihnen schicken?` against
-  `Spielt das bei Ihnen gerade eine Rolle?`
+- Everything else is **fixed text**, written once, reviewed once.
+- The A/B variant changes exactly one line: `Läuft das bei Ihnen ähnlich?` against
+  `Ich habe eine kurze Auswertung dazu vorbereitet. Soll ich sie schicken?`
+
+Read it against the chain: the pain is theirs (`zweimal durch die Hand`), the consequence is
+arithmetic they can check (`400 Belege → zwei Arbeitstage`), the benefit is a measurement
+(`12 Stunden pro Woche, seit Januar`), the reference is named and comparable, and the CTA costs
+one word to answer.
 
 ## Worked example: LinkedIn
 
@@ -451,6 +510,7 @@ Under 300 characters, no link, explicit opt-out, the offer in message two after 
 - [ ] **Three paragraphs maximum**, and under the channel word limit.
 - [ ] **The competitor test** on the hook: would it also fit the recipient's competitor?
 - [ ] **The pain is theirs, not the category's** — could the reader have written that sentence?
+- [ ] **The consequence is named**, as arithmetic they can check — not a threat.
 - [ ] **The benefit is a number with a unit and a timeframe**, not an adjective.
 - [ ] **Every number carries a named reference**, and the reference is comparable in size and
       industry.

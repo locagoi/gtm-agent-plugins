@@ -10,7 +10,7 @@
       "name": "gtm",
       "source": "./gtm",
       "description": "Zero to a live outbound campaign, nine ready-to-run plays, the template copy doctrine, and the goals/agents/loops that make a workspace run itself. Includes the gtm CLI and the workspace MCP connection.",
-      "version": "0.5.0",
+      "version": "0.5.1",
       "author": {
         "name": "cegtec",
         "email": "info@cegtec.net"
