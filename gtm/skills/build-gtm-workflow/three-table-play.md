@@ -127,6 +127,13 @@ run, and `auto_run` is rejected for it.
 
 ---
 
+## Reading the grid
+
+Each table above is listed in execution order, and that is also the column order in the grid:
+identity, cheap verdict, gate, expensive work, copy, enroll. Every `run_condition` refers to a
+column to its **left**. Scanning a row left to right tells you how far it got and which gate
+stopped it.
+
 ## Quality gates
 
 Score, then act on the score. The thresholds matter less than having them written down:

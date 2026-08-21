@@ -317,6 +317,10 @@ several times the reply rate, at lower volume.
 **Checkpoint:** the workspace produces a number you can act on, and one change is queued
 based on it.
 
+Then close the loops so it keeps producing without you: reply triage first, then reply to
+meeting, then blacklist reconciliation, then one sourcing loop. Order matters, and
+**agents-loops-goals** has it.
+
 ---
 
 ## Save the play so the next one takes an hour
@@ -349,4 +353,5 @@ replay everywhere: that is what turns the second campaign into an hour of work.
 | Build the table properly | **build-gtm-workflow** (+ `three-table-play.md`) |
 | Write the touch plan and the copy | **sequences** (+ `copy-patterns.md`) |
 | Understand how the pieces connect | **gtm-handoffs** |
+| Make it run without you | **agents-loops-goals** |
 | Operate it day to day | **gtm-operate** |
