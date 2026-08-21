@@ -35,6 +35,7 @@ a contact you never enrich.
 
 | # | Column | Kind | Job | Output |
 |---|---|---|---|---|
+| 0 | `company_name` · `country` · `industry` · `website` · `size` | display | who this row is | the identity block |
 | 1 | *(source)* | `source` | fill rows from a connected source | entity-bound rows |
 | 2 | `company_profile` | `enrichment` | summarise industry, size, location, products in 3–5 sentences | short profile |
 | 3 | `icp_fit` | `ai` | check against `{{asset.icp}}` — industry, size, region, stack | `{ fit: true\|false, reason }` |
@@ -79,6 +80,7 @@ One row per person at a qualified company. Several rows per Table 1 row.
 
 | # | Column | Kind | Job | Output |
 |---|---|---|---|---|
+| 0 | `full_name` · `salutation` · `job_title` | display | who this row is | the identity block |
 | 1 | `find_people` | `source` / `tool` | people at the company, filtered by title | rows, lead-bound |
 | 2 | `still_employed` | `enrichment` | are they actually still there? | `true` \| `false` |
 | 3 | `persona` | `ai` | classify against your persona assets | one of a **fixed list** |
@@ -86,6 +88,9 @@ One row per person at a qualified company. Several rows per Table 1 row.
 | 5 | `recent_activity` | `enrichment` | last 2–3 posts or mentions | short summary |
 | 6 | `hook` | `ai` | one-sentence icebreaker from role, post or project | ≤ 140 chars, no question |
 | 7 | `salutation` | `ai` | the complete gendered greeting, with title, plus a confidence | `Sehr geehrter Herr Müller` |
+
+The identity block is display only: it costs nothing, and it is what makes a wrong row obvious
+at a glance. Everything below it has to earn its place.
 
 **`still_employed` earns its cost.** Job-change rates in B2B mean a list bought or scraped
 three months ago has a meaningful share of people who left. Writing to them wastes the send

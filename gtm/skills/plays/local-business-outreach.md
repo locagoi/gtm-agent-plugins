@@ -31,6 +31,10 @@ gtm call workspace_table_add_source --input '{
 **Region small, trade narrow.** "Dachdecker, Kassel + 30 km" beats "Handwerk, Hessen" — and
 narrow ICPs reply at roughly twice the rate. If the query needs a comma, it is two runs.
 
+**Show the identity block first.** For a Maps-sourced table that is `company_name`, `country`,
+`industry` and `website`; `size` is rarely present in Maps data, so leave it out rather than
+showing an empty column. Add `city` here, because the whole play is local.
+
 Watch it land, then read the rows:
 
 ```bash
@@ -52,6 +56,8 @@ Use the **prebuilt** `agent:icp_fit` — it ships with a tested prompt and retur
 asset to the playbook first or the research runs without your criteria.
 
 The Maps entry itself carries signal worth keeping as columns:
+
+Then, and only then, the play-specific columns:
 
 | Column | Kind | Reads | Says |
 |---|---|---|---|
