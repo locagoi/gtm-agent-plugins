@@ -47,6 +47,7 @@ Start at **`gtm-quickstart`** and it walks you through all nine.
 | **`build-gtm-workflow`** | Build a play as a table: columns, output schemas, gates, cascade, template. Includes `three-table-play.md` — the canonical accounts → people → outreach layout. |
 | **`sequences`** | The touch plan: seven step kinds, cadence, slots, senders, enrollment, stop rules. Includes `copy-patterns.md` — per-channel copy structure and the pre-send check. |
 | **`plays`** | **Nine ready-to-run motions**, each with its sources, columns, gates and tool calls: local business outreach · own-post engagers · keyword signals · job openings · inbound qualification · website visitors · lost-deal reactivation · CRM blacklist sync · CRM mining. |
+| **`agents-loops-goals`** | Make the workspace run itself: missions as goals, agents with scoped tool allowlists, and the loops (scheduled sources, signal watches, event triggers, the `await_rows` return edge, approval gates). Includes what a dry run really simulates. |
 | **`gtm-handoffs`** | How the pieces connect — and the connections that do **not** exist. Read before wiring a motion end to end. |
 | **`gtm-operate`** | Day-to-day operating: read, source, enrich, run columns, spend safely. |
 
@@ -176,10 +177,12 @@ gtm/
                       three-table-play.md   # accounts → people → outreach
     sequences/SKILL.md              # the touch plan
              copy-patterns.md       #   per-channel copy structure
+    agents-loops-goals/SKILL.md     # goals, agents, and the loops that keep running
     plays/SKILL.md                  # the source + module catalogue, and how to run a play
          local-business-outreach.md · own-post-engagers.md · keyword-signals.md
          job-openings.md · inbound-qualification.md · web-visitor-outreach.md
          lost-deal-reactivation.md · crm-blacklist-sync.md · crm-mining.md
+    outbound-playbook/learnings.md  # cross-workspace patterns, each with its confound named
     gtm-operate/SKILL.md            # day-to-day operating
     gtm-handoffs/SKILL.md           # how the pieces connect
 ```
