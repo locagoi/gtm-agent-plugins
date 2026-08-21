@@ -71,7 +71,7 @@ Wissen ──pin──▶ Playbook ──bindet──▶ Tabelle ──terminale
 A Workflow is the **event** dimension (Tabelle = per row, Sequenz = per lead over time). Deterministic by construction: same input → same steps → same output.
 
 1. **Trigger** — `schedule`, `event`, `manual` or `webhook`, set on `create_workflow`. Without one it is a script nobody starts.
-2. **Steps**, appended with `add_workflow_step`. The deterministic set: `http_request` (one templated API call; the response lands under `output_key` as `{{key.body}}`/`{{key.status}}`) · `add_table_rows` · `enroll_sequence` · `feed_notify` · `tool_call` (one named custom/registry tool — the integration node) · `wait` (hours/days, max 30d; the run parks and resumes on the tick, it never holds a worker). An **agent** step is for the cases that need judgment — bounded, and gated.
+2. **Steps**, appended with `add_workflow_step`. The deterministic set: `http_request` (one templated API call; the response lands under `output_key` as `{{key.body}}`/`{{key.status}}`) · `add_table_rows` · `enroll_sequence` · `feed_notify` · `tool_call` (one named custom/registry tool — the integration node) · `wait` (hours/days, max 30d; the run parks and resumes on the tick rather than blocking). An **agent** step is for the cases that need judgment — bounded, and gated.
 3. **Branch and control** — `set_workflow_step_condition`, `set_workflow_step_parallel_group`, `set_workflow_step_retry`, `set_workflow_max_concurrency`.
 4. **Dry run before it goes live.** `run_workflow` with a dry run shows the steps it would take without side effects. Then `set_workflow_enabled`.
 5. **Watch it** — `list_runs`, `get_workflow_history`, and `diagnose_workflow_run` for one failed run.

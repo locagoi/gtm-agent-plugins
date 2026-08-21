@@ -58,7 +58,7 @@ Steps:
 2. **`agent` step** — diff against `list_blacklist`. Judgment belongs here: a domain that
    appears as both a customer and a new inbound lead is a *cross-sell*, not a suppression.
 3. **`tool_call`** — `add_blacklist` for the new suppressions, with a reason that says where it
-   came from (`"HubSpot: offener Deal"`), so the next person can tell an automatic entry from a
+   came from (`"CRM: offener Deal"`), so the next person can tell an automatic entry from a
    hand-made one.
 4. **`feed_notify`** — report what was added, and flag anything ambiguous for a human.
 

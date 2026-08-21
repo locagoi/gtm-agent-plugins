@@ -133,6 +133,7 @@ campaign"** for `gtm-quickstart`.
 Speaks MCP over HTTP to your workspace endpoint — no SDK, no extra backend.
 
 - **Install:** `npm i -g gtm-goat-cli` (Node 18+). Package `gtm-goat-cli`, command `gtm`.
+- **Reference:** `gtm --help`, and `gtm <command> --help` per command.
 
 ```bash
 gtm whoami                                              # verify the key, spends nothing
