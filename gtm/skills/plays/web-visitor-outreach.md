@@ -10,8 +10,8 @@ freshest signals available: they were thinking about the problem this morning.
 
 ## 1 — The de-anonymisation tool is external
 
-The platform does not de-anonymise traffic itself. You bring a tool that does — RB2B, Snitcher,
-Leadfeeder, Albacross — and it POSTs to a webhook source:
+The platform does not de-anonymise traffic itself. You bring a visitor-identification tool that
+does, and it POSTs to a webhook source:
 
 ```bash
 gtm call create_webhook_source --input '{
@@ -26,13 +26,13 @@ gtm call create_webhook_source --input '{
 }' --json
 ```
 
-Paste the returned URL and secret into the tool's webhook settings. Directly, or via
-Zapier/Make if it has no native webhook.
+Paste the returned URL and secret into the tool's webhook settings — directly, or through an
+automation bridge if it has no native webhook.
 
-> A `website_visitors` **detector** for signal watches ships staged. When it is available in a
-> workspace it appears in the error list that `create_signal_watch` returns for an unknown
-> detector — which means the tool can never lie to you about what exists. Until then, the
-> webhook route is the one that works.
+> Signal watches also carry a `website_visitors` **detector**, which may or may not be
+> available in a given workspace. Ask rather than assume: `create_signal_watch` rejects an
+> unknown detector **with the list of available ones**, so the tool can never lie to you about
+> what exists. Where it is unavailable, the webhook route above is the one that works.
 
 ## 2 — Keep what the visit means
 
