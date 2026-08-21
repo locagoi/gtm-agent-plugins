@@ -36,6 +36,8 @@ automation bridge if it has no native webhook.
 
 ## 2 — Keep what the visit means
 
+Identity block first: `company_name`, `country`, `industry`, `website`, `size`.
+
 Not every visit is a buying signal. What separates them:
 
 | Column | Kind | Job |

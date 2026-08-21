@@ -110,6 +110,40 @@ There are also six house plays as structured data: `get_play(id)` for `lead_list
 `recurring_source`, `enrich_existing_list`, `event_to_action`, `thought_leader_engagement`,
 `external_api_to_column`.
 
+## What every table shows
+
+Before the first processing column, every table carries a small block of identity columns.
+Not because the grid needs decoration, but because a person has to be able to look at a row
+and know who it is without opening anything.
+
+**A company-bound table shows, in this order:**
+
+| Column | Source |
+|---|---|
+| `company_name` | `{{company.name}}` |
+| `country` | `{{company.country}}` |
+| `industry` | `{{company.industry}}` |
+| `website` | `{{company.domain}}` |
+| `size` | `{{company.employee_count}}` |
+
+**A lead-bound table shows:**
+
+| Column | Source |
+|---|---|
+| `full_name` | `{{lead.first_name}} {{lead.last_name}}` |
+| `salutation` | the greeting column (see `sequences/copy-patterns.md`) |
+| `job_title` | `{{lead.title}}` |
+
+Those are the defaults, not a contract. Take what the source actually gives you and drop what
+it does not: a Maps-sourced table has no `employee_count` worth showing, a post-engager table
+has no `country`. Add the one field that is specific to *this* play, if there is one, and stop
+there.
+
+**Then be strict.** Every further column costs money to fill, space to read, and attention to
+maintain. Before adding one, answer: *who reads this, and what do they do differently because
+of it?* If the answer is "it might be useful later", it is not a column, it is clutter. A
+table a person can scan beats a table that knows everything.
+
 ## The shape every play shares
 
 ```

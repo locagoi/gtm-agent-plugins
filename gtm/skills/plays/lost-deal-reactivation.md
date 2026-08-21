@@ -37,8 +37,12 @@ of momentum.
 
 ## 3 — Find what changed
 
+Identity block first: `company_name`, `industry`, `website`, plus `full_name`, `salutation`
+and `job_title` for the contact. Then the two fields this play turns on: `loss_reason` and
+`closed_at`.
+
 There has to be a reason to write **now**, or this is just a cold email with an awkward
-history. Two columns:
+history. Two more columns:
 
 ```bash
 gtm call workspace_table_add_column --input '{

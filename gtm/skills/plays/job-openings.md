@@ -29,7 +29,8 @@ Paid, so `max_credits` is required. The job title *is* the ICP filter — "SDR" 
 building outbound; "Vertriebsleiter" finds companies replacing leadership. Different plays,
 different copy.
 
-Keep from the posting itself:
+Identity block first: `company_name`, `country`, `industry`, `website`, `size`. Then keep
+from the posting itself:
 
 | Column | Kind | Job |
 |---|---|---|

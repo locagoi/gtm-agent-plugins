@@ -49,6 +49,15 @@ Rows must carry `entity_id` (a lead/company) or a bound column's dry-run sees em
 | Terminal action (CRM push, tool) | `tool` | `category`, `tool?`, `args_template` |
 | Link to another table's row | `relation` | `target_table_id`, `display_column` |
 
+**Start with the identity block.** Before any processing column, add the few fields that let a
+person recognise the row: a company table shows name, country, industry, website and size; a
+lead table shows full name, salutation and job title. Take what the source actually delivers,
+drop the rest, and add at most one field specific to this play.
+
+Then hold the line: every further column costs credits to fill and attention to read. Before
+adding one, answer *who reads this and what do they do differently because of it?* "Might be
+useful later" is not an answer.
+
 **Rules that matter:**
 - **`output_schema` is mandatory for predictability** on ai/enrichment — it's the typed contract sent to the provider (jsonMode) + validated on return; off-schema → cell `failed`, never garbage. Same shape at 40 or 4000 rows.
 - **Inputs via `{{...}}`** — reference upstream columns (`{{cell.owner}}`), the linked entity (`{{company.name}}`), or a bound Wissen asset (`{{asset.icp}}`). The dependency graph reads these → cascade order. Only referenced keys are injected (cheap).
