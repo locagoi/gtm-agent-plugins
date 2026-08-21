@@ -38,7 +38,10 @@ to people. If nobody on the team posts, this play has no fuel — say so rather 
 
 ## 2 — Keep the context that makes it warm
 
-The engagement itself is the hook, and it decays. Three columns:
+Show the lead identity block first: `full_name`, `salutation`, `job_title`, plus
+`company_name` so you can see where they work. Nothing else about the person.
+
+The engagement itself is the hook, and it decays. Four columns:
 
 | Column | Kind | Job |
 |---|---|---|

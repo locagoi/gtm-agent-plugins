@@ -41,6 +41,10 @@ Exactly one of the two targets. Not both.
 
 ## 2 — Qualify in seconds, not overnight
 
+Show what arrived before you process it: `company_name`, `website`, `industry`, `size` from
+the payload, plus `submitted_at`. If the form gave you a person, `full_name` and `job_title`
+too.
+
 Inbound decays fast: someone who filled a form ten minutes ago is a different prospect from
 the same person tomorrow. Keep the qualification chain **short and cheap**:
 

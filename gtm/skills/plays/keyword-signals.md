@@ -47,6 +47,8 @@ Returns **engaged companies plus leads**, not just posts.
 
 ## 3 — Separate engagement from intent
 
+Identity block first: `full_name`, `salutation`, `job_title`, `company_name`, `industry`.
+
 Someone commenting under a competitor's post might be a buyer, a rival, or an employee.
 
 | Column | Kind | Returns |
