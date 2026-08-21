@@ -1,8 +1,8 @@
 {
   "name": "gtm",
   "displayName": "GTM Automation",
-  "version": "0.2.0",
-  "description": "Take a GTM Automation workspace from empty to a live outbound campaign in one session. Ships gtm-quickstart (the nine-stage build path incl. the intake interview), outbound-playbook (what to build, with anonymous cross-workspace benchmarks), draft-gtm-play, build-gtm-workflow (incl. the three-table play), sequences (incl. per-channel copy patterns), gtm-handoffs, gtm-operate and a guided setup skill — plus a wired MCP connection to your workspace. Requires a workspace on the Growth plan or higher.",
+  "version": "0.3.0",
+  "description": "Take a GTM Automation workspace from empty to a live outbound campaign, and run named motions end to end. Ships gtm-quickstart (nine-stage build path incl. the intake interview), plays (nine ready-to-run templates: local business outreach, LinkedIn post engagers, keyword signals, job openings, inbound qualification, website visitors, lost-deal reactivation, CRM blacklist sync, CRM mining), outbound-playbook (what to build, with benchmarks), draft-gtm-play, build-gtm-workflow, sequences, gtm-handoffs, gtm-operate and a guided setup skill — plus a wired MCP connection. Requires a workspace on the Growth plan or higher.",
   "author": {
     "name": "cegtec",
     "email": "info@cegtec.net",
@@ -15,9 +15,11 @@
     "outbound",
     "cold-email",
     "linkedin",
+    "whatsapp",
     "sequences",
     "enrichment",
     "icp",
+    "crm",
     "cegtec"
   ],
   "mcpServers": {
