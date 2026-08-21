@@ -85,7 +85,7 @@ One row per person at a qualified company. Several rows per Table 1 row.
 | 4 | `influence` | `ai` | decision authority | `high` \| `medium` \| `low` |
 | 5 | `recent_activity` | `enrichment` | last 2–3 posts or mentions | short summary |
 | 6 | `hook` | `ai` | one-sentence icebreaker from role, post or project | ≤ 140 chars, no question |
-| 7 | `salutation` | `formula` | correct formal address from name and gender | `Herr Müller` |
+| 7 | `salutation` | `ai` | the complete gendered greeting, with title, plus a confidence | `Sehr geehrter Herr Müller` |
 
 **`still_employed` earns its cost.** Job-change rates in B2B mean a list bought or scraped
 three months ago has a meaningful share of people who left. Writing to them wastes the send
