@@ -49,7 +49,7 @@ Wissen ──pin──▶ Playbook ──bindet──▶ Tabelle ──terminale
 - **One Sequenz per Playbook per channel.** A second email sequence on the same playbook is
   rejected by a unique constraint — edit the existing one or pick another channel.
 - **An empty Sequenz is the quietest failure there is.** It accepts the enroll wiring, sends
-  nothing, and errors never. Across the platform 45 of 88 sequences have zero steps. Call
+  nothing, and errors never — and it is one of the most common build faults there is. Call
   `get_sequence` and read the step list before you call a motion built.
 - **Enrollment dedup has a release valve.** An existing enrollment blocks a second one, but
   the terminal states `cancelled`, `failed`, `skipped` and `expired` free the lead again —

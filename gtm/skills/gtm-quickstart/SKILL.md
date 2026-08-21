@@ -223,8 +223,8 @@ gtm call create_sequence --input '{"playbook_id":"<id>","channel":"email","name"
 **Nothing sends when you create this.** Creating a sequence starts nothing at all.
 
 **Checkpoint:** `get_sequence` returns your steps with their delays. If it returns an empty
-step list, the sequence does not exist in any useful sense — across the platform, 45 of 88
-sequences are exactly this: named, wired, empty, and believed to be live.
+step list, the sequence does not exist in any useful sense — and this is one of the most
+common build faults there is: named, wired, empty, and believed to be live.
 
 ---
 
@@ -306,8 +306,8 @@ every meeting with its reason, and feed both back into the assets. A losing angl
 revised `messaging_angle` (new version, history kept); a converting signal gets weighted up.
 
 **When a campaign underperforms, rebuild the message before adding contacts.** The largest
-single improvement in the platform data came from rebuilding a campaign on the same
-audience: 5.28 % → 16.18 % reply rate, at half the volume.
+improvements in the platform data come from rebuilding a campaign on the same audience —
+several times the reply rate, at lower volume.
 
 **Checkpoint:** the workspace produces a number you can act on, and one change is queued
 based on it.

@@ -105,7 +105,7 @@ Save the built table as a template (`workspace_table_save_as_template`) — the 
 - **Unbounded first run** — never run 4,000 rows before reviewing 20.
 - **A second channel without its own copy** — playbooks running two channels reply at less
   than half the rate of those running one properly.
-- **Scaling a weak campaign instead of rebuilding it** — the largest measured improvement on
-  the platform came from rebuilding the message on the *same* audience: 5.28 % → 16.18 %
-  reply rate at half the volume.
+- **Scaling a weak campaign instead of rebuilding it** — the largest measured improvements on
+  the platform come from rebuilding the message on the *same* audience: several times the
+  reply rate at lower volume.
 - **Vendor-hardcoding** — always resolve tools by category; the play must survive a provider switch.

@@ -65,8 +65,8 @@ source is. Its `output_schema`:
 ```
 
 The `enum` on `disqualifier` is the point. Free-text disqualification reasons aggregate into
-nothing — on the platform, recorded objection texts are almost all unique, which makes them
-unusable for exactly the question you want to ask: *what is disqualifying most of my list?*
+nothing — they fragment into near-unique strings, which makes them unusable for exactly the
+question you want to ask: *what is disqualifying most of my list?*
 
 **Health check:** ICP fit rate **≥ 60 %**. Below that, the ICP is too vague or the source
 query is too broad — fix the input, do not widen the gate.

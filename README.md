@@ -57,10 +57,10 @@ file.
 
 A sample of the rules, each with its evidence in `benchmarks.md`:
 
-- **Narrow beats broad by ~2×.** Playbooks naming ≤ 5 regions reply at 4.06 % against 2.23 %
-  for broader ones, measured over ~36,500 contacted leads.
-- **Rebuild the message before adding contacts.** The largest single improvement on the
-  platform: 5.28 % → 16.18 % reply rate on the *same* audience, at half the volume.
+- **Narrow beats broad by ~2×.** Playbooks naming ≤ 5 regions reply at roughly twice the rate
+  of those naming more.
+- **Rebuild the message before adding contacts.** The largest improvements observed come from
+  rebuilding the copy on the *same* audience — several times the reply rate, at lower volume.
 - **15 cold emails per inbox per day.** Scale by adding inboxes, never by raising volume.
   Thirty inboxes × fifteen = 450 clean sends a day.
 - **No links and no tracking in a cold body.** The single largest deliverability lever, and
@@ -71,11 +71,12 @@ A sample of the rules, each with its evidence in `benchmarks.md`:
   channel.
 - **A signal is hot for 3–7 days.** After ~28 it is cold, and a late approach does more damage
   than silence.
-- **Check your sequence has steps.** 45 of 88 sequences on the platform contain zero — built,
-  wired, believed live, sending nothing.
+- **Check your sequence has steps.** A sequence with no steps is one of the most common build
+  faults there is — wired, believed live, sending nothing, erroring never.
 
-Platform figures are anonymous aggregates across all workspaces; no customer, campaign or
-contact is identifiable. Operator figures come from cegtec's published practice at
+Platform findings are directional patterns aggregated across all workspaces, reported as
+ratios only — no per-customer figures, no campaign volumes, nothing attributable to any
+customer. Operator figures come from cegtec's published practice at
 [cegtec.net/academy](https://www.cegtec.net/academy). Neither is a promise — they are
 reference points to argue with.
 
