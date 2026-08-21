@@ -251,14 +251,20 @@ Five rules that decide whether this works at 4,000 rows:
 
 ```bash
 gtm call workspace_table_dependencies --input '{"table_id":"<id>"}' --json   # the graph you intended, no cycles
-gtm call workspace_table_preflight --input '{"table_id":"<id>"}' --json      # does a NEW row run through?
+gtm call workspace_table_preflight --input '{"table":"<name-or-id>","expect":["fills_itself","enrolls_leads"]}' --json
 ```
 
-`workspace_table_preflight` is deterministic: same column config, same verdict, no data and no
-cost. It reports the four failures that are otherwise silent — nothing runs on a new row, a
-gate that can never open, an enroll column that is not last, and a sequence slot no column
-feeds. `ok: true` and a `dry_run` with a sane count and cost per paid column, and the stage is
-done.
+`workspace_table_preflight` is read-only and free. One call, three answers: the findings on the
+column graph, the cost of a full run, and the resolved inputs of the first rows.
+
+**`expect` is what makes it sharp.** Without it the tool only reports defects it can prove;
+name your goals — `fills_itself` · `runs_daily` · `enrolls_leads` · `complete_data` — and it
+also reports what is *missing* for them. A freshly built table typically comes back with
+`ziel_offen: die Tabelle hat keine Quelle` and `keine Outreach-Endspalte`, which is exactly the
+list of what is left to do.
+
+It is a report, never a gate: `verdict: 'blocker'` means "this run demonstrably burns", not
+"you may not". A column combination it has no rule for produces no finding.
 
 ## Stage 7 — The enroll column: the one handoff that sends
 

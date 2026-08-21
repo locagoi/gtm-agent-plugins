@@ -196,7 +196,7 @@ maximum) and both the platform rules and data protection apply.
 ## 8 — First run
 
 ```bash
-gtm call workspace_table_preflight --input '{"table_id":"<id>"}' --json
+gtm call workspace_table_preflight --input '{"table":"Accounts","expect":["fills_itself","enrolls_leads"]}' --json
 ```
 
 Free and deterministic: it tells you whether a new row runs through the chain at all before you
