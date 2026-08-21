@@ -10,16 +10,16 @@ The platform will faithfully execute a bad campaign. This skill is what stops yo
 one — the go-to-market decisions that determine whether a workspace produces meetings, in
 the order you actually face them.
 
-Every rule here has a number behind it. They live in **`benchmarks.md`** next to this file:
-anonymous aggregates over ~36,500 contacted leads across all workspaces on the platform,
-plus one operator's six years of published DACH outbound practice. Read it when a
-stakeholder wants to argue with a rule — that is what it is for.
+Every rule here has evidence behind it. It lives in **`benchmarks.md`** next to this file:
+directional patterns aggregated across all campaigns on the platform, plus one operator's six
+years of published DACH outbound practice. Read it when a stakeholder wants to argue with a
+rule — that is what it is for.
 
 ## The one decision that dominates everything
 
 **Precision of the list beats quality of the text.** A good message to the wrong list stays
-ineffective. In the platform data, playbooks naming ≤ 5 regions reply at 4.06 % against
-2.23 % for broader ones — with the outlier campaign excluded from both sides.
+ineffective. In the platform data, playbooks naming ≤ 5 regions reply at roughly twice the
+rate of those naming more — and the gap holds with the strongest campaign excluded.
 
 So the first question is never "what do we write". It is *who exactly, and why now*.
 
@@ -47,7 +47,7 @@ finding, not a failure.
 
 ## Choose one channel and finish it
 
-Playbooks running a single channel reply at 5.16 %; those running two at 1.84 %. That is not
+Playbooks running a single channel reply at roughly 2–3× the rate of those running two. That is not
 an argument against multichannel — channels do reinforce each other — it is what a second
 channel looks like when it is added without its own copy, cadence and sender.
 
@@ -126,16 +126,16 @@ do with cold volume, and the reputation damage there is business-critical.
 
 Open rate is deliberately absent. So is "emails sent".
 
-Expect roughly three no's per yes: across the platform, classified replies run 45 % negative,
-26 % positive interest, 21 % neutral. A negative reply is a disqualification you did not have
+Expect roughly three no's per yes: classified replies run about 45 % negative, 25 % positive
+interest, 20 % neutral. A negative reply is a disqualification you did not have
 to pay for. When the negative share collapses, that is usually a targeting failure — nobody
 is engaged enough to bother saying no.
 
 ## Improve by rebuilding, not by scaling
 
-The largest single gain in the platform data came from rebuilding a campaign on the *same*
-audience: 5.28 % → 16.18 % reply rate, at half the volume. The list did not change. The
-message did.
+The largest gains in the platform data come from rebuilding a campaign on the *same*
+audience — several times the reply rate, at lower volume. The list does not change. The
+message does.
 
 So when a campaign underperforms, the order of moves is:
 
@@ -159,9 +159,9 @@ Without those, outbound is linear: volume in, meetings out, and every month star
 With them, the same effort compounds.
 
 **Fix your vocabulary while you do it.** Objection reasons and industry labels recorded as
-free text are unusable in aggregate — in the platform data the same industry appears under
-four different names, and objection texts are almost all unique. Make the classifier choose
-from a fixed list. One sentence in a prompt, and the difference between a measurable campaign
+free text are unusable in aggregate — they fragment into near-unique strings, and the same
+industry ends up spelled several different ways. Make the classifier choose from a fixed
+list. One sentence in a prompt, and the difference between a measurable campaign
 and an anecdote.
 
 ## Compliance is part of the method
@@ -177,8 +177,8 @@ and an anecdote.
 ## Anti-patterns, each of which has cost somebody a quarter
 
 - **Table first, strategy never** — columns with hand-typed prompts that drift apart.
-- **A sequence with no steps** — 45 of 88 sequences on the platform are empty shells that
-  look configured.
+- **A sequence with no steps** — an empty shell that looks configured, sends nothing and
+  never errors.
 - **Free-form copy at scale** — use a fixed template with generated `{hook}` / `{pain_point}`
   fills, so output stays predictable at 40 rows and at 4,000.
 - **Cold lists over signals** — 5,000 companies with no trigger is spray and pray.
