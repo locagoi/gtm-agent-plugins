@@ -55,7 +55,9 @@ should plan a lower reply rate rather than pretend otherwise.
 
 | Question | Notes |
 |---|---|
-| Which customer had the most striking result? | name, number, timeframe |
+| Which customer had the most striking result? | name, **number with a unit**, timeframe. "20 auf 4 Minuten pro Lead, seit Januar" — not "deutlich schneller" |
+| What was the value BEFORE? | a benefit without a baseline cannot be checked, and an unverifiable number is worse than none |
+| How big is that customer, and in which industry? | a reference only proves something to a comparable company |
 | 1–3 case studies per ICP | matched to company size and industry so the right one can be selected per row |
 | What did they say about it? | a quote in their words beats your summary |
 
@@ -71,7 +73,7 @@ Benefit format that survives contact with a reader: **`[verb] [metric] by [amoun
 | Job title / role | the exact titles, plus the ones to exclude ("Assistant", "Intern") |
 | Decision maker or influencer? | changes the ask, not just the wording |
 | What are they measured on? | the lever your offer actually moves |
-| **Challenges, 4–6** | in *their* words. Format: `[process] [negative verb] [consequence]` |
+| **Challenges, 4–6** | **verbatim, in their words** — not your paraphrase. This is the raw material for every hook, and a paraphrase reads like a brochure. Format: `[process] [negative verb] [consequence]` |
 | **Benefits, 4–6** | what changes for them personally |
 | Typical objections | the 3 you hear most, and what defuses each |
 | CTA that fits them | a question that validates rather than sells |
