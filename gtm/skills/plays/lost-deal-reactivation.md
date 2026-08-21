@@ -65,10 +65,10 @@ it.
 Reactivation copy is different from cold copy in one specific way: pretending there is no
 history is the mistake. They remember. Name it, briefly, then move on.
 
-> Guten Tag Herr {{lead.last_name}}, wir hatten {{cell.deal_age}} über
-> {{cell.original_topic}} gesprochen — damals war {{cell.loss_reason}} der Grund, es nicht zu
-> machen. Seitdem {{cell.whats_new_short}}. Falls sich die Lage geändert hat, melde ich mich
-> gern nochmal — sonst lasse ich Sie in Ruhe.
+> {{cell.salutation}}, wir hatten {{cell.deal_age}} über {{cell.original_topic}} gesprochen.
+> Damals war {{cell.loss_reason}} der Grund, es nicht zu machen. Seitdem
+> {{cell.whats_new_short}}. Falls sich die Lage geändert hat, melde ich mich gern nochmal.
+> Sonst lasse ich Sie in Ruhe.
 
 Four properties that make it work: short, honest about the history, one line on what changed,
 and an explicit exit. No "just checking in", no pretending the last conversation did not

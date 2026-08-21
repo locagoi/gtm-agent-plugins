@@ -73,8 +73,8 @@ jurisdictions, a claim you should be careful making.
 
 Reference the **topic**, not the visit:
 
-> Guten Tag Frau {{lead.last_name}}, das Thema {{cell.intent_topic}} kommt bei
-> {{company.name}} gerade offenbar auf. {{cell.case_match}} stand vor derselben Frage —
+> {{cell.salutation}}, das Thema {{cell.intent_topic}} kommt bei {{company.name}} gerade
+> offenbar auf. {{cell.case_match}} stand vor derselben Frage. Das Ergebnis:
 > {{cell.case_result}}. Ist das bei Ihnen ein Thema?
 
 `intent_topic` is derived from the pages: pricing → cost and rollout; integrations → the stack;

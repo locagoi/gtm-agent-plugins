@@ -33,6 +33,75 @@ Same blocks, different dosage.
 
 ---
 
+## The salutation is its own column
+
+Two forms, and nothing in between:
+
+| Form | Looks like | When |
+|---|---|---|
+| **Formal** (default in DACH B2B) | `Sehr geehrter Herr Meier` · `Sehr geehrte Frau Meier` | anyone you have not met, any decision maker, always unless told otherwise |
+| **Informal** | `Hi Max` | startups, peers, and only when the customer says so |
+
+Never mix them inside one sequence, and never fall back to something neutral when the gender
+is unclear. "Guten Tag Max Meier" and "Hallo zusammen" both announce that a machine wrote the
+line.
+
+Build it as an **`ai` column**, not a formula. A formula cannot infer gender from a first
+name, cannot handle an academic title, and cannot tell you when it does not know:
+
+```bash
+gtm call workspace_table_add_column --input '{
+  "table": "Contacts", "key": "salutation", "kind": "ai",
+  "config": {
+    "prompt": "Erzeuge die Anrede-Zeile für einen deutschen B2B-Geschäftsbrief.\n\nVorname: {{lead.first_name}}\nNachname: {{lead.last_name}}\nTitel/Position: {{lead.title}}\n\nREGELN\n1. Form: SIE (formal). Ergebnis ist immer \"Sehr geehrter Herr <Nachname>\" oder \"Sehr geehrte Frau <Nachname>\".\n2. Akademischen Grad aufnehmen, wenn erkennbar: \"Sehr geehrter Herr Dr. Meier\".\n3. Geschlecht aus dem Vornamen ableiten. Wenn nicht eindeutig (z. B. Kim, Alex, Andrea, nur Initiale, nur Nachname): confidence unter 0.8 setzen und salutation leer lassen. NICHT raten.\n4. Keine Grußfloskel, kein Komma am Ende, kein Satzzeichen.\n5. Umlaute korrekt ausschreiben.",
+    "output_schema": {
+      "type": "object",
+      "properties": {
+        "salutation": { "type": "string" },
+        "gender": { "type": "string", "enum": ["m", "f", "unknown"] },
+        "confidence": { "type": "number" }
+      },
+      "required": ["salutation", "gender", "confidence"]
+    }
+  }
+}' --json
+```
+
+Then **gate the send on it**: `run_condition` on the enroll column,
+`salutation.confidence >= 0.8`. A row whose gender could not be determined does not get a
+guessed greeting, it gets held back. That is a handful of rows you write by hand, against a
+whole campaign that opens with the wrong gender.
+
+For the informal variant, the same column with rule 1 replaced by: *Ergebnis ist immer
+`Hi <Vorname>`*, plus a rule that strips titles.
+
+In the template the greeting is then one slot and a comma:
+
+```
+{{cell.salutation}},
+
+Ich sah {{cell.signal}}. Spielen {{cell.pain_point}} bei {{company.name}} aktuell eine Rolle?
+```
+
+## No dashes in outbound copy
+
+An em dash or a hyphen used as a sentence connector is the clearest tell that a language model
+wrote the line. Two short sentences say the same thing and read as human:
+
+| Not this | This |
+|---|---|
+| `Ich sah X — spielt Y eine Rolle?` | `Ich sah X. Spielt Y eine Rolle?` |
+| `Kurz nachgefasst — will es nicht liegen lassen.` | `Kurz nachgefasst. Ich wollte es nicht liegen lassen.` |
+| `Verstehe — hat gerade keine Priorität.` | `Verstehe. Das hat gerade keine Priorität.` |
+
+Put it in the generation prompt as a hard rule, not in your review habit: *keine Gedankenstriche,
+keine Bindestriche als Satzverbinder. Zwei kurze Sätze statt einem verbundenen.* A rule you
+apply to the template you read does not hold on the variants you did not.
+
+Same family, same reason: no bullet lists in a cold email, no bold inside the body, no emoji.
+
+---
+
 ## Email — three steps
 
 ### Step 1 · the opener · ≤ 80 words
@@ -40,7 +109,7 @@ Same blocks, different dosage.
 | Section | Purpose | Pattern |
 |---|---|---|
 | Subject, ≤ 5 words | trigger pain or benefit | `{{cell.pain_point}} bei {{company.name}}?` |
-| Hook, 1 sentence | prove relevance | `Ich sah {{cell.signal}} — scheint {{cell.pain_point}} spielt gerade eine Rolle.` |
+| Hook, 1 sentence | prove relevance | `Ich sah {{cell.signal}}. Offenbar spielt {{cell.pain_point}} gerade eine Rolle.` |
 | Value, 1 sentence | benefit with a number | `{{cell.case_customer}} senkte {{cell.pain_point}} um {{cell.case_result}}.` |
 | Proof, 1 sentence | make it comparable | `Läuft bei {{company.employee_count}} MA in {{company.industry}}.` |
 | CTA, 1 question | validate, do not sell | `Spielt das bei Ihnen ebenfalls eine Rolle?` |
@@ -55,7 +124,7 @@ body carries no links at all.
 
 | Section | Pattern |
 |---|---|
-| Reference | `Kurz nachgefasst, {{lead.last_name}} — will es nicht liegen lassen.` |
+| Reference | `Kurz nachgefasst. Ich wollte es nicht liegen lassen.` |
 | **New** proof | `{{cell.case_customer}}: {{cell.benefit}} in {{cell.timeframe}}.` |
 | CTA | one question, different from step 1 |
 
@@ -66,7 +135,7 @@ follow-up, and it performs worse than not sending.
 
 | Section | Pattern |
 |---|---|
-| Plain speech | `Scheint, {{cell.solution}} hat gerade keine Priorität — alles gut.` |
+| Plain speech | `Offenbar hat {{cell.solution}} gerade keine Priorität. Alles gut.` |
 | Opt-out | `Ich lasse das ruhen, außer Sie melden sich.` |
 | Door open | `Bei Bedarf genügt eine Nachricht.` |
 
@@ -76,7 +145,7 @@ more later replies than a pushy one produces now, and it keeps the opt-out rate 
 ### Subject lines that work
 
 ```
-{{cell.pain_point}} — relevant bei {{company.name}}?
+{{cell.pain_point}} bei {{company.name}}?
 {{company.name}}: {{cell.pain_point}} reduzieren
 Wie {{cell.case_customer}} {{cell.pain_point}} löste
 ```
@@ -101,19 +170,19 @@ wir uns?`
 
 **Touch 2 — opener.** Thanks → signal → validating question. Still no pitch.
 
-> Danke fürs Annehmen, {{lead.last_name}}. Ich sah {{cell.signal}} — spielen
+> Danke fürs Annehmen, Herr {{lead.last_name}}. Ich sah {{cell.signal}}. Spielen
 > {{cell.pain_point}} bei {{company.name}} aktuell eine Rolle?
 
 **Touch 3 — follow-up.** The only step that pitches, and it pitches in four lines:
 
-> Kurz & konkret, {{lead.last_name}}:
+> Kurz und konkret, Herr {{lead.last_name}}:
 > {{cell.consequence}}
 > Ergebnis: {{cell.benefit}} bei {{cell.case_customer}}
-> Für euch: {{cell.quick_win}}
-> 15 min prüfen, ob das passt?
+> Für Sie: {{cell.quick_win}}
+> 15 Minuten prüfen, ob das passt?
 
-**Touch 4 — break-up.** `Verstehe — hat gerade keine Priorität. Lasse das ruhen; bei Bedarf
-genügt eine Nachricht.`
+**Touch 4 — break-up.** `Verstehe, das hat gerade keine Priorität. Ich lasse das ruhen. Bei
+Bedarf genügt eine Nachricht.`
 
 **LinkedIn rules:** 300 characters is the ceiling for any touch — it is not a blog. Only
 trigger on a signal younger than seven days. One variable per argument. Delete every
@@ -145,9 +214,9 @@ The most intimate channel, and the least forgiving. Rules, not preferences:
 - **The offer comes in message two**, after a reaction — never in message one.
 - **One follow-up after 3–4 days, then stop.** WhatsApp does not forgive persistence.
 
-> Guten Tag Herr {{lead.last_name}}, ich sehe, Sie betreiben {{company.name}} in
-> {{company.city}}. Wir helfen {{cell.industry_short}} dabei, {{cell.quick_win}}. Wäre das
-> interessant? Ein kurzes Nein genügt.
+> {{cell.salutation}}, ich sehe, Sie betreiben {{company.name}} in {{company.city}}. Wir
+> helfen {{cell.industry_short}} dabei, {{cell.quick_win}}. Wäre das interessant? Ein kurzes
+> Nein genügt.
 
 Two obligations run in parallel here and they are not the same: the platform's business
 rules (violations cost the number, without warning) and data protection (a business mobile
@@ -163,6 +232,11 @@ expensive mistakes.
 
 - [ ] **The competitor test.** Would line one also fit the recipient's competitor? Then it is
       not personalisation, it is a mail merge.
+- [ ] **The salutation is complete and correctly gendered** — `Sehr geehrter Herr Meier` or
+      `Sehr geehrte Frau Meier`, or `Hi Max` if the campaign is informal. Never a neutral
+      fallback, never a guess below 0.8 confidence.
+- [ ] **No dashes as sentence connectors.** Two short sentences instead. This is the loudest
+      AI tell in the message.
 - [ ] Is there a **real trigger** in line one?
 - [ ] Concrete **result plus timeframe**, or no proof claim at all?
 - [ ] **No empty slots** — check against a real row, including a sparse one.
@@ -184,6 +258,7 @@ produced by its own column with its own `output_schema`.
 
 | Column | Prompt job | Output |
 |---|---|---|
+| `salutation` | the complete greeting, gendered, with title | `Sehr geehrte Frau Dr. Meier` |
 | `signal` | strongest current trigger from news, postings, activity | 1–2 words |
 | `pain_point` | likely challenge given size and industry | 3–4 words |
 | `case_customer` | pick the matching case study by size and industry | one name from a **fixed list** |

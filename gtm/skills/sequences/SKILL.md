@@ -91,7 +91,9 @@ Copy carries slots that resolve per lead at send time. The canonical form is
 **`{{cell.<column_key>}}`** — a value from the table column of that name.
 
 ```
-Ich sah {{cell.signal}} — spielt {{cell.pain_point}} bei {{company.name}} eine Rolle?
+{{cell.salutation}},
+
+Ich sah {{cell.signal}}. Spielt {{cell.pain_point}} bei {{company.name}} eine Rolle?
 ```
 
 Three rules that prevent the most common failure:
@@ -103,6 +105,13 @@ Three rules that prevent the most common failure:
    The copy engine is yours — the provider is only the rail.
 3. **One variable, one argument.** Two slots stacked in one sentence read as generated even
    when each is correct.
+4. **The greeting is a slot too.** `{{cell.salutation}}` resolves to the complete, correctly
+   gendered line (`Sehr geehrter Herr Meier`, or `Hi Max` for an informal campaign) and is
+   produced by its own prompt column. Gate the send on its confidence rather than letting a
+   guess go out. See `copy-patterns.md`.
+5. **No dashes as sentence connectors.** An em dash joining two clauses is the loudest signal
+   that a model wrote the line. Two short sentences instead, and put the rule in the
+   generation prompt.
 
 Per-channel structure, length limits and the step-by-step patterns are in
 **`copy-patterns.md`** next to this file.

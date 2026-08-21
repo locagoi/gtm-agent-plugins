@@ -75,8 +75,8 @@ Four touches, and the first one carries no pitch:
 
 Touch 2 is where the play pays off:
 
-> Danke fürs Annehmen, {{lead.last_name}}. Sie hatten auf den Beitrag zu
-> {{cell.engaged_post}} reagiert — spielt {{cell.pain_point}} bei {{company.name}} gerade eine
+> Danke fürs Annehmen, Herr {{lead.last_name}}. Sie hatten auf den Beitrag zu
+> {{cell.engaged_post}} reagiert. Spielt {{cell.pain_point}} bei {{company.name}} gerade eine
 > Rolle?
 
 **Respect the limit: 20–25 connection requests per account per day.** A connected LinkedIn
