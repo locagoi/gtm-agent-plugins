@@ -32,7 +32,10 @@ Draft in this order (each builds on the previous):
 1. **ICP** (`icp`) — firmographics + the qualifying/disqualifying criteria. Concrete beats broad: "German Mittelstand manufacturers, 50–500 employees, complex B2B master data" outperforms "companies that need CRM".
 2. **Persona** (`persona`) — the decision-maker: role, pains, what they're measured on.
 3. **Offer** (`offer`) — what you sell them and the promise, in their language.
-4. **Proof** (`proof`) — case studies, numbers, references. One strong proof per persona beats five vague ones.
+4. **Proof** (`proof`) — case studies with a named customer, a number carrying a unit, and a
+   timeframe. One strong proof per persona beats five vague ones. **This asset is the only
+   source of numbers in outbound copy.** A model asked to "make it concrete" invents a
+   plausible percentage, and an invented number is the one thing a prospect can check.
 5. **Messaging angle** (`messaging_angle`) — the hook that connects pain → offer.
 6. **Signals** (`signal`) — the buying signals that make an ICP company *hot now* (hiring for a role, a new decision-maker, job postings, engagement). A signal asset **references the ICP and Offer assets it matters for** (`icp_refs`, `offer_refs`) and can map to a runtime detection (`signal_type_key`) so the platform's signal sources feed it. Plays that lead with a signal ("you're hiring 5 SDRs") convert multiples of plays that lead with an intro.
 
