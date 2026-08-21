@@ -2,9 +2,10 @@
 
 Two sources, kept apart on purpose.
 
-**A — Platform data.** Aggregates over every campaign running on GTM Automation:
-15 workspaces, 74 playbooks, ~36,500 contacted leads, 1,635 recorded conversions.
-Anonymous and aggregated; no workspace, campaign or contact is identifiable.
+**A — Platform patterns.** Directional findings from campaigns running on GTM Automation,
+aggregated across all workspaces. Reported as ratios and rounded rates only: no per-customer
+figures, no campaign volumes, no dataset counts. Nothing here is attributable to any
+workspace, campaign or contact.
 
 **B — Operator data.** cegtec's own published outbound practice
 ([cegtec.net/academy](https://www.cegtec.net/academy)) — one operator's numbers, six years
@@ -17,108 +18,69 @@ Neither is a promise. They are the reference points to argue with when someone s
 
 ## A1 — Narrow beats broad, by roughly 2×
 
-Reply rate by how many regions the playbook's ICP names:
+Playbooks whose ICP names **five regions or fewer reply at roughly twice the rate** of those
+naming more — about 4 % against about 2 %. The gap holds with the strongest-performing
+campaign excluded from both sides, so it is not one outlier carrying the result. Including it,
+the gap is wider still.
 
-| ICP region scope | Contacted | Reply rate |
-|---|---|---|
-| ≤ 5 regions | 18,437 | **4.06 %** |
-| > 5 regions | 18,015 | **2.23 %** |
+The same pattern shows up for industry breadth and for company-size windows. The mechanism is
+not mysterious: a narrow ICP is one you can write a specific first line for.
 
-The outlier workspace (one LinkedIn motion far above every other) is excluded from both
-rows, so this is not one campaign carrying the result. Include it and the gap widens to
-7.20 % vs 2.22 %.
-
-The same holds for industry breadth and for company-size windows. The mechanism is not
-mysterious: a narrow ICP is one you can write a specific first line for.
-
-**Rule:** name ≤ 5 regions and ≤ 6 industries per playbook. If the list needs more, that
-is two playbooks, not one.
+**Rule:** name ≤ 5 regions and ≤ 6 industries per playbook. If the list needs more, that is
+two playbooks, not one.
 
 ## A2 — One channel done properly beats two done partly
 
-| Channels on the playbook | Contacted | Reply rate |
-|---|---|---|
-| 1 | 11,953 | **5.16 %** |
-| 2 | 21,196 | **1.84 %** |
-| 3 | 3,303 | 4.33 % |
+Playbooks running a **single channel reply at roughly 2–3× the rate** of those running two.
 
-Read this as a warning about *split attention*, not as proof that multichannel is wrong —
-the academy's own guidance is that channels reinforce each other. What the data shows is
-that a second channel added without its own copy, its own cadence and its own sender
-performs worse than not adding it.
+Read this as a warning about *split attention*, not as proof that multichannel is wrong — the
+academy's own guidance is that channels reinforce each other. What the pattern shows is that
+a second channel added without its own copy, its own cadence and its own sender performs
+worse than not adding it.
 
 **Rule:** ship one channel end to end. Add the second when the first has a measured reply
 rate, and give it its own copy — not a forwarded email.
 
 ## A3 — Rebuilding beats scaling
 
-The largest single improvement in the dataset came from rebuilding a campaign on the
-*same* audience — same ICP, same industries, same region — with revised copy and a
-tightened company-size window:
+The largest improvements observed come from rebuilding a campaign on the **same** audience —
+same ICP, same industries, same region — with revised copy and a tighter company-size window.
+A rebuild of that kind can **multiply the reply rate several times over at lower volume**.
+Nothing about the list changes; the message does.
 
-| | Contacted | Reply rate |
-|---|---|---|
-| First version | 871 | 5.28 % |
-| Rebuilt version | 445 | **16.18 %** |
+**Rule:** when a campaign underperforms, the next move is a rebuild of the message, not more
+contacts. Volume is the most expensive lever and the only one that damages the infrastructure.
 
-Three times the reply rate at half the volume. Nothing about the list changed; the
-message did.
+## A4 — Half-built sequences are the most common silent failure
 
-**Rule:** when a campaign underperforms, the next move is a rebuild of the message, not
-more contacts. Volume is the most expensive lever and the only one that damages the
-infrastructure.
+A sequence created, named, wired to an enroll column — and containing **no steps**. It sends
+nothing and it errors never, so the motion looks finished. This is one of the most frequent
+build faults there is, and it survives precisely because nothing complains.
 
-## A4 — Most sequences are never finished
+**Rule:** a sequence without steps is not a sequence. Call `get_sequence` and read the step
+list before you call a motion built.
 
-Of 88 sequences configured across all workspaces, **45 contain zero steps** — created,
-named, and never filled. Of those that do have steps:
+## A5 — Reply mix: expect roughly three no's per yes
 
-| Channel | Typical steps |
-|---|---|
-| Email | 3–4 |
-| LinkedIn | 3–4 (max 6) |
-| WhatsApp | 1–2 |
+Across classified inbound replies, the rough shape is: **~45 % negative · ~25 % positive
+interest · ~20 % neutral**, with the remainder objections and auto-replies. Positive share of
+replies runs highest on LinkedIn, then WhatsApp, then email.
 
-An empty sequence is not inert in a bad way — nothing sends, so nothing breaks. It is
-worse than that: it looks configured. Somebody built the table, wired the enroll column,
-and believes the motion is live.
+A negative reply is a *good* outcome compared to silence: it is a disqualification you did not
+have to pay for. Campaigns whose negative share collapses usually have a targeting problem,
+not a copy win — nobody is engaged enough to say no.
 
-**Rule:** a sequence without steps is not a sequence. Verify with `get_sequence` before
-wiring anything to it.
+## A6 — Fix your vocabulary at ingest
 
-## A5 — Reply mix: expect three no's per yes
+The most common reason a campaign cannot be analysed later is not missing data — it is
+uncontrolled vocabulary. Industry labels, persona names, disqualification reasons and
+objection types recorded as free text fragment into near-unique strings: the same industry
+ends up spelled four different ways, and every per-industry comparison silently splits.
 
-Classified inbound replies across all workspaces (n = 2,830):
-
-| Category | Share |
-|---|---|
-| Negative | 44.6 % |
-| Positive interest | 25.6 % |
-| Neutral | 20.5 % |
-| Objection | 5.7 % |
-| Auto-reply | 3.5 % |
-
-Positive share of replies by channel: **LinkedIn 28.2 % · WhatsApp 24.7 % · email 17.4 %**.
-
-A negative reply is a *good* outcome compared to silence: it is a disqualification you did
-not have to pay for. Campaigns whose negative share collapses usually have a targeting
-problem, not a copy win — nobody is engaged enough to say no.
-
-## A6 — What the platform cannot yet tell you
-
-Two measurement gaps, stated plainly because a guide that hides them wastes your time:
-
-- **Step attribution.** Of 1,635 recorded conversions, **one** carries the sequence step it
-  came from. So "which step books the meeting" is not answerable from the data — only
-  "which campaign does".
-- **Industry labels.** The same industry appears as `Banking`, `Bankwesen`,
-  `Financial Services` and `Finanzdienstleistungen`. Any per-industry comparison silently
-  splits into four.
-
-**Rule:** fix your vocabulary at ingest. Pick one label per industry and one signal-type
-key per signal, and make the qualification column choose from that fixed list — never free
-text. This costs one sentence in a prompt and is the difference between a measurable
-campaign and an anecdote.
+**Rule:** pick one label per industry, one key per signal type, one name per persona, and make
+every classifying column choose from that fixed list — never free text. This costs one
+sentence in a prompt and is the difference between a measurable campaign and an anecdote.
+Decide it before the first run; it is not recoverable afterwards.
 
 ---
 

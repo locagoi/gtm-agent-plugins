@@ -57,9 +57,9 @@ Rows must carry `entity_id` (a lead/company) or a bound column's dry-run sees em
 - **Closed lists, never free text.** Any column whose output you will later count — a
   qualification verdict, a disqualification reason, an industry label, a persona name, a case
   study pick — must choose from an `enum` in its `output_schema`. Free text aggregates into
-  nothing: on the platform, recorded objection reasons are almost all unique strings and the
-  same industry appears under four names, so the obvious question ("what disqualifies most of
-  my list?") cannot be answered at all.
+  nothing: reasons fragment into near-unique strings and one industry ends up spelled several
+  ways, so the obvious question ("what disqualifies most of my list?") cannot be answered at
+  all.
 - **Verdict columns return a reason.** A bare boolean is unauditable — when the fit rate comes
   back at 30 % you need twenty reasons to know whether the ICP or the source is wrong.
 - **Gate the expensive columns.** A `run_condition` on enrichment (`icp_fit.fit == true`) is

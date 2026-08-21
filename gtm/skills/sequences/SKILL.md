@@ -158,9 +158,9 @@ bound to a signal type but enrolled three weeks late reads as researched, not re
 gtm call get_sequence --input '{"sequence_id":"<id>"}' --json
 ```
 
-**Check the step list is not empty.** Across every workspace on the platform, 45 of 88
-sequences contain zero steps: created, named, wired to an enroll column, and believed to be
-live. Nothing sends, nothing errors, and the motion looks finished.
+**Check the step list is not empty.** A sequence with zero steps — created, named, wired to
+an enroll column, believed to be live — is one of the most common build faults there is.
+Nothing sends, nothing errors, and the motion looks finished.
 
 Then check, in this order:
 
@@ -173,8 +173,9 @@ Then check, in this order:
 ## Common failures
 
 - **An empty sequence wired to an enroll column** — the motion looks built and never sends.
+  Check the step list; this one is common.
 - **Two channels, one copy** — a forwarded email is not a LinkedIn message. Playbooks running
-  two channels reply at less than half the rate of those running one properly.
+  two channels reply at a fraction of the rate of those running one properly.
 - **A slot that resolves empty at scale** — always previewed against one row, never against
   the row that has no value.
 - **Editing an active sequence** without realising in-flight leads are mid-plan.

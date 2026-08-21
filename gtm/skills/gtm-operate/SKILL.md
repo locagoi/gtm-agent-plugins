@@ -152,8 +152,8 @@ gtm call workspace_table_import_from_playbook --input '{"table":"Leads","playboo
 gtm call list_sequences --json
 gtm call get_sequence --input '{"sequence_id":"<id>"}' --json   # READ the step list
 ```
-> Across the platform, 45 of 88 sequences contain ZERO steps — created, wired to an enroll
-> column, and believed to be live. An empty sequence sends nothing and reports no error.
+> A sequence with ZERO steps — created, wired to an enroll column, believed to be live — is
+> one of the most common build faults there is. It sends nothing and reports no error.
 
 ### 5. Read Wissen for context
 ```bash
