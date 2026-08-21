@@ -45,7 +45,7 @@ paid source means it will refuse.
 | `scraping` | Google Maps businesses | **paid** | `workspace_table_add_source` |
 | `lead_sourcing` | LinkedIn company search | **paid** | `workspace_table_add_source` |
 | `indeed_jobs` | companies with matching job postings | **paid** | `workspace_table_add_source` |
-| `generic_actor` | any Apify actor (needs `actor_id` + `field_mapping`) | **paid** | `workspace_table_add_source` |
+| `generic_actor` | any catalog scraper actor (needs `actor_id` + `field_mapping`) | **paid** | `workspace_table_add_source` |
 | `post_engagers` | companies behind the reactions to one post | free | `workspace_table_add_source` |
 | `job_change` | new decision makers | free | **schedule only** |
 | `profile_posts` | everyone engaging with ONE profile's own posts | free | **schedule only** |

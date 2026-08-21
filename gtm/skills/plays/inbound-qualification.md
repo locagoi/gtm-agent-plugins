@@ -1,7 +1,7 @@
 # Play: inbound lead qualification
 
 **Use when** something outside the platform produces leads — a website form, a chatbot, a
-partner feed, a Clay table, an event list. Inbound is warmer than anything you source, and it
+partner feed, an event list, a spreadsheet another team maintains. Inbound is warmer than anything you source, and it
 is routinely wasted by arriving unqualified in an inbox nobody reads within the hour.
 
 **Shape:** webhook → qualified in seconds → routed by what it is → the rep gets a card, or the

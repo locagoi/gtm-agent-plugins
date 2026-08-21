@@ -34,18 +34,6 @@ gtm --help               # command groups + global flags
 
 > The npm package is `gtm-goat-cli`; the command it installs is `gtm`.
 
-**Fallback (build from source):** if you can't install from npm (e.g. offline, or you want a local dev build),
-the CLI source lives in the main GTM Automation repo under `cli/` (full reference: `cli/README.md`):
-
-```bash
-# from a checkout of the main GTM Automation repo
-cd cli
-npm install
-npm run build            # compiles to dist/, produces the `gtm` bin
-npm link                 # puts `gtm` on your PATH
-# …or run without linking: node dist/index.js --help
-```
-
 ## Step 2 — Log in with the workspace MCP key
 
 Ask the user to paste their workspace MCP key (from Erweiterungen/Extensions -> MCP). Then:

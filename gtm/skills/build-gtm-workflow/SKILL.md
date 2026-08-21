@@ -10,9 +10,9 @@ Build a **repeatable, deterministic** GTM workflow as a workspace **table**: eac
 
 **Mental model (read once):** a *workflow* = the table's frozen column config. A *column* = a typed action per row (`source`/`enrichment`/`ai`/`tool`/`formula`/`relation`). *Inputs* = `{{cell.X}}` (sibling column) · `{{entity.X}}`/`{{company.X}}`/`{{lead.X}}` (linked entity) · `{{asset.X}}` (bound Wissen asset). *Output* = the column's `output_schema` (the predictability contract — every row conforms or is `failed`, never garbage). Build-time = the agent wires; run-time = deterministic replay, no agent, no guessing.
 
-**Where the table lives (v2 product):** the table is the deterministic-execution layer of a **Playbook** — the strategic paper that references its Wissen assets + Tabellen + automations. In v2 workspaces the surfaces are Playbook (strategy) · Tabellen (execution) · **CRM Kanban** (the prioritized lead surface) · Wissen (knowledge). Qualification/copy columns should reference the playbook's Wissen assets via `{{asset.icp}}`/`{{asset.offer}}`/`{{asset.messaging_angle}}`; source columns can act on the **`signal` Wissen asset class** (buying signals referencing ICP/Offer) to keep the table filled with *hot* rows. See `draft-gtm-play` for the strategy-first sequencing.
+**Where the table lives:** the table is the deterministic-execution layer of a **Playbook** — the strategic paper that references its Wissen assets + Tabellen + automations. The surfaces around it are Playbook (strategy) · Tabellen (execution) · the prioritized lead surface · Wissen (knowledge). Qualification/copy columns should reference the playbook's Wissen assets via `{{asset.icp}}`/`{{asset.offer}}`/`{{asset.messaging_angle}}`; source columns can act on the **`signal` Wissen asset class** (buying signals referencing ICP/Offer) to keep the table filled with *hot* rows. See `draft-gtm-play` for the strategy-first sequencing.
 
-All operations are the `workspace_table_*` / `wissen_*` MCP tools (flag `workspace_tables_enabled`). Do them in order.
+All operations are the `workspace_table_*` / `wissen_*` MCP tools. Do them in order.
 
 > **Start with the shape, not the tools:** `three-table-play.md` next to this file is the
 > canonical layout — accounts → people → outreach, with a scored gate between each stage,
@@ -76,7 +76,7 @@ Rows must carry `entity_id` (a lead/company) or a bound column's dry-run sees em
 
 - `workspace_table_cascade_preview` — worst-case rows × per-cell cost.
 - A live paid run REQUIRES a `max_credits` ceiling; cells over the cap are skipped `max_credits_reached`, the run finalizes cleanly. Money-audit is built in — never run an unbounded paid column.
-- Scale: for large N, prefer the provider's BULK path where available (bulk enrichment is a fast-follow). The job queue batches + is resumable (per-cell status; re-run only touches pending/failed; no auto-retry).
+- Scale: for large N, prefer the provider's BULK path where available. The job queue batches and is resumable (per-cell status; a re-run only touches pending/failed; no auto-retry).
 
 ## 6. Run it
 
@@ -99,7 +99,7 @@ This is the replicability loop: **build once → save_as_template → from_templ
 - **Read `workspace_schema_get` first.** Don't invent column keys or table ids.
 - **Formula stores its template in `config.expression`** (not `config.formula`) — the dependency graph + cascade read `expression`.
 - **`{{asset.X}}` needs a bound/pinned Wissen asset** on the playbook, else it resolves empty.
-- **Cross-workspace insights are admin-only** — no `{{marketplace.*}}`/`{{platform.*}}`; a column only ever sees THIS workspace's data.
+- **No cross-workspace reads** — there is no `{{marketplace.*}}`/`{{platform.*}}`; a column only ever sees THIS workspace's data.
 - **Deleting a referenced column is blocked** — remove the `{{cell.X}}`/run_condition references first (`workspace_table_delete_column` enforces this).
 - **Terminal SEND is gated, not absent** — a GENERIC tool column hard-refuses every send category (fail-closed: no adapter is even resolved). Sending runs through the dedicated **outreach terminal column**, which routes into the shipped, gated enroll machinery before that refusal applies. It sends only in its own run, never on create, and `auto_run` is rejected for it.
 - **The seams between the bricks are their own guide** — which handoffs exist (Wissen → Playbook → Tabelle → Sequenz, the Workflow's three), what creates each, and which ones do NOT exist: see **gtm-handoffs**, or read `handoffs.legend` from `workspace_schema_get` for the live version.

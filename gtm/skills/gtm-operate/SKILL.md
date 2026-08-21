@@ -28,13 +28,13 @@ Practical consequence: if a skill names a tool that is not in your list — `cre
 `workspace_table_save_as_template`, `wissen_asset_revise` — **call it anyway**. Do not
 conclude the feature is missing because the verb is not advertised.
 
-## Product profile (v2 vs classic)
-Workspaces carry `settings.product_version`. **v2** (new workspaces) = the lean product: **Tabellen** + **CRM Kanban as the lead surface** + **strategic-paper Playbook** (pinned Wissen assets + referenced Tabellen + automations) + **Wissen**. v2 has **no pipeline, no old playbook form, no phone agent**, and legacy pipeline/phone tools are **not advertised** on its surface — so trust `gtm tools` / `workspace_capabilities` for what's actually available rather than assuming a tool exists. **classic** workspaces keep the full legacy surface (pipeline included). Don't hardcode either — read what the workspace exposes.
+## Workspaces differ — read, never assume
+Not every workspace exposes the same surface: which modules, sources and integrations are available depends on what that workspace has connected and enabled. `gtm tools` and `workspace_capabilities` are the answer for the workspace you are in. Never hardcode the assumption that a tool exists because it existed somewhere else.
 
 ## The object model (9 primitives, short)
 
 - **Workspace** — the tenant boundary. Every call is scoped to one.
-- **Wissen** — the workspace knowledge base (rolling out, first stage available per-workspace toggle): versioned **Assets** (ICP, Persona, Offer, Positioning, Messaging Angle, Proof), **Learnings** (structured insights the system distills from what actually books meetings and gets replies — copy patterns, objection handling, ICP/signal/channel effects — each proposed into an approval queue and only injected into prompts once approved), and **Speicher** (self-maintaining markdown memory of how the workspace operates). The Sales Blueprint stays as the onboarding hub: it ingests docs, CRM analytics, and outreach signals — plus connected knowledge integrations (Notion, a generic Wissens-MCP) — and proposes Wissen assets through the approval queue; it is not being retired.
+- **Wissen** — the workspace knowledge base: versioned **Assets** (ICP, Persona, Offer, Positioning, Messaging Angle, Proof, Signal), **Learnings** (structured insights the system distills from what actually books meetings and gets replies — copy patterns, objection handling, ICP/signal/channel effects — each proposed into an approval queue and only injected into prompts once approved), and a self-maintaining memory of how the workspace operates. The Sales Blueprint is the onboarding hub: it ingests documents, CRM analytics and outreach signals, plus any connected knowledge integration, and proposes Wissen assets through the same approval queue.
 - **Tabelle / Spalte / Zelle** (table / column / cell) — a column is a typed action per row; a cell carries value, status, cost, provenance. The platform's core operating surface.
 - **Workflow** — a deterministic, named, dry-run-able process (same input → same steps → same output).
 - **Run** — one record shape for every execution (pipeline/chain/job/sourcing): status, item counts, credits.
@@ -58,7 +58,7 @@ Same tools underneath — a CLI verb like `gtm column run` just calls the `works
 
 ## Using the `gtm` CLI (shell agents)
 
-Full reference: **`cli/README.md`**. The essentials:
+`gtm --help` is the full reference. The essentials:
 
 ```bash
 # Discover — always start here
@@ -109,7 +109,7 @@ Discovery-first, same as the CLI. Then the core surface:
   - `mode: 'dry_run'` → **free, synchronous, no writes**; returns `{ rows, estimated_credits, sample_inputs }`. Always do this first for `ai`/`enrichment` columns.
   - `mode: 'live'` (default) → executes. **A live run of a paid (ai/enrichment) column REQUIRES `max_credits`** (> 0, a hard per-run cap). Without it the tool refuses and hands back the estimate. Live runs are async (returns a `job_id` — poll with `workspace_table_get`). Over the cap, remaining cells are skipped `max_credits_reached` and the run finalizes cleanly. **No automatic retries.**
 
-**Wissen (read as context, review the Learnings queue) — rolling out, first stage available per-workspace toggle:**
+**Wissen (read as context, review the Learnings queue):**
 - `wissen_asset_list({ kind?, status? })` — metadata only (id, kind, name, status, revision). Pass `status: 'proposed'` to find Learnings the system has distilled from booked meetings and replies and queued for approval.
 - `wissen_asset_get({ asset_id })` — the current revision's typed content + history.
 - `wissen_asset_create` / `wissen_asset_revise` — author or version an Asset (immutable revisions).
@@ -161,13 +161,13 @@ gtm wissen list --kind icp --json
 gtm wissen get <assetId> --json       # current ICP revision content
 ```
 
-### 6. Review the Learnings approval queue (rolling out)
+### 6. Review the Learnings approval queue
 ```bash
 gtm call wissen_asset_list --input '{"status":"proposed"}' --json          # what the system distilled, awaiting review
 gtm call wissen_asset_get --input '{"asset_id":"<id>"}' --json             # read the proposed content before deciding
 gtm call wissen_asset_approve --input '{"asset_id":"<id>","decision":"approve"}' --json   # or "decision":"reject"
 ```
-> A proposed Learning sits inert until approved — approval is what lets it start feeding qualification/copy prompts. This is a first-stage rollout with a per-workspace toggle — confirm Wissen/Learnings is enabled for the workspace before relying on it being there.
+> A proposed Learning sits inert until approved — approval is what lets it start feeding qualification/copy prompts. Confirm the workspace has Wissen available (`workspace_capabilities`) before relying on it being there.
 
 ## Guardrails (non-negotiable)
 
@@ -175,6 +175,6 @@ gtm call wissen_asset_approve --input '{"asset_id":"<id>","decision":"approve"}'
 - **No auto-retry.** Runs never silently retry and burn credits — a re-run is a deliberate act.
 - **Sends are gated, not absent.** A GENERIC `tool` column hard-refuses every send category (fail-closed — no adapter is even resolved). Sending runs through the dedicated **outreach terminal column**, which routes into the shipped, gated enroll machinery before that refusal applies: contactability (unsubscribe + blacklist) is checked deny-only and fails closed, it sends only in its own run, and `auto_run` is rejected for it. "A tool column cannot send" is true; "the platform cannot send" is not. See **sequences** and **gtm-handoffs**.
 - **Mutations are proposals.** Any live, paid, or external-write action assumes a human approves consequential changes. The same applies to Learnings: a distilled insight is a proposal until `wissen_asset_approve` accepts it.
-- **Never cross workspaces.** Every call is scoped to the workspace behind your key. There is no `{{marketplace.*}}`/`{{platform.*}}`; a column only ever sees THIS workspace's data. Cross-workspace insight is admin-only.
+- **Never cross workspaces.** Every call is scoped to the workspace behind your key. There is no `{{marketplace.*}}`/`{{platform.*}}`; a column only ever sees THIS workspace's data.
 - **Resolve integrations by CATEGORY, never a vendor id** — the connected adapter can change under you.
 - **Verify before claiming done** — read the cells/rows back; check status, not just a queued job.
