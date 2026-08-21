@@ -133,7 +133,7 @@ gtm call workspace_table_add_column --input '{
 Validation is not optional: validated versus unvalidated lists bounce at 0.4 % against 7.7 %
 on identical infrastructure, and a domain is spent at 8 %.
 
-Then `base:resolve_contact` writes the final sending address onto the lead — personal address
+Then `base:resolve_contact` writes the final sending address onto the lead: personal address
 first, optionally a company fallback like `info@`. For local businesses that fallback is often
 the only address there is; decide deliberately whether `info@` is worth writing to.
 
@@ -143,14 +143,19 @@ Four small typed columns, each gated on `email_valid == 'valid'`:
 
 | Column | Returns |
 |---|---|
-| `hook` | one sentence from the local signal — ≤ 140 chars, no question |
+| `salutation` | the complete greeting, gendered: `Sehr geehrter Herr Müller` |
+| `hook` | one sentence from the local signal, ≤ 140 chars, no question |
 | `pain_point` | 3–4 words, from trade and size |
 | `case_match` | one name **from a fixed enum** of your case studies |
 | `quick_win` | what changes for them, in six words |
 
 The sequence template is fixed; only these fills vary. That is what keeps 400 messages
-readable and debuggable — when the copy is weak you can see *which column* produced the weak
+readable and debuggable: when the copy is weak you can see *which column* produced the weak
 fill.
+
+Gate the enroll column on `salutation.confidence >= 0.8`. A row whose gender could not be
+determined is held back rather than greeted with a guess. The prompt for that column is in
+`sequences/copy-patterns.md`.
 
 ## 7 — Sequence and enrollment
 

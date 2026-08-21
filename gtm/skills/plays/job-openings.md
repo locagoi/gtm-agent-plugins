@@ -104,8 +104,9 @@ a day.
 
 The signal goes in line one and nowhere else:
 
-> Sie suchen aktuell {{cell.job_title}} — {{cell.job_excerpt}}. Genau dabei unterstützen wir
-> {{cell.case_match}}: {{cell.case_result}}. Spielt das bei Ihnen gerade eine Rolle?
+> {{cell.salutation}}, Sie suchen aktuell {{cell.job_title}}. In der Ausschreibung steht:
+> „{{cell.job_excerpt}}". Genau dabei unterstützen wir {{cell.case_match}}:
+> {{cell.case_result}}. Spielt das bei Ihnen gerade eine Rolle?
 
 What kills this play: writing four weeks after the posting went up. Gate on `fresh`, and let
 the cold ones go.

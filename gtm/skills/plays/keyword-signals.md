@@ -65,8 +65,9 @@ produces. Route those first.
 
 The whole advantage is that you can quote them:
 
-> Sie schrieben unter dem Beitrag von {{cell.post_author}}: „{{cell.quote}}" — genau daran
-> arbeiten wir mit {{cell.case_match}}. Spielt das bei {{company.name}} auch eine Rolle?
+> {{cell.salutation}}, Sie schrieben unter dem Beitrag von {{cell.post_author}}:
+> „{{cell.quote}}". Genau daran arbeiten wir mit {{cell.case_match}}. Spielt das bei
+> {{company.name}} auch eine Rolle?
 
 Two rules that keep this from turning creepy:
 
