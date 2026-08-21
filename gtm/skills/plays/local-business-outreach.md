@@ -195,8 +195,16 @@ maximum) and both the platform rules and data protection apply.
 
 ## 8 — First run
 
-25 rows sourced → read the fit reasons → fit rate below 60 % means the query or the ICP is
-wrong, not the volume. Then 20 generated messages, read by a human. Then enroll, capped.
+```bash
+gtm call workspace_table_preflight --input '{"table_id":"<id>"}' --json
+```
+
+Free and deterministic: it tells you whether a new row runs through the chain at all before you
+spend anything on rows. Then 25 rows sourced → read the fit reasons → a fit rate below 60 %
+means the query or the ICP is wrong, not the volume. Then 20 generated messages, read by a
+human. Then enroll, capped.
+
+Run the preflight again before scheduling the source.
 
 ```bash
 gtm call workspace_table_save_as_template --input '{"table":"Accounts","name":"Local outreach — accounts"}' --json

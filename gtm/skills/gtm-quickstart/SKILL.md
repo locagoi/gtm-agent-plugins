@@ -247,9 +247,18 @@ Five rules that decide whether this works at 4,000 rows:
   object, not an expression string, and dotted paths into a JSON cell do work. Prove it with a
   dry run: the response reports `rows_skipped_by_condition`.
 
-**Checkpoint:** `workspace_table_dependencies` shows the graph you intended with no cycles, a
-`dry_run` of each paid column returns a sane count and cost, and every variable in the
-inventory has exactly one column feeding it.
+**Checkpoint** — two calls, both free:
+
+```bash
+gtm call workspace_table_dependencies --input '{"table_id":"<id>"}' --json   # the graph you intended, no cycles
+gtm call workspace_table_preflight --input '{"table_id":"<id>"}' --json      # does a NEW row run through?
+```
+
+`workspace_table_preflight` is deterministic: same column config, same verdict, no data and no
+cost. It reports the four failures that are otherwise silent — nothing runs on a new row, a
+gate that can never open, an enroll column that is not last, and a sequence slot no column
+feeds. `ok: true` and a `dry_run` with a sane count and cost per paid column, and the stage is
+done.
 
 ## Stage 7 — The enroll column: the one handoff that sends
 
@@ -266,7 +275,8 @@ Four properties of this column, all deliberate:
 
 - It is the **last** column, never a middle one.
 - It **sends only in its own run** — never on create.
-- `auto_run: true` is **rejected** for it. Enrollment is always a deliberate act.
+- `auto_run: true` needs a `run_condition` beside it, or it is refused. Leave it off for the first
+  campaign: enrollment should be a deliberate act until the qualification has proven itself.
 - Every enrollment passes the contactability gates: unsubscribe and blacklist are checked
   first, and the check **fails closed** — if the lead cannot be loaded reliably, nothing goes
   out.
@@ -308,6 +318,10 @@ recipient's competitor?* If yes, it is a mail merge, not personalisation.
 
 **Never run 4,000 rows before someone has read 20.** This is the most expensive mistake
 available in the product, and the easiest to avoid.
+
+And before you put a **schedule** on the source, run `workspace_table_preflight` once more. From
+that moment rows arrive without anybody watching, and a chain that quietly does nothing looks
+identical to a chain with nothing to do.
 
 **Checkpoint:** a human has approved the sample. Only now run the enroll column, capped.
 

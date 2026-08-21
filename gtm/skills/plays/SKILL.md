@@ -183,7 +183,7 @@ the table fills exactly those. Write it first, take the inventory of its `{{...}
 build one column per slot and no others. Building the table first produces columns nobody
 references and variables nobody filled.
 
-The six rules that hold in all nine plays:
+The seven rules that hold in all nine plays:
 
 1. **Sequence first, then its variables.** Two is the target, three the ceiling. Write it with
    built-in slots, add the enroll column, then `update_sequence` to put `{{cell.*}}` in — the
@@ -193,8 +193,11 @@ The six rules that hold in all nine plays:
    `{ column, op, value }` object, not an expression string — and prove it with a free dry run,
    which reports `rows_skipped_by_condition`. Then read 20 rows including a sparse one.
 4. **Closed lists, never free text**, for anything you will count later.
-5. **Twenty rows, read by a human**, before the first enrollment.
-6. **The enroll column is last**, sends only in its own run, and `auto_run` is rejected.
+5. **Preflight before you schedule.** `workspace_table_preflight` answers, deterministically
+   and for free, whether a new row runs through at all. The dry run prices one column; this
+   says whether the chain moves and stops in the right place.
+6. **Twenty rows, read by a human**, before the first enrollment.
+7. **The enroll column is last**, sends only in its own run.
 
 ## Running a play
 

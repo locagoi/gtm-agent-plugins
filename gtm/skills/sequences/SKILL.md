@@ -70,7 +70,10 @@ Two defences, and you need both:
 1. **Gate the enrollment on every variable.** `run_condition` on the enroll column:
    `anrede.confidence >= 0.8 AND hook.usable == true`. A row missing a fill is held back, not
    sent with a gap.
-2. **Prove it on 20 real rows before enrolling** — including a deliberately sparse one. The row
+2. **Let the preflight find the missing column.** `workspace_table_preflight` reads every
+   `{{cell.x}}` in the bound sequence and reports any slot no column feeds — free, deterministic
+   and before a single row is spent.
+3. **Prove it on 20 real rows before enrolling** — including a deliberately sparse one. The row
    that breaks the template is never the row you spot-checked.
 
 Fewer variables is the real protection. Two variables have two failure modes; six have six, and

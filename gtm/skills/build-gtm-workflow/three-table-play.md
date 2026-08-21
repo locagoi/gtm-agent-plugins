@@ -132,7 +132,8 @@ on the same infrastructure: **0.4 % versus 7.7 % bounce**, a factor of 19. Domai
 starts around 5 % and a domain is effectively spent at 8 %.
 
 **Gate on 7:** `{ "column": "email_valid", "op": "equals", "value": "valid" }`. And the enroll column is last, sends only in its own
-run, and `auto_run` is rejected for it.
+run. `auto_run` on it is opt-in and only accepted together with a `run_condition`; leave it off
+until the qualification has proven itself on real rows.
 
 ---
 
