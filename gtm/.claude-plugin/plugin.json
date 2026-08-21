@@ -1,7 +1,7 @@
 {
   "name": "gtm",
   "displayName": "GTM Automation",
-  "version": "0.4.2",
+  "version": "0.5.0",
   "description": "Take a GTM Automation workspace from empty to a live outbound campaign, run named motions end to end, and close the loops that keep it running. Ships gtm-quickstart (nine-stage build path incl. the intake interview), plays (nine templates), agents-loops-goals (missions, scoped agents, scheduled sources, signal watches, event triggers, approval gates), outbound-playbook (method, benchmarks and cross-workspace learnings), sequences (touch plans and the template copy doctrine), draft-gtm-play, build-gtm-workflow, gtm-handoffs, gtm-operate and a guided setup skill. Requires a workspace on the Growth plan or higher.",
   "author": {
     "name": "cegtec",

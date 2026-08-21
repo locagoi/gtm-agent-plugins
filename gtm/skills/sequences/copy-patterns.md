@@ -107,18 +107,80 @@ Everything follows from it: the salutation column (`Sehr geehrter Herr Meier` ag
 and every pronoun in the fixed text (`Ihnen`/`Ihre` against `Dir`/`Deine`). A message that opens
 formally and closes informally reads as though two people wrote it, because effectively two did.
 
-## The value prop names a reference and a number
+## Name the pain, then prove the benefit with numbers
 
-Not what the product is. What changes for them, with a name and a number attached:
+Two halves, and both are non-negotiable. A concrete pain the reader recognises, and a benefit
+expressed in **numbers, data and facts** — each one backed by a named reference.
 
-| Weak | Strong |
+### The pain has to be theirs, not the category's
+
+| Category pain (useless) | Their pain (recognisable) |
 |---|---|
-| "Wir bieten KI-gestützte Vertriebsautomatisierung." | "Musterverwaltung Nord hat die Recherchezeit pro Lead von 20 auf 4 Minuten gesenkt." |
-| "Unsere Lösung verbessert Ihre Prozesse deutlich." | "Musterbau bearbeitet heute dreimal so viele Anfragen mit demselben Team." |
+| "ineffiziente Prozesse" | "Jede Anfrage wird zweimal erfasst: einmal im Postfach, einmal im ERP." |
+| "hohe Akquisekosten" | "Drei SDRs recherchieren 20 Minuten pro Lead, bevor die erste Zeile steht." |
+| "mangelnde Sichtbarkeit" | "Vier von fünf Angeboten gehen raus, ohne dass jemand nachfasst." |
 
-Rules for the reference: real, named, with a real number and a real timeframe, and comparable
-in size and industry to the recipient. One reference, not three. If you have none for this
-vertical, that is a finding about which vertical to run, not a licence to write "viele Kunden".
+The test: **could the reader have written this sentence themselves?** If yes, it is their pain.
+If it reads like a brochure heading, it is the category's.
+
+Where the specific version comes from: the persona's challenges from the intake, in *their*
+words — never a paraphrase. That is why the intake asks for challenges verbatim.
+
+### The benefit is a number, a unit and a timeframe
+
+Not an adjective. Not a direction. A measurement:
+
+| No number, no claim | Number, unit, timeframe |
+|---|---|
+| "deutlich schneller" | "von 20 auf 4 Minuten pro Lead" |
+| "spart Zeit" | "12 Stunden pro Woche in der Poststelle, seit Januar" |
+| "mehr Abschlüsse" | "dreimal so viele Anfragen mit demselben Team" |
+| "reduziert Kosten" | "Cost per Lead von 84 € auf 31 €, über zwei Quartale" |
+
+Three parts, and a missing one weakens the whole: **the amount** (20 → 4), **the unit**
+(minutes per lead), **the period** (since January, over two quarters). "40 % schneller" without
+a base is a decoration; "von 20 auf 4 Minuten" is a fact.
+
+### Every number carries its reference
+
+A number without a name is a claim; with a name it is evidence. The three belong in one
+sentence:
+
+```
+{{reference}} hat {{metric}} von {{before}} auf {{after}} gesenkt — {{timeframe}}.
+```
+
+> Musterverwaltung Nord hat die Bearbeitungszeit je Posteingang von 6 auf 2 Minuten gesenkt,
+> seit Januar.
+
+Rules for the reference: real, named, with a real number and a real timeframe, and **comparable
+in size and industry** to the recipient — a 2.000-person reference proves nothing to a
+20-person business. One reference, not three. If you have none for this vertical, that is a
+finding about which vertical to run, not a licence to write "viele Kunden".
+
+**Where the numbers come from:** the `proof` Wissen asset, and nowhere else. If a number is not
+in an approved asset, it does not go in a message. A model asked to "make it concrete" will
+invent a plausible percentage, and an invented number in an outbound mail is the one mistake a
+prospect can check.
+
+### The chain the reader walks
+
+```
+pain they recognise  →  number that proves it is solvable  →  name that proves it is real
+```
+
+Break any link and the message reverts to a brochure. All three fit in two sentences:
+
+> {{anrede}},
+>
+> {{hook}}
+>
+> Bei Hausverwaltungen läuft jede Rechnung zweimal durch die Hand: einmal im Postfach, einmal
+> im ERP. Musterverwaltung Nord hat das auf einen Durchlauf gebracht und spart seit Januar
+> rund 12 Stunden pro Woche.
+
+Pain in the reader's language, benefit as a measurement, reference by name. Then the lead
+magnet, then the signature.
 
 ## The lead magnet carries the CTA
 
@@ -388,7 +450,12 @@ Under 300 characters, no link, explicit opt-out, the offer in message two after 
       generated, stop.
 - [ ] **Three paragraphs maximum**, and under the channel word limit.
 - [ ] **The competitor test** on the hook: would it also fit the recipient's competitor?
-- [ ] **The value prop names a reference and a number**, and the reference is comparable.
+- [ ] **The pain is theirs, not the category's** — could the reader have written that sentence?
+- [ ] **The benefit is a number with a unit and a timeframe**, not an adjective.
+- [ ] **Every number carries a named reference**, and the reference is comparable in size and
+      industry.
+- [ ] **Every number comes from an approved `proof` asset** — nothing invented, nothing rounded
+      up.
 - [ ] **The lead magnet is concrete**: a deliverable, a size, a timeframe. Not "more
       information".
 - [ ] **The salutation is complete and correctly gendered.** No neutral fallback, no guess
