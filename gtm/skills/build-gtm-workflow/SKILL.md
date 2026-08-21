@@ -49,6 +49,10 @@ Rows must carry `entity_id` (a lead/company) or a bound column's dry-run sees em
 | Terminal action (CRM push, tool) | `tool` | `category`, `tool?`, `args_template` |
 | Link to another table's row | `relation` | `target_table_id`, `display_column` |
 
+**Write the sequence before this table.** The sequence defines which variables exist; this
+table exists to fill exactly those. Take the inventory of its `{{...}}` slots first, then build
+one column per slot and no others. See `sequences`.
+
 **Start with the identity block.** Before any processing column, add the few fields that let a
 person recognise the row: a company table shows name, country, industry, website and size; a
 lead table shows full name, salutation and job title. Take what the source actually delivers,

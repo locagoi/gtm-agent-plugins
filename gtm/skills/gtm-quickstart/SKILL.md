@@ -25,8 +25,8 @@ campaign built on invented positioning still fails in week two.
 | 2 | Wissen assets | ICP · persona · offer · proof · angle · signals | `draft-gtm-play` |
 | 3 | Playbook | the strategy, bound | `draft-gtm-play` |
 | 4 | Senders & channel | one channel, verified, within limits | `sequences` |
-| 5 | The table | source → qualify → enrich → copy | `plays` · `build-gtm-workflow` |
-| 6 | The sequence | the touch plan the lead experiences | `sequences` |
+| 5 | The sequence | the touch plan, and the variable inventory it defines | `sequences` |
+| 6 | The table | source → qualify → enrich → fill exactly those variables | `plays` · `build-gtm-workflow` |
 | 7 | The enroll column | the one handoff that sends | `gtm-handoffs` |
 | 8 | First bounded run | 20 rows read by a human | `outbound-playbook` |
 | 9 | Measure and rebuild | the loop that compounds | `outbound-playbook` |
@@ -165,73 +165,82 @@ daily limit and what your planned volume is against it.
 
 ---
 
-## Stage 5 — The table
+## Stage 5 — The sequence, before the table
 
-**Check `plays` first.** If the motion has a name — local business outreach, post engagers,
-keyword signals, job openings, inbound, website visitors, lost deals — there is a ready-made
-template with its sources, columns, gates and tool calls already written. Building from it
-beats building from scratch.
-
-The table is where the campaign is actually assembled: one row per company or lead, one
-column per step. Build it with **`build-gtm-workflow`**; the canonical shape is in
-**`three-table-play.md`** there — company discovery → people discovery → outreach list, with
-a scored gate between each.
-
-The short version, in build order:
-
-```bash
-gtm call workspace_table_create --input '{"name":"Accounts","entity_binding":"company"}' --json
-gtm call workspace_table_add_source --input '{"table":"Accounts", ...}' --json   # attach
-gtm call workspace_table_run_source --input '{"table":"Accounts","max_results":25}' --json  # prove it small
-gtm call workspace_table_add_column --input '{"table":"Accounts","key":"icp_fit","kind":"ai", ...}' --json
-```
-
-Five rules that decide whether this works at 4,000 rows:
-
-- **`output_schema` on every ai/enrichment column.** It is the typed contract: off-schema
-  output makes the cell `failed` rather than garbage. Same shape at 40 rows and at 4,000.
-- **Reference, never re-type.** `{{asset.icp}}` for the qualification prompt, `{{cell.x}}` for
-  a sibling column, `{{company.name}}` for the entity. The dependency graph reads these and
-  derives the run order.
-- **Gate the chain.** A `run_condition` on the enrichment column (`icp_fit == true`) means you
-  only pay to enrich companies that qualified. This is where the credit bill is decided.
-- **Fixed vocabulary, never free text.** Qualification verdicts, industry labels, objection
-  reasons: give the model a closed list to choose from. Free text is why, across the
-  platform, the same industry appears under four names and per-industry comparison is
-  impossible.
-- **Template + variables for copy.** A fixed template with generated `{hook}` / `{pain_point}`
-  fills, not free-form generation per row.
-
-**Checkpoint:** `workspace_table_dependencies` shows the graph you intended, with no cycles,
-and a `dry_run` of each paid column returns a sane row count and cost.
-
----
-
-## Stage 6 — The sequence
-
-The sequence is the touch plan the *lead* experiences over time. Build it with
-**`sequences`**; the copy patterns per channel and step are in **`copy-patterns.md`** there.
+**Write the sequence first.** It decides which variables exist; the table then fills exactly
+those and nothing else. Build the table first and you get columns nobody references and
+variables nobody filled.
 
 ```bash
 gtm call create_sequence --input '{"playbook_id":"<id>","channel":"email","name":"Ops Lead — 3 step"}' --json
 ```
 
-`playbook_id` is required — a sequence always belongs to a playbook. Then the steps:
+`playbook_id` is required, and there is **one sequence per playbook per channel**.
 
-- **Cadence day 1 → 4 → 9 → 16 → 25**, increasing gaps, **max 5 touches**.
-- Every step carries a **new angle**, never "just following up".
-- Email: step 1 ≤ 80 words, step 2 ≤ 50, break-up ≤ 30. Plain text, **no links in the body**,
-  no tracking.
-- A reply pauses **every** channel for that lead. No reply → 60–90 day cooldown, re-entry
-  only on a new signal.
+Four rules that decide whether this sequence is any good:
 
-**Nothing sends when you create this.** Creating a sequence starts nothing at all.
+- **As short as possible.** 80 words for the opener, 50 for the follow-up, 30 for the break-up.
+- **As few variables as possible.** Two is the target: `{{anrede}}` and `{{hook}}`. Everything
+  else is fixed template text you wrote once and approved. More than three means the copy is
+  over-personalised.
+- **One form throughout: `Sie` or `Du`.** Decided once, held in every step, matched by the
+  salutation column. Never mixed.
+- **Variants from the first version**, testing different messaging angles. A sequence with one
+  version cannot be improved, only replaced.
 
-**Checkpoint:** `get_sequence` returns your steps with their delays. If it returns an empty
-step list, the sequence does not exist in any useful sense — and this is one of the most
-common build faults there is: named, wired, empty, and believed to be live.
+Cadence day 1 → 4 → 9 → 16 → 25, maximum five touches, each carrying a **different angle**. A
+reply pauses every channel. Nothing sends on create.
 
----
+Then take the inventory, because it is the input to the next stage:
+
+```bash
+gtm call get_sequence --input '{"sequence_id":"<id>"}' --json | grep -o '{{[^}]*}}' | sort -u
+```
+
+**Checkpoint:** `get_sequence` returns your steps with their delays, `graph_mode` matches the
+plan you think is running, and you have a written list of the variables the table must fill.
+An empty step list means the sequence does not exist in any useful sense.
+
+Copy doctrine, the salutation prompt and the per-channel patterns: **`sequences`** and
+`copy-patterns.md`.
+
+## Stage 6 — The table that fills exactly those variables
+
+**Check `plays` first.** If the motion has a name — local business outreach, post engagers,
+keyword signals, job openings, inbound, website visitors, lost deals — there is a ready-made
+template with its sources, columns, gates and tool calls already written.
+
+The table is where the campaign is assembled: one row per company or lead, one column per step.
+Build it with **`build-gtm-workflow`**; the canonical shape is `three-table-play.md` there.
+
+**Columns left to right, in execution order**, each gated on a column to its left:
+
+```
+identity  →  cheap qualification  →  GATE  →  enrichment  →  variable fills  →  ENROLL
+```
+
+The identity block comes first so a person can read a row: a company table shows name, country,
+industry, website, size; a lead table shows full name, salutation, job title. Take what the
+source actually delivers.
+
+Then **one column per variable from stage 5's inventory, and no others.** If the sequence uses
+`{{anrede}}` and `{{hook}}`, you build two fill columns. Not five "might be useful" columns.
+
+Five rules that decide whether this works at 4,000 rows:
+
+- **`output_schema` on every ai/enrichment column.** Off-schema output makes the cell `failed`
+  rather than garbage.
+- **Reference, never re-type.** `{{asset.icp}}` for qualification, `{{cell.x}}` for a sibling,
+  `{{company.name}}` for the entity.
+- **Gate the expensive columns.** Contact enrichment costs 25 credits a row against 1 for
+  qualification. The `run_condition` is where the bill is decided.
+- **Closed lists, never free text**, for anything you will count later.
+- **No empty variables.** Gate the enroll column on every fill: `anrede.confidence >= 0.8 AND
+  hook.usable == true`. An unresolved slot resolves empty and sends a message with a hole in it.
+
+**Checkpoint:** `workspace_table_dependencies` shows the graph you intended with no cycles, a
+`dry_run` of each paid column returns a sane count and cost, and every variable in the
+inventory has exactly one column feeding it.
 
 ## Stage 7 — The enroll column: the one handoff that sends
 
