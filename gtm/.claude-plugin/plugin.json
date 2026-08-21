@@ -1,15 +1,25 @@
 {
   "name": "gtm",
   "displayName": "GTM Automation",
-  "version": "0.1.0",
-  "description": "Operate and build GTM Automation plays from Claude Code. Ships the draft-gtm-play + gtm-operate + build-gtm-workflow + gtm-handoffs skills, a guided setup skill, and a wired MCP connection to your GTM Automation workspace. Requires a workspace on the Growth plan or higher.",
+  "version": "0.2.0",
+  "description": "Take a GTM Automation workspace from empty to a live outbound campaign in one session. Ships gtm-quickstart (the nine-stage build path incl. the intake interview), outbound-playbook (what to build, with anonymous cross-workspace benchmarks), draft-gtm-play, build-gtm-workflow (incl. the three-table play), sequences (incl. per-channel copy patterns), gtm-handoffs, gtm-operate and a guided setup skill — plus a wired MCP connection to your workspace. Requires a workspace on the Growth plan or higher.",
   "author": {
     "name": "cegtec",
     "email": "info@cegtec.net",
     "url": "https://app.cegtec.net"
   },
   "homepage": "https://app.cegtec.net",
-  "keywords": ["gtm", "sales", "outbound", "enrichment", "cegtec"],
+  "keywords": [
+    "gtm",
+    "sales",
+    "outbound",
+    "cold-email",
+    "linkedin",
+    "sequences",
+    "enrichment",
+    "icp",
+    "cegtec"
+  ],
   "mcpServers": {
     "gtm": {
       "type": "http",

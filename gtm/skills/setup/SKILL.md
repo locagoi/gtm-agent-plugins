@@ -1,6 +1,6 @@
 ---
 name: setup
-description: Use FIRST, right after installing the gtm plugin, to connect Claude Code to a GTM Automation workspace. Guides the agent through installing the `gtm` CLI, logging in with the workspace MCP key, and validating the connection with `gtm whoami` + `gtm tools`. Run this before gtm-operate or build-gtm-workflow.
+description: Use FIRST, right after installing the gtm plugin, to connect Claude Code to a GTM Automation workspace. Guides the agent through installing the `gtm` CLI, logging in with the workspace MCP key, and validating the connection with `gtm whoami` + `gtm tools`. Once connected, go to gtm-quickstart for the complete build path from empty workspace to live campaign.
 allowed-tools: Bash, Read
 ---
 
@@ -75,8 +75,36 @@ Exit `4` -> re-check the key. Exit `5` -> the workspace is not on Growth+ (or MC
 
 ## Done — what next
 
-Once `gtm whoami` and `gtm tools` succeed, you are connected. Then:
-- To **operate** the workspace (read tables/Wissen, source, enrich, run columns, spend safely) -> the **gtm-operate** skill.
-- To **build a repeatable play** as a table (create table -> module columns -> cascade -> save as template) -> the **build-gtm-workflow** skill.
+Once `gtm whoami` and `gtm tools` succeed, you are connected.
 
-**Guardrails carry over from the moment you connect:** paid (`ai`/`enrichment`) live runs require `--max-credits`; always `--mode dry_run` first; no auto-retries; outreach sends are gated; every call is scoped to this one workspace. See gtm-operate for the full list.
+**Go to `gtm-quickstart`.** It is the complete path from an empty workspace to a live,
+sending campaign in one session — intake interview, Wissen assets, playbook, senders, table,
+sequence, enrollment, first bounded run, measurement. Every stage points at the skill that
+goes deep on it.
+
+If you already know what you are doing:
+
+| You want to | Skill |
+|---|---|
+| Decide what to build, with the evidence | **outbound-playbook** |
+| Draft the strategy asset by asset | **draft-gtm-play** |
+| Build a play as a table | **build-gtm-workflow** |
+| Write the touch plan | **sequences** |
+| Operate day to day | **gtm-operate** |
+| See how the pieces connect | **gtm-handoffs** |
+
+## One thing about the tool list
+
+`gtm tools` shows a **curated core** — roughly 70 verbs, the ones you need to operate the
+substrate. The rest of the catalogue is not gone: **every tool stays callable by name**, only
+the listing is trimmed. `find_tools({query})` returns the names of the rest, and
+`gtm call <name>` runs any of them.
+
+So when a skill names a tool you cannot see in the list — `create_playbook`,
+`playbook_asset_pin`, `add_workflow_step`, `workspace_table_save_as_template` — call it
+anyway. It is there.
+
+**Guardrails carry over from the moment you connect:** paid (`ai`/`enrichment`) live runs
+require `--max-credits`; always `--mode dry_run` first; no auto-retries; the enroll column is
+terminal and never auto-runs; sends pass the contactability gate fail-closed; every call is
+scoped to this one workspace. See gtm-operate for the full list.
