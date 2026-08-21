@@ -98,6 +98,15 @@ Bedarf genügt eine Nachricht" is not, and it produces more later replies.
 The test before sending: **would a colleague you respect write this to someone they might meet
 at a conference?** If it would embarrass you in person, it does not improve at scale.
 
+## One form per sequence: Sie or Du
+
+Decided once, at the sequence, held in **every** step. DACH B2B default is `Sie`; `Du` is a
+deliberate choice for startups and peer audiences, made by the customer.
+
+Everything follows from it: the salutation column (`Sehr geehrter Herr Meier` against `Hi Max`),
+and every pronoun in the fixed text (`Ihnen`/`Ihre` against `Dir`/`Deine`). A message that opens
+formally and closes informally reads as though two people wrote it, because effectively two did.
+
 ## The value prop names a reference and a number
 
 Not what the product is. What changes for them, with a name and a number attached:
