@@ -15,9 +15,12 @@ A **play** is not a table with columns — it's a strategy that a table executes
 **The core discipline: strategy before mechanics.** A play whose ICP lives in a chat message dies in week two. A play whose ICP is a versioned asset referenced by every qualification column improves with every revision.
 
 > **Where this sits:** `gtm-quickstart` is the build order for a whole workspace and calls
-> this skill at stage 2. `outbound-playbook` carries the go-to-market decisions and the
-> numbers behind them — read it first if you are choosing an ICP or a channel. Table
-> mechanics: `build-gtm-workflow`. Touch plans: `sequences`. Operating basics: `gtm-operate`.
+> this skill at stage 2. `validate-gtm-theses` sits one level above: this skill drafts **one**
+> play, that one decides which thesis deserves a play at all and when to bury it — read it
+> first when a new motion, vertical or audience is being opened. `outbound-playbook` carries
+> the go-to-market decisions and the numbers behind them — read it first if you are choosing
+> an ICP or a channel. Table mechanics: `build-gtm-workflow`. Touch plans: `sequences`.
+> Operating basics: `gtm-operate`.
 
 **Never invent the substance.** Interview the human for anything missing —
 `gtm-quickstart/intake.md` is the question list. A play built on guessed positioning produces
