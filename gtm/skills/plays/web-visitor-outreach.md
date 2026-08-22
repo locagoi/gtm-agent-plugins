@@ -75,7 +75,7 @@ jurisdictions, a claim you should be careful making.
 
 Reference the **topic**, not the visit:
 
-> {{cell.salutation}}, das Thema {{cell.intent_topic}} kommt bei {{company.name}} gerade
+> {{cell.salutation}}, das Thema {{cell.intent_topic}} kommt bei {{company_name}} gerade
 > offenbar auf. {{cell.case_match}} stand vor derselben Frage. Das Ergebnis:
 > {{cell.case_result}}. Ist das bei Ihnen ein Thema?
 

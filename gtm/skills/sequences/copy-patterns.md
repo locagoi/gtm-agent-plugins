@@ -218,7 +218,7 @@ they get answered.
 **Form A — validate the pain.** One question, closed, answerable in a word:
 
 > Läuft das bei Ihnen ähnlich?
-> Spielt das bei {{company.name}} gerade eine Rolle?
+> Spielt das bei {{company_name}} gerade eine Rolle?
 > Ist das bei Ihnen auch der Engpass, oder liegt er woanders?
 
 The third one is the strongest of the three: it offers a way to say „nein, woanders" — and that
@@ -349,9 +349,10 @@ cannot handle an academic title, and cannot tell you when it does not know:
 
 ```bash
 gtm call workspace_table_add_column --input '{
-  "table": "Contacts", "key": "anrede", "kind": "ai",
+  "table": "Contacts", "key": "anrede", "name": "Anrede",
+  "data_type": "json", "kind": "ai",
   "config": {
-    "prompt": "Erzeuge die Anrede-Zeile für einen deutschen B2B-Geschäftsbrief.\n\nVorname: {{lead.first_name}}\nNachname: {{lead.last_name}}\nTitel: {{lead.title}}\n\nREGELN\n1. Form: SIE. Ergebnis ist immer \"Sehr geehrter Herr <Nachname>\" oder \"Sehr geehrte Frau <Nachname>\".\n2. Akademischen Grad aufnehmen, wenn erkennbar: \"Sehr geehrter Herr Dr. Meier\".\n3. Geschlecht aus dem Vornamen ableiten. Wenn nicht eindeutig (Kim, Alex, Andrea, nur Initiale, nur Nachname): confidence unter 0.8 und salutation leer lassen. NICHT raten.\n4. Keine Grußfloskel, kein Komma am Ende.\n5. Umlaute korrekt ausschreiben.",
+    "prompt": "Erzeuge die Anrede-Zeile für einen deutschen B2B-Geschäftsbrief.\n\nVorname: {{lead.first_name}}\nNachname: {{lead.last_name}}\nTitel: {{lead.job_title}}\n\nREGELN\n1. Form: SIE. Ergebnis ist immer \"Sehr geehrter Herr <Nachname>\" oder \"Sehr geehrte Frau <Nachname>\".\n2. Akademischen Grad aufnehmen, wenn erkennbar: \"Sehr geehrter Herr Dr. Meier\".\n3. Geschlecht aus dem Vornamen ableiten. Wenn nicht eindeutig (Kim, Alex, Andrea, nur Initiale, nur Nachname): confidence unter 0.8 und salutation leer lassen. NICHT raten.\n4. Keine Grußfloskel, kein Komma am Ende.\n5. Umlaute korrekt ausschreiben.",
     "output_schema": {
       "type": "object",
       "properties": {
@@ -380,7 +381,7 @@ schema:
 ```
 Prompt: Schreibe EINEN Satz, der auf das beobachtete Signal Bezug nimmt.
 
-INPUT   Signal: {{cell.signal}} · Beleg: {{cell.signal_grund}} · Firma: {{company.name}}
+INPUT   Signal: {{cell.signal}} · Beleg: {{cell.signal_grund}} · Firma: {{lead.company_name}}
 REGELN  1. Genau ein Satz, höchstens 140 Zeichen.
         2. Nur das Signal. Keine Wertung, kein Pitch, keine Frage.
         3. Keine Gedankenstriche. Keine Floskeln ("spannend", "beeindruckend").
@@ -473,7 +474,7 @@ one word to answer.
 | # | Step | Content |
 |---|---|---|
 | 1 | `linkedin_invite` | **empty note** |
-| 2 | `linkedin_message` | `{{anrede}}, danke fürs Annehmen. {{hook}} Spielt das bei {{company.name}} eine Rolle?` |
+| 2 | `linkedin_message` | `{{anrede}}, danke fürs Annehmen. {{hook}} Spielt das bei {{company_name}} eine Rolle?` |
 | 3 | `linkedin_message` | different angle: proof. Fixed text, one reference, one number |
 | 4 | `linkedin_message` | break-up, max 100 characters |
 
@@ -494,7 +495,7 @@ the template; the template is rarely the problem.
 ## Worked example: WhatsApp
 
 ```
-{{anrede}}, {{hook}} Wir helfen Betrieben in {{company.city}} dabei,
+{{anrede}}, {{hook}} Wir helfen Betrieben in {{location}} dabei,
 {{fixed: benefit}}. Ich schicke Ihnen gern die Kurzauswertung dazu.
 Ein kurzes Nein genügt.
 ```

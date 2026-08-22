@@ -49,6 +49,23 @@ enrollment comes from.
 with the list of what is available, rather than accepted and parked at send time. Read the
 error: it names the table it checked against.
 
+### Sequence copy and column prompts use DIFFERENT slot grammars
+
+This is the single most common way a build stalls, because the two look alike:
+
+| In | Grammar | Example |
+|---|---|---|
+| **Sequence copy** (step subject/body) | **flat** names from the list above, plus `{{cell.x}}` and `{{asset.x.y}}` | `{{company_name}}`, `{{job_title}}` |
+| **Column prompts** (`ai` prompt, `args_template`) | **dotted** entity paths | `{{company.name}}`, `{{lead.job_title}}` |
+
+Write `{{company.name}}` in a sequence step and `create_sequence` **refuses the call** —
+loudly, which is the good case. Write `{{company_name}}` in a column prompt and it resolves
+**empty** — silently, which is the expensive one.
+
+In a column prompt the entity namespace follows the table's `entity_binding`: a lead-bound
+table has no `{{company.*}}` at all and reaches its company through `{{lead.company_name}}` /
+`{{lead.company_domain}}`. The lead's role field is `{{lead.job_title}}` — a `lead.title` path resolves to nothing.
+
 **The variable inventory is a real step, not a formality.** After writing the sequence, list
 every `{{...}}` across every step:
 
@@ -190,7 +207,7 @@ Copy carries slots that resolve per lead at send time. The canonical form is
 ```
 {{cell.salutation}},
 
-Ich sah {{cell.signal}}. Spielt {{cell.pain_point}} bei {{company.name}} eine Rolle?
+Ich sah {{cell.signal}}. Spielt {{cell.pain_point}} bei {{company_name}} eine Rolle?
 ```
 
 Three rules that prevent the most common failure:

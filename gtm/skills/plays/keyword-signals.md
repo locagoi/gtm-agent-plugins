@@ -69,7 +69,7 @@ The whole advantage is that you can quote them:
 
 > {{cell.salutation}}, Sie schrieben unter dem Beitrag von {{cell.post_author}}:
 > „{{cell.quote}}". Genau daran arbeiten wir mit {{cell.case_match}}. Spielt das bei
-> {{company.name}} auch eine Rolle?
+> {{company_name}} auch eine Rolle?
 
 Two rules that keep this from turning creepy:
 

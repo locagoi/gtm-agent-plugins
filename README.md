@@ -43,6 +43,7 @@ Start at **`gtm-quickstart`** and it walks you through all nine.
 | **`setup`** | Guided first run: install the CLI, log in with your workspace key, validate. |
 | **`gtm-quickstart`** | **Start here.** The nine stages above, with a checkpoint at the end of each. Includes `intake.md` — the discovery questions the build actually consumes. |
 | **`outbound-playbook`** | *What* to build: ICP breadth, channel choice, cadence, copy rules, volume, what to measure. Includes `benchmarks.md` — the numbers every rule rests on. |
+| **`validate-gtm-theses`** | The layer *above* the play: a campaign is one cycle of a hypothesis test. Competing theses, one variable per run, first contact as a measuring instrument. |
 | **`draft-gtm-play`** | The strategy layer, asset by asset: ICP → persona → offer → proof → angle → signals, with the quality bars. |
 | **`build-gtm-workflow`** | Build a play as a table: columns, output schemas, gates, cascade, template. Includes `three-table-play.md` — the canonical accounts → people → outreach layout. |
 | **`sequences`** | The touch plan: seven step kinds, cadence, slots, senders, enrollment, stop rules. Includes `copy-patterns.md` — per-channel copy structure and the pre-send check. |
@@ -71,11 +72,14 @@ Name the motion and the agent builds it — no "which tool does that?" round tri
 | **CRM blacklist reconciliation** | the guard that stops outbound shadowing an open deal |
 | **CRM mining for the ICP** | won deals → the ICP, written as Wissen → the free lookalike source |
 
-Plus five **installable platform workflows** — reply-to-meeting, reply triage, post-engagers,
-CRM auto-enrich, deliverability watch — which the agent installs rather than rebuilds.
+Plus **ten installable platform workflows** — reply-to-meeting, reply triage, lead routing,
+meeting→CRM, post-engagers, CRM auto-enrich, deliverability watch and three signal-to-outreach
+reactions — which the agent installs rather than rebuilds. And **nineteen house plays as
+structured data** via `get_play(id)`, including `full_gtm_chain`: the whole path from the
+customer's own data to a scaled winner, in ten callable modules.
 
-Every play carries the cost gate that matters: contact enrichment costs 25 credits a row
-against 1 for qualification, so qualification always runs first and the expensive column is
+Every play carries the cost gate that matters: contact enrichment costs up to 25 credits a row
+against 2 for qualification, so qualification always runs first and the expensive column is
 gated on its verdict.
 
 ## Some of what is inside
@@ -107,7 +111,8 @@ reference points to argue with.
 
 ## Prerequisites
 
-1. A **GTM Automation workspace** on the **Growth plan or higher** (MCP access is plan-gated).
+1. A **GTM Automation workspace** on the **Starter plan or higher** (MCP access is plan-gated;
+   only a trial workspace is refused).
 2. Your **workspace MCP key** — in the app (`https://app.cegtec.net`): **Erweiterungen /
    Extensions → MCP**. Per workspace and secret; treat it like a password.
 3. **Node 18+** for the `gtm` CLI.
@@ -168,10 +173,11 @@ gtm/
   .claude-plugin/plugin.json        # manifest + MCP server + userConfig (workspace_mcp_key)
   skills/
     setup/SKILL.md                  # connect and validate
-    quickstart/SKILL.md             # ← start here: zero to live campaign
-              intake.md             #   the discovery questions
+    gtm-quickstart/SKILL.md         # ← start here: zero to live campaign
+                   intake.md        #   the discovery questions
     outbound-playbook/SKILL.md      # what to build, and why
                      benchmarks.md  #   the numbers behind every rule
+    validate-gtm-theses/SKILL.md    # the campaign as a hypothesis test
     draft-gtm-play/SKILL.md         # strategy, asset by asset
     build-gtm-workflow/SKILL.md     # build a play as a table
                       three-table-play.md   # accounts → people → outreach

@@ -46,12 +46,27 @@ history. Two more columns:
 
 ```bash
 gtm call workspace_table_add_column --input '{
-  "table": "Reactivation", "key": "whats_new", "kind": "enrichment",
-  "config": { "category": "company_research", "module": "agent:buying_signals" }
+  "table": "Reactivation", "key": "whats_new", "name": "Was ist neu",
+  "data_type": "json", "kind": "enrichment",
+  "config": {
+    "category": "company_research",
+    "depth": "standard",
+    "args_template": {
+      "name": "{{company.name}}", "domain": "{{company.domain}}",
+      "instructions": "Recherchiere aktuelle Kaufsignale: Finanzierung, Neueinstellungen, Expansion, Führungswechsel, Technologiewechsel. Gib signals (je type, description, source, recency), signal_strength (high/medium/low) und eine kurze summary zurück."
+    },
+    "output_schema": {
+      "type": "object",
+      "properties": { "signals": { "type": "array" }, "signal_strength": { "type": "string" },
+                      "summary": { "type": "string" } },
+      "required": ["signals", "summary"]
+    }
+  }
 }' --json
 ```
 
-`agent:buying_signals` returns `signals[]`, `signal_strength` and a `summary`. Then:
+That is the `agent:buying_signals` preset copied in — `workspace_capabilities` carries the
+current wording. It returns `signals[]`, `signal_strength` and a `summary`. Then:
 
 | Column | Kind | Job |
 |---|---|---|

@@ -10,7 +10,7 @@ This skill gets a freshly installed `gtm` plugin from "installed" to "connected 
 Do the three steps in order. Stop and ask the user for anything you don't have — never guess a key.
 
 **Prerequisites (confirm before you start):**
-- The user has a **GTM Automation workspace** on the **Growth plan or higher** (MCP access is plan-gated).
+- The user has a **GTM Automation workspace** on the **Starter plan or higher** (MCP access is plan-gated; only a trial workspace is refused).
 - The user has their **workspace MCP key**. It comes from the app: **Erweiterungen / Extensions -> MCP**. It is per-workspace and secret — the user pastes it; you never print it in full.
 - Node 18+ is available (the CLI needs it).
 
@@ -58,8 +58,8 @@ gtm tools --json         # machine-readable, for the agent
 - `gtm tools` returning a non-empty list = the workspace endpoint is reachable and the key is valid.
 
 **Read the exit code if anything fails** — the CLI maps failures precisely:
-`0` ok · `2` usage · `3` no/unreadable creds · `4` bad key (401) · `5` plan-gated, needs Growth+ (403) · `6` rate-limited (429) · `7` network · `8` tool ran but returned an error.
-Exit `4` -> re-check the key. Exit `5` -> the workspace is not on Growth+ (or MCP is off); tell the user. Exit `7` -> check the `--url`/network.
+`0` ok · `2` usage · `3` no/unreadable creds · `4` bad key (401) · `5` plan-gated, needs Starter+ (403) · `6` rate-limited (429) · `7` network · `8` tool ran but returned an error.
+Exit `4` -> re-check the key. Exit `5` -> the workspace is on a trial plan (or MCP is off); tell the user. Exit `7` -> check the `--url`/network.
 
 ## Done — what next
 
