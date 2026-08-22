@@ -95,9 +95,10 @@ The enrichment categories are `contact_enrichment`, `email_validation`, `company
 
 ### Use the prebuilt agent columns
 
-Three presets ship with a tested prompt and output schema. They are what
-`workspace_capabilities` returns in the `agents` group, each carrying a `preset` block with
-the prompt, the `output_schema` and (for research agents) the `args_template`.
+Three presets ship with a tested prompt and output schema. `workspace_capabilities` returns
+them in the `unsere` group (the platform's own modules) — you recognise them by the `agent:`
+id prefix and by the **`preset`** block they carry, which holds the prompt, the
+`output_schema` and, for the research agents, the `args_template`.
 
 | Preset id | Kind | Category | Returns |
 |---|---|---|---|
@@ -188,7 +189,7 @@ twenty times what it needs to.
 
 ## Install, do not build
 
-The platform ships five workflow templates. Installing one is a single call and beats
+The platform ships **ten** workflow templates. Installing one is a single call and beats
 rebuilding it:
 
 ```bash
@@ -199,14 +200,46 @@ gtm call install_workflow_template --input '{"slug":"reply-to-meeting","playbook
 | Slug | What it does |
 |---|---|
 | `reply-to-meeting` | classifies a reply, drafts the meeting proposal, books it — the whole reply→meeting path |
-| `reply-triage` | classifies inbound replies and routes them |
+| `reply-triage` | classifies inbound replies and drafts the response |
+| `lead-routing-to-outreach` | inbound lead → qualify → pick the channel → enroll |
+| `meeting-to-crm-owner` | meeting booked → assign the owner → write it to the CRM |
 | `post-engagers-to-linkedin-outreach` | the daily engager → table → qualify → LinkedIn enrollment chain |
-| `crm-auto-enrich` | enriches CRM records as they appear |
+| `crm-auto-enrich` | enriches new CRM records as they appear, plus meeting prep |
 | `deliverability-watch` | watches sender health and proposes a pause in the Feed |
+| `signal-job-posting-to-outreach` | a detected job posting becomes outreach |
+| `signal-funding-to-outreach` | a funding round becomes outreach |
+| `signal-role-change-to-outreach` | a leadership change becomes outreach |
 
-There are also six house plays as structured data: `get_play(id)` for `lead_list_to_outreach`,
-`recurring_source`, `enrich_existing_list`, `event_to_action`, `thought_leader_engagement`,
-`external_api_to_column`.
+The three `signal-*` templates are the event half of the keyword and job-opening plays: the
+watch detects, the template acts. Install the template rather than wiring the reaction by hand.
+
+### Nineteen house plays as structured data
+
+`get_play(id)` returns a play as steps with the exact tool calls — the same shape as the files
+in this folder, maintained platform-side. Call it before building anything it already covers:
+
+| Play | `get_play(id)` |
+|---|---|
+| Target group → running outreach | `lead_list_to_outreach` |
+| Supply that arrives daily by itself | `recurring_source` |
+| Enrich an existing list | `enrich_existing_list` |
+| React automatically to an event | `event_to_action` |
+| Turn your own reach into meetings | `thought_leader_engagement` |
+| Wire any third-party tool into a column or workflow | `external_api_to_column` |
+| CRM as a **source** — reactivate instead of sourcing | `crm_bestandsakquise` |
+| CRM as a **target** — write results back without duplicates | `crm_als_ziel` |
+| CRM as a **trigger** — enrich new records automatically | `crm_trigger` |
+
+And **`full_gtm_chain`** — the whole path from the customer's own data to a scaled winner,
+which chains ten module plays you can also call individually:
+
+`wissen_aus_kundendaten` → `playbook_und_mappe` → `quellen_entdecken` →
+`firmen_qualifizieren` → `kontakte_finden_und_verknuepfen` →
+`kontakte_qualifizieren_anreichern` → `copy_und_sequenz` → `enrollment` →
+`gewinner_skalieren`
+
+Start there when the answer to "what should I build?" is "all of it". The module plays are the
+same nine stages this plugin walks, kept in the product so they cannot drift from the tools.
 
 ## What every table shows
 

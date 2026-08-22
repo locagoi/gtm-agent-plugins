@@ -71,11 +71,14 @@ Name the motion and the agent builds it — no "which tool does that?" round tri
 | **CRM blacklist reconciliation** | the guard that stops outbound shadowing an open deal |
 | **CRM mining for the ICP** | won deals → the ICP, written as Wissen → the free lookalike source |
 
-Plus five **installable platform workflows** — reply-to-meeting, reply triage, post-engagers,
-CRM auto-enrich, deliverability watch — which the agent installs rather than rebuilds.
+Plus **ten installable platform workflows** — reply-to-meeting, reply triage, lead routing,
+meeting→CRM, post-engagers, CRM auto-enrich, deliverability watch and three signal-to-outreach
+reactions — which the agent installs rather than rebuilds. And **nineteen house plays as
+structured data** via `get_play(id)`, including `full_gtm_chain`: the whole path from the
+customer's own data to a scaled winner, in ten callable modules.
 
-Every play carries the cost gate that matters: contact enrichment costs 25 credits a row
-against 1 for qualification, so qualification always runs first and the expensive column is
+Every play carries the cost gate that matters: contact enrichment costs up to 25 credits a row
+against 2 for qualification, so qualification always runs first and the expensive column is
 gated on its verdict.
 
 ## Some of what is inside
