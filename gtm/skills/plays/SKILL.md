@@ -59,38 +59,137 @@ paid source means it will refuse.
 estimate. Attach → run once small → *then* schedule. A schedule turns a source into recurring
 cost.
 
+### Every add-column call needs four things
+
+`workspace_table_add_column` requires **`table`, `name` and `data_type`** — and, for anything
+that is not a plain manual field, **`kind` plus a `config` that is complete for that kind**.
+A call missing one of them is refused before anything is created:
+
+| Field | | Notes |
+|---|---|---|
+| `table` | **required** | name or id |
+| `name` | **required** | the human-readable column label |
+| `data_type` | **required** | `text` · `number` · `boolean` · `datetime` · `json` |
+| `key` | optional | derived from `name` when omitted |
+| `kind` | optional | `manual` (default) · `ai` · `enrichment` · `relation` · `formula` · `tool` |
+| `config` | per kind | required for `ai`, `enrichment`, `relation` and `tool` |
+| `run_condition` | optional | the gate — must name a column that already exists |
+
+`data_type` is `json` for every column that returns an object — which is every agent column
+below, and the reason you can gate on `icp_fit.fit_score` at all. A typed verdict in a `text`
+cell is a string, and a `gte` gate on a string does not do what you want.
+
+What each `kind` needs in `config`:
+
+| Kind | `config` must carry |
+|---|---|
+| `ai` | `prompt` (non-empty). Optional `model`, `output_schema`, `role` |
+| `enrichment` | `category` **and** `args_template`. Research instructions go in `args_template.instructions` — a `prompt` key here is **rejected** |
+| `relation` | `target_table_id`, `display_column` |
+| `tool` | `category`, or for the outreach terminal: `channel` + `sequence_id`/`campaign_id` |
+
+The enrichment categories are `contact_enrichment`, `email_validation`, `company_research`,
+`solar_analysis`, `geocode`, `find_leads`, `create_lead`, `research_people`, `resolve_contact`.
+`create_lead` additionally requires all three of `target_table_id`, `relation_column` and
+`owner_source_column`.
+
 ### Use the prebuilt agent columns
 
-Three columns ship with a tested prompt and output schema. Use them instead of writing your
-own — they are what `workspace_capabilities` returns under `prebuilt_agent: true`, and their
-`preset` block carries the prompt, the `output_schema` and the `args_template`:
+Three presets ship with a tested prompt and output schema. `workspace_capabilities` returns
+them in the `unsere` group (the platform's own modules) — you recognise them by the `agent:`
+id prefix and by the **`preset`** block they carry, which holds the prompt, the
+`output_schema` and, for the research agents, the `args_template`.
 
-| Module id | Does | Returns |
+| Preset id | Kind | Category | Returns |
+|---|---|---|---|
+| `agent:icp_fit` | `enrichment` | `company_research` | `fit_score` 0–100 · `tier` A/B/C · `reasoning` · matched/missing criteria |
+| `agent:buying_signals` | `enrichment` | `company_research` | `signals[]` · `signal_strength` · `summary` |
+| `agent:persona_fit` | `ai` | — | `matches_persona` · `confidence` · `reasoning` |
+
+**A preset is content you copy, not an id you reference.** There is no `module` field in a
+column config — read the preset from `workspace_capabilities` and pass its parts through:
+
+```bash
+# 1. read the preset for this workspace
+gtm call workspace_capabilities --json    # → columns[].preset for id "agent:icp_fit"
+
+# 2. create the column FROM that preset
+gtm call workspace_table_add_column --input '{
+  "table": "Accounts", "key": "icp_fit", "name": "ICP-Fit",
+  "data_type": "json", "kind": "enrichment",
+  "config": {
+    "category": "company_research",
+    "depth": "standard",
+    "args_template": {
+      "name": "{{company.name}}",
+      "domain": "{{company.domain}}",
+      "instructions": "<the preset prompt, plus anything specific to this play>"
+    },
+    "output_schema": {
+      "type": "object",
+      "properties": {
+        "fit_score": { "type": "number" }, "tier": { "type": "string" },
+        "reasoning": { "type": "string" },
+        "matched_criteria": { "type": "array" }, "missing_criteria": { "type": "array" }
+      },
+      "required": ["fit_score", "tier", "reasoning"]
+    }
+  }
+}' --json
+```
+
+Copying rather than referencing is what lets you edit the instruction per play — which you
+will, because "fits our ICP" means something different for a roofer than for a SaaS buyer.
+
+**`output_schema` is only accepted for `company_research`.** It is also what makes the column
+predictable: without it the provider returns prose, and every gate downstream reads nothing.
+
+**Always set `depth: "standard"` on a research column.** `company_research` defaults to
+`quick`, and the engine's own note on that setting reads: *shallow enough that a flash model
+can hallucinate*. It costs 2 credits instead of 1 and it is the difference between research
+about this company and confident prose about a company with a similar name. `research_people`
+already defaults to `standard` — which is why it costs **2**, not the 1 the catalog label
+suggests.
+
+`agent:persona_fit` is an `ai` column and its prompt references `{{asset.persona}}` — pin the
+persona asset to the playbook or the slot resolves empty and the model qualifies against
+nothing.
+
+### The entity namespace follows the binding
+
+A table's `entity_binding` decides which slots resolve, and the ones that do not resolve fail
+**silently** — empty string, no error, a model qualifying against nothing.
+
+| On a table bound to | These resolve | These do **not** |
 |---|---|---|
-| `agent:icp_fit` | live web research against the ICP | `fit_score` 0–100 · `tier` A/B/C · `reasoning` · matched/missing criteria |
-| `agent:buying_signals` | current triggers for the company | `signals[]` · `signal_strength` · `summary` |
-| `agent:persona_fit` | is this contact the target persona | `matches_persona` · `confidence` · `reasoning` |
+| `company` | `{{company.name}}` · `.domain` · `.industry` · `.employee_count` · `.location` · `.country` · `.linkedin_url` | every `{{lead.*}}` |
+| `lead` | `{{lead.first_name}}` · `.last_name` · `.full_name` · `.job_title` · `.email` · `.phone` · `.linkedin_url` · `.salutation` · **`.company_name`** · **`.company_domain`** | every `{{company.*}}` |
 
-`agent:persona_fit` already references `{{asset.persona}}` — so pin the persona asset to the
-playbook or it resolves empty.
+Two traps live in that table. The lead field is **`job_title`**, not `title`. And a lead-bound
+table reaches its company through **`{{lead.company_name}}`** — `{{company.name}}` is blank
+there, because the `company` namespace is only populated when the binding *is* company.
 
 ### Know what a row costs before you run it
 
 | Module | Credits per row |
 |---|---|
-| `base:contact_enrichment` (email + phone) | **25** |
-| `base:solar_analysis` | 2 |
-| `agent:icp_fit` · `agent:buying_signals` · `base:web_research` · `base:find_leads` · `base:email_validation` · `base:geocode` | 1 |
+| `base:contact_enrichment` (email + phone) | **up to 25** — 10 per email found, 15 per phone found |
+| `base:solar_analysis` · `base:research_people` (depth `standard` by default) · `base:web_research` at `depth: "standard"` | 2 |
+| `base:web_research` at the `quick` default · `base:find_leads` · `base:email_validation` · `base:geocode` · an `ai` column | 1 |
 | `base:create_lead` · `base:resolve_contact` · formula · relation · manual | 0 |
 
-Contact enrichment is 25× the cost of qualification. **That single fact decides the shape of
-every play in this folder:** qualify first, enrich last, and gate the enrichment column on the
-qualification verdict. A play that enriches before it qualifies costs roughly twenty times
-what it needs to.
+Every one of these is **success-only**: a miss costs nothing, and a contact that yields an
+email but no phone costs 10, not 25. Budget with 25 anyway — that is the number the run
+reserves per row, and a cap set to the average gets the run cut off half way through.
+
+Contact enrichment is up to 25× the cost of qualification. **That single fact decides the
+shape of every play in this folder:** qualify first, enrich last, and gate the enrichment
+column on the qualification verdict. A play that enriches before it qualifies costs roughly
+twenty times what it needs to.
 
 ## Install, do not build
 
-The platform ships five workflow templates. Installing one is a single call and beats
+The platform ships **ten** workflow templates. Installing one is a single call and beats
 rebuilding it:
 
 ```bash
@@ -101,14 +200,46 @@ gtm call install_workflow_template --input '{"slug":"reply-to-meeting","playbook
 | Slug | What it does |
 |---|---|
 | `reply-to-meeting` | classifies a reply, drafts the meeting proposal, books it — the whole reply→meeting path |
-| `reply-triage` | classifies inbound replies and routes them |
+| `reply-triage` | classifies inbound replies and drafts the response |
+| `lead-routing-to-outreach` | inbound lead → qualify → pick the channel → enroll |
+| `meeting-to-crm-owner` | meeting booked → assign the owner → write it to the CRM |
 | `post-engagers-to-linkedin-outreach` | the daily engager → table → qualify → LinkedIn enrollment chain |
-| `crm-auto-enrich` | enriches CRM records as they appear |
+| `crm-auto-enrich` | enriches new CRM records as they appear, plus meeting prep |
 | `deliverability-watch` | watches sender health and proposes a pause in the Feed |
+| `signal-job-posting-to-outreach` | a detected job posting becomes outreach |
+| `signal-funding-to-outreach` | a funding round becomes outreach |
+| `signal-role-change-to-outreach` | a leadership change becomes outreach |
 
-There are also six house plays as structured data: `get_play(id)` for `lead_list_to_outreach`,
-`recurring_source`, `enrich_existing_list`, `event_to_action`, `thought_leader_engagement`,
-`external_api_to_column`.
+The three `signal-*` templates are the event half of the keyword and job-opening plays: the
+watch detects, the template acts. Install the template rather than wiring the reaction by hand.
+
+### Nineteen house plays as structured data
+
+`get_play(id)` returns a play as steps with the exact tool calls — the same shape as the files
+in this folder, maintained platform-side. Call it before building anything it already covers:
+
+| Play | `get_play(id)` |
+|---|---|
+| Target group → running outreach | `lead_list_to_outreach` |
+| Supply that arrives daily by itself | `recurring_source` |
+| Enrich an existing list | `enrich_existing_list` |
+| React automatically to an event | `event_to_action` |
+| Turn your own reach into meetings | `thought_leader_engagement` |
+| Wire any third-party tool into a column or workflow | `external_api_to_column` |
+| CRM as a **source** — reactivate instead of sourcing | `crm_bestandsakquise` |
+| CRM as a **target** — write results back without duplicates | `crm_als_ziel` |
+| CRM as a **trigger** — enrich new records automatically | `crm_trigger` |
+
+And **`full_gtm_chain`** — the whole path from the customer's own data to a scaled winner,
+which chains ten module plays you can also call individually:
+
+`wissen_aus_kundendaten` → `playbook_und_mappe` → `quellen_entdecken` →
+`firmen_qualifizieren` → `kontakte_finden_und_verknuepfen` →
+`kontakte_qualifizieren_anreichern` → `copy_und_sequenz` → `enrollment` →
+`gewinner_skalieren`
+
+Start there when the answer to "what should I build?" is "all of it". The module plays are the
+same nine stages this plugin walks, kept in the product so they cannot drift from the tools.
 
 ## What every table shows
 
@@ -132,7 +263,7 @@ and know who it is without opening anything.
 |---|---|
 | `full_name` | `{{lead.first_name}} {{lead.last_name}}` |
 | `salutation` | the greeting column (see `sequences/copy-patterns.md`) |
-| `job_title` | `{{lead.title}}` |
+| `job_title` | `{{lead.job_title}}` |
 
 Those are the defaults, not a contract. Take what the source actually gives you and drop what
 it does not: a Maps-sourced table has no `employee_count` worth showing, a post-engager table

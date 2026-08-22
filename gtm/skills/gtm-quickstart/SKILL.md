@@ -124,7 +124,7 @@ The playbook is the strategy paper: which assets, which channel, what runs by it
 
 ```bash
 gtm call create_playbook --input '{"name":"DACH Packaging — Ops Lead","language":"de"}' --json
-gtm call playbook_asset_pin --input '{"playbook":"<id>","asset_id":"<icp-id>"}' --json
+gtm call playbook_asset_pin --input '{"playbook_id":"<id>","asset_id":"<icp-id>"}' --json
 ```
 
 Pin every asset. **Pinning is what makes `{{asset.icp}}` resolve** in a column prompt — without
@@ -272,8 +272,10 @@ A table hands leads to a sequence through **one terminal column**, and nothing e
 
 ```bash
 gtm call workspace_table_add_column --input '{
-  "table":"Contacts", "key":"enroll", "kind":"tool",
-  "config": { "channel":"email", "sequence_id":"<id>", "field_mapping": { ... } }
+  "table":"Contacts", "key":"enroll", "name":"Enrollment",
+  "data_type":"json", "kind":"tool",
+  "config": { "channel":"email", "copy_mode":"template",
+              "sequence_id":"<id>", "field_mapping": { ... } }
 }' --json
 ```
 

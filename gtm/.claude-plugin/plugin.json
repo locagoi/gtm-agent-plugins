@@ -1,8 +1,8 @@
 {
   "name": "gtm",
   "displayName": "GTM Automation",
-  "version": "0.6.0",
-  "description": "Take a GTM Automation workspace from empty to a live outbound campaign, run named motions end to end, and close the loops that keep it running. Ships gtm-quickstart (nine-stage build path incl. the intake interview), plays (nine templates), agents-loops-goals (missions, scoped agents, scheduled sources, signal watches, event triggers, approval gates), outbound-playbook (method, benchmarks and cross-workspace learnings), sequences (touch plans and the template copy doctrine), draft-gtm-play, build-gtm-workflow, gtm-handoffs, gtm-operate and a guided setup skill. Requires a workspace on the Growth plan or higher.",
+  "version": "0.6.1",
+  "description": "Take a GTM Automation workspace from empty to a live outbound campaign, run named motions end to end, and close the loops that keep it running. Ships gtm-quickstart (nine-stage build path incl. the intake interview), plays (nine templates), validate-gtm-theses (the campaign as a hypothesis test), agents-loops-goals (missions, scoped agents, scheduled sources, signal watches, event triggers, approval gates), outbound-playbook (method, benchmarks and cross-workspace learnings), sequences (touch plans and the template copy doctrine), draft-gtm-play, build-gtm-workflow, gtm-handoffs, gtm-operate and a guided setup skill. Requires a workspace on the Starter plan or higher.",
   "author": {
     "name": "cegtec",
     "email": "info@cegtec.net",
@@ -32,7 +32,7 @@
     "workspace_mcp_key": {
       "type": "string",
       "title": "GTM Automation workspace MCP key",
-      "description": "Your per-workspace MCP key from the app: Erweiterungen/Extensions -> MCP. Growth plan or higher. Stored in secure storage, never in a plain settings file.",
+      "description": "Your per-workspace MCP key from the app: Erweiterungen/Extensions -> MCP. Starter plan or higher. Stored in secure storage, never in a plain settings file.",
       "sensitive": true,
       "required": true
     }

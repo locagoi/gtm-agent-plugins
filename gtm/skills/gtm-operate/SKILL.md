@@ -67,7 +67,7 @@ gtm <command> --help       # per-command flags
 gtm tools                  # every tool on THIS workspace (name + description)
 gtm tools --json           # machine-readable
 
-# Auth (key from workspace settings → MCP integration; Growth plan+)
+# Auth (key from workspace settings → MCP integration; Starter plan+)
 gtm login --key <key>      # stored in ~/.gtm/config.json (0600)
 gtm whoami                 # verify key + show workspace, no credits spent
 
@@ -81,7 +81,7 @@ gtm wissen list [--kind icp]
 gtm wissen get <assetId>
 
 # Generic escape hatch — ANY tool from `gtm tools`, even without an ergonomic verb
-gtm call research_company --input '{"domain":"acme.io"}' --json
+gtm call research_company --input '{"company_name":"Acme GmbH","domain":"acme.io"}' --json
 gtm call find_companies --query "solar installers" --limit 5    # key/val pairs, server coerces types
 ```
 
