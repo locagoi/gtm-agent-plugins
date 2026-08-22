@@ -118,6 +118,7 @@ gtm call workspace_table_add_column --input '{
   "data_type": "json", "kind": "enrichment",
   "config": {
     "category": "company_research",
+    "depth": "standard",
     "args_template": {
       "name": "{{company.name}}",
       "domain": "{{company.domain}}",
@@ -142,17 +143,38 @@ will, because "fits our ICP" means something different for a roofer than for a S
 **`output_schema` is only accepted for `company_research`.** It is also what makes the column
 predictable: without it the provider returns prose, and every gate downstream reads nothing.
 
+**Always set `depth: "standard"` on a research column.** `company_research` defaults to
+`quick`, and the engine's own note on that setting reads: *shallow enough that a flash model
+can hallucinate*. It costs 2 credits instead of 1 and it is the difference between research
+about this company and confident prose about a company with a similar name. `research_people`
+already defaults to `standard` — which is why it costs **2**, not the 1 the catalog label
+suggests.
+
 `agent:persona_fit` is an `ai` column and its prompt references `{{asset.persona}}` — pin the
 persona asset to the playbook or the slot resolves empty and the model qualifies against
 nothing.
+
+### The entity namespace follows the binding
+
+A table's `entity_binding` decides which slots resolve, and the ones that do not resolve fail
+**silently** — empty string, no error, a model qualifying against nothing.
+
+| On a table bound to | These resolve | These do **not** |
+|---|---|---|
+| `company` | `{{company.name}}` · `.domain` · `.industry` · `.employee_count` · `.location` · `.country` · `.linkedin_url` | every `{{lead.*}}` |
+| `lead` | `{{lead.first_name}}` · `.last_name` · `.full_name` · `.job_title` · `.email` · `.phone` · `.linkedin_url` · `.salutation` · **`.company_name`** · **`.company_domain`** | every `{{company.*}}` |
+
+Two traps live in that table. The lead field is **`job_title`**, not `title`. And a lead-bound
+table reaches its company through **`{{lead.company_name}}`** — `{{company.name}}` is blank
+there, because the `company` namespace is only populated when the binding *is* company.
 
 ### Know what a row costs before you run it
 
 | Module | Credits per row |
 |---|---|
 | `base:contact_enrichment` (email + phone) | **up to 25** — 10 per email found, 15 per phone found |
-| `base:solar_analysis` | 2 |
-| `base:web_research` (category `company_research`) · `base:research_people` · `base:find_leads` · `base:email_validation` · `base:geocode` · an `ai` column | 1 |
+| `base:solar_analysis` · `base:research_people` (depth `standard` by default) · `base:web_research` at `depth: "standard"` | 2 |
+| `base:web_research` at the `quick` default · `base:find_leads` · `base:email_validation` · `base:geocode` · an `ai` column | 1 |
 | `base:create_lead` · `base:resolve_contact` · formula · relation · manual | 0 |
 
 Every one of these is **success-only**: a miss costs nothing, and a contact that yields an
@@ -208,7 +230,7 @@ and know who it is without opening anything.
 |---|---|
 | `full_name` | `{{lead.first_name}} {{lead.last_name}}` |
 | `salutation` | the greeting column (see `sequences/copy-patterns.md`) |
-| `job_title` | `{{lead.title}}` |
+| `job_title` | `{{lead.job_title}}` |
 
 Those are the defaults, not a contract. Take what the source actually gives you and drop what
 it does not: a Maps-sourced table has no `employee_count` worth showing, a post-engager table

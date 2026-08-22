@@ -60,7 +60,7 @@ gtm call workspace_table_add_column --input '{
   "table": "Engagers", "key": "persona_fit", "name": "Persona-Fit",
   "data_type": "json", "kind": "ai",
   "config": {
-    "prompt": "Prüfe, ob dieser Kontakt zur Ziel-Persona passt.\n\nKontakt: {{lead.first_name}} {{lead.last_name}} — Position: {{lead.title}}\nUnternehmen: {{company.name}}\nZiel-Persona: {{asset.persona}}\n\nAntworte als JSON mit matches_persona (boolean), confidence (0-1) und reasoning.",
+    "prompt": "Prüfe, ob dieser Kontakt zur Ziel-Persona passt.\n\nKontakt: {{lead.first_name}} {{lead.last_name}} — Position: {{lead.job_title}}\nUnternehmen: {{lead.company_name}}\nZiel-Persona: {{asset.persona}}\n\nAntworte als JSON mit matches_persona (boolean), confidence (0-1) und reasoning.",
     "output_schema": {
       "type": "object",
       "properties": { "matches_persona": { "type": "boolean" },
@@ -88,8 +88,8 @@ Four touches, and the first one carries no pitch:
 
 Touch 2 is where the play pays off:
 
-> Danke fürs Annehmen, Herr {{lead.last_name}}. Sie hatten auf den Beitrag zu
-> {{cell.engaged_post}} reagiert. Spielt {{cell.pain_point}} bei {{company.name}} gerade eine
+> Danke fürs Annehmen, Herr {{last_name}}. Sie hatten auf den Beitrag zu
+> {{cell.engaged_post}} reagiert. Spielt {{cell.pain_point}} bei {{company_name}} gerade eine
 > Rolle?
 
 **Respect the limit: 20–25 connection requests per account per day.** A connected LinkedIn

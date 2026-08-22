@@ -50,6 +50,7 @@ gtm call workspace_table_add_column --input '{
   "data_type": "json", "kind": "enrichment",
   "config": {
     "category": "company_research",
+    "depth": "standard",
     "args_template": {
       "name": "{{company.name}}", "domain": "{{company.domain}}",
       "instructions": "Recherchiere aktuelle Kaufsignale: Finanzierung, Neueinstellungen, Expansion, Führungswechsel, Technologiewechsel. Gib signals (je type, description, source, recency), signal_strength (high/medium/low) und eine kurze summary zurück."

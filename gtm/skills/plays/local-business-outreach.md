@@ -7,9 +7,10 @@ cost gate matters most.
 **Shape:** Maps → qualify company → find the decision maker → qualify them → find and validate
 the email → write the copy → enroll.
 
-**Why the order:** contact enrichment costs 25 credits a row against 1 for qualification.
-Sourcing 2,000 Maps entries and enriching them all costs 50,000 credits; qualifying first and
-enriching the ~400 that survive costs about 12,000. Same campaign, a quarter of the bill.
+**Why the order:** contact enrichment costs up to 25 credits a row against 2 for
+qualification. Sourcing 2,000 Maps entries and enriching them all reserves 50,000 credits;
+qualifying first and enriching the ~400 that survive reserves about 14,000. Same campaign,
+somewhat over a quarter of the bill.
 
 ---
 
@@ -50,6 +51,7 @@ gtm call workspace_table_add_column --input '{
   "data_type": "json", "kind": "enrichment",
   "config": {
     "category": "company_research",
+    "depth": "standard",
     "args_template": {
       "name": "{{company.name}}", "domain": "{{company.domain}}",
       "instructions": "Bewerte anhand aktueller Web-Recherche, wie gut dieser Betrieb zum ICP passt. Gib fit_score (0-100), tier (A/B/C) und eine kurze Begründung zurück."
@@ -154,7 +156,7 @@ gtm call workspace_table_add_column --input '{
   "table": "Contacts", "key": "persona_fit", "name": "Persona-Fit",
   "data_type": "json", "kind": "ai",
   "config": {
-    "prompt": "Prüfe, ob dieser Kontakt zur Ziel-Persona passt.\n\nKontakt: {{lead.first_name}} {{lead.last_name}} — Position: {{lead.title}}\nUnternehmen: {{company.name}}\nZiel-Persona: {{asset.persona}}\n\nAntworte als JSON mit matches_persona (boolean), confidence (0-1) und reasoning.",
+    "prompt": "Prüfe, ob dieser Kontakt zur Ziel-Persona passt.\n\nKontakt: {{lead.first_name}} {{lead.last_name}} — Position: {{lead.job_title}}\nUnternehmen: {{lead.company_name}}\nZiel-Persona: {{asset.persona}}\n\nAntworte als JSON mit matches_persona (boolean), confidence (0-1) und reasoning.",
     "output_schema": {
       "type": "object",
       "properties": { "matches_persona": { "type": "boolean" },
@@ -255,13 +257,13 @@ The next region is then a new source run against the same template.
 | Stage | Rows | Credits/row | Total |
 |---|---|---|---|
 | Maps source | 500 | ~0.3 | ~150 |
-| `icp_fit` (company_research) | 500 | 1 | 500 |
-| `research_people` (gated, ~40 %) | 200 | 1 | 200 |
+| `icp_fit` (`company_research`, depth `standard`) | 500 | 2 | 1,000 |
+| `research_people` (gated, ~40 %) | 200 | 2 | 400 |
 | `contact_enrichment` (gated, ~60 % of those) | 120 | **up to 25** | **≤ 3,000** |
 | validation | 120 | 1 | 120 |
 | copy fills | 120 | ~1 | ~120 |
 
-~4,100 credits worst case for ~120 contactable, qualified, validated leads — less in
+~4,800 credits worst case for ~120 contactable, qualified, validated leads — less in
 practice, because enrichment bills only what it finds (10 for an email, 15 for a phone), but
 budget the worst case or the cap stops the run half way. Ungated, the same 500 rows
 through contact enrichment alone would be 12,500 — for a list that is 60 % wrong.
