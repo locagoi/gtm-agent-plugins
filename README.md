@@ -107,7 +107,8 @@ reference points to argue with.
 
 ## Prerequisites
 
-1. A **GTM Automation workspace** on the **Growth plan or higher** (MCP access is plan-gated).
+1. A **GTM Automation workspace** on the **Starter plan or higher** (MCP access is plan-gated;
+   only a trial workspace is refused).
 2. Your **workspace MCP key** — in the app (`https://app.cegtec.net`): **Erweiterungen /
    Extensions → MCP**. Per workspace and secret; treat it like a password.
 3. **Node 18+** for the `gtm` CLI.
@@ -168,8 +169,8 @@ gtm/
   .claude-plugin/plugin.json        # manifest + MCP server + userConfig (workspace_mcp_key)
   skills/
     setup/SKILL.md                  # connect and validate
-    quickstart/SKILL.md             # ← start here: zero to live campaign
-              intake.md             #   the discovery questions
+    gtm-quickstart/SKILL.md         # ← start here: zero to live campaign
+                   intake.md        #   the discovery questions
     outbound-playbook/SKILL.md      # what to build, and why
                      benchmarks.md  #   the numbers behind every rule
     draft-gtm-play/SKILL.md         # strategy, asset by asset

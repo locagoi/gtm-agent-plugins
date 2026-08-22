@@ -349,7 +349,8 @@ cannot handle an academic title, and cannot tell you when it does not know:
 
 ```bash
 gtm call workspace_table_add_column --input '{
-  "table": "Contacts", "key": "anrede", "kind": "ai",
+  "table": "Contacts", "key": "anrede", "name": "Anrede",
+  "data_type": "json", "kind": "ai",
   "config": {
     "prompt": "Erzeuge die Anrede-Zeile für einen deutschen B2B-Geschäftsbrief.\n\nVorname: {{lead.first_name}}\nNachname: {{lead.last_name}}\nTitel: {{lead.title}}\n\nREGELN\n1. Form: SIE. Ergebnis ist immer \"Sehr geehrter Herr <Nachname>\" oder \"Sehr geehrte Frau <Nachname>\".\n2. Akademischen Grad aufnehmen, wenn erkennbar: \"Sehr geehrter Herr Dr. Meier\".\n3. Geschlecht aus dem Vornamen ableiten. Wenn nicht eindeutig (Kim, Alex, Andrea, nur Initiale, nur Nachname): confidence unter 0.8 und salutation leer lassen. NICHT raten.\n4. Keine Grußfloskel, kein Komma am Ende.\n5. Umlaute korrekt ausschreiben.",
     "output_schema": {

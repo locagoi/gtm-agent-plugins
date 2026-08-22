@@ -59,34 +59,110 @@ paid source means it will refuse.
 estimate. Attach → run once small → *then* schedule. A schedule turns a source into recurring
 cost.
 
+### Every add-column call needs four things
+
+`workspace_table_add_column` requires **`table`, `name` and `data_type`** — and, for anything
+that is not a plain manual field, **`kind` plus a `config` that is complete for that kind**.
+A call missing one of them is refused before anything is created:
+
+| Field | | Notes |
+|---|---|---|
+| `table` | **required** | name or id |
+| `name` | **required** | the human-readable column label |
+| `data_type` | **required** | `text` · `number` · `boolean` · `datetime` · `json` |
+| `key` | optional | derived from `name` when omitted |
+| `kind` | optional | `manual` (default) · `ai` · `enrichment` · `relation` · `formula` · `tool` |
+| `config` | per kind | required for `ai`, `enrichment`, `relation` and `tool` |
+| `run_condition` | optional | the gate — must name a column that already exists |
+
+`data_type` is `json` for every column that returns an object — which is every agent column
+below, and the reason you can gate on `icp_fit.fit_score` at all. A typed verdict in a `text`
+cell is a string, and a `gte` gate on a string does not do what you want.
+
+What each `kind` needs in `config`:
+
+| Kind | `config` must carry |
+|---|---|
+| `ai` | `prompt` (non-empty). Optional `model`, `output_schema`, `role` |
+| `enrichment` | `category` **and** `args_template`. Research instructions go in `args_template.instructions` — a `prompt` key here is **rejected** |
+| `relation` | `target_table_id`, `display_column` |
+| `tool` | `category`, or for the outreach terminal: `channel` + `sequence_id`/`campaign_id` |
+
+The enrichment categories are `contact_enrichment`, `email_validation`, `company_research`,
+`solar_analysis`, `geocode`, `find_leads`, `create_lead`, `research_people`, `resolve_contact`.
+`create_lead` additionally requires all three of `target_table_id`, `relation_column` and
+`owner_source_column`.
+
 ### Use the prebuilt agent columns
 
-Three columns ship with a tested prompt and output schema. Use them instead of writing your
-own — they are what `workspace_capabilities` returns under `prebuilt_agent: true`, and their
-`preset` block carries the prompt, the `output_schema` and the `args_template`:
+Three presets ship with a tested prompt and output schema. They are what
+`workspace_capabilities` returns in the `agents` group, each carrying a `preset` block with
+the prompt, the `output_schema` and (for research agents) the `args_template`.
 
-| Module id | Does | Returns |
-|---|---|---|
-| `agent:icp_fit` | live web research against the ICP | `fit_score` 0–100 · `tier` A/B/C · `reasoning` · matched/missing criteria |
-| `agent:buying_signals` | current triggers for the company | `signals[]` · `signal_strength` · `summary` |
-| `agent:persona_fit` | is this contact the target persona | `matches_persona` · `confidence` · `reasoning` |
+| Preset id | Kind | Category | Returns |
+|---|---|---|---|
+| `agent:icp_fit` | `enrichment` | `company_research` | `fit_score` 0–100 · `tier` A/B/C · `reasoning` · matched/missing criteria |
+| `agent:buying_signals` | `enrichment` | `company_research` | `signals[]` · `signal_strength` · `summary` |
+| `agent:persona_fit` | `ai` | — | `matches_persona` · `confidence` · `reasoning` |
 
-`agent:persona_fit` already references `{{asset.persona}}` — so pin the persona asset to the
-playbook or it resolves empty.
+**A preset is content you copy, not an id you reference.** There is no `module` field in a
+column config — read the preset from `workspace_capabilities` and pass its parts through:
+
+```bash
+# 1. read the preset for this workspace
+gtm call workspace_capabilities --json    # → columns[].preset for id "agent:icp_fit"
+
+# 2. create the column FROM that preset
+gtm call workspace_table_add_column --input '{
+  "table": "Accounts", "key": "icp_fit", "name": "ICP-Fit",
+  "data_type": "json", "kind": "enrichment",
+  "config": {
+    "category": "company_research",
+    "args_template": {
+      "name": "{{company.name}}",
+      "domain": "{{company.domain}}",
+      "instructions": "<the preset prompt, plus anything specific to this play>"
+    },
+    "output_schema": {
+      "type": "object",
+      "properties": {
+        "fit_score": { "type": "number" }, "tier": { "type": "string" },
+        "reasoning": { "type": "string" },
+        "matched_criteria": { "type": "array" }, "missing_criteria": { "type": "array" }
+      },
+      "required": ["fit_score", "tier", "reasoning"]
+    }
+  }
+}' --json
+```
+
+Copying rather than referencing is what lets you edit the instruction per play — which you
+will, because "fits our ICP" means something different for a roofer than for a SaaS buyer.
+
+**`output_schema` is only accepted for `company_research`.** It is also what makes the column
+predictable: without it the provider returns prose, and every gate downstream reads nothing.
+
+`agent:persona_fit` is an `ai` column and its prompt references `{{asset.persona}}` — pin the
+persona asset to the playbook or the slot resolves empty and the model qualifies against
+nothing.
 
 ### Know what a row costs before you run it
 
 | Module | Credits per row |
 |---|---|
-| `base:contact_enrichment` (email + phone) | **25** |
+| `base:contact_enrichment` (email + phone) | **up to 25** — 10 per email found, 15 per phone found |
 | `base:solar_analysis` | 2 |
-| `agent:icp_fit` · `agent:buying_signals` · `base:web_research` · `base:find_leads` · `base:email_validation` · `base:geocode` | 1 |
+| `base:web_research` (category `company_research`) · `base:research_people` · `base:find_leads` · `base:email_validation` · `base:geocode` · an `ai` column | 1 |
 | `base:create_lead` · `base:resolve_contact` · formula · relation · manual | 0 |
 
-Contact enrichment is 25× the cost of qualification. **That single fact decides the shape of
-every play in this folder:** qualify first, enrich last, and gate the enrichment column on the
-qualification verdict. A play that enriches before it qualifies costs roughly twenty times
-what it needs to.
+Every one of these is **success-only**: a miss costs nothing, and a contact that yields an
+email but no phone costs 10, not 25. Budget with 25 anyway — that is the number the run
+reserves per row, and a cap set to the average gets the run cut off half way through.
+
+Contact enrichment is up to 25× the cost of qualification. **That single fact decides the
+shape of every play in this folder:** qualify first, enrich last, and gate the enrichment
+column on the qualification verdict. A play that enriches before it qualifies costs roughly
+twenty times what it needs to.
 
 ## Install, do not build
 

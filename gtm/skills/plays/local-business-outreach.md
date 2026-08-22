@@ -46,18 +46,30 @@ gtm call workspace_table_get --input '{"table":"Accounts","limit":20}' --json
 
 ```bash
 gtm call workspace_table_add_column --input '{
-  "table": "Accounts", "key": "icp_fit", "kind": "enrichment",
-  "config": { "category": "company_research", "module": "agent:icp_fit" }
+  "table": "Accounts", "key": "icp_fit", "name": "ICP-Fit",
+  "data_type": "json", "kind": "enrichment",
+  "config": {
+    "category": "company_research",
+    "args_template": {
+      "name": "{{company.name}}", "domain": "{{company.domain}}",
+      "instructions": "Bewerte anhand aktueller Web-Recherche, wie gut dieser Betrieb zum ICP passt. Gib fit_score (0-100), tier (A/B/C) und eine kurze Begründung zurück."
+    },
+    "output_schema": {
+      "type": "object",
+      "properties": { "fit_score": { "type": "number" }, "tier": { "type": "string" },
+                      "reasoning": { "type": "string" } },
+      "required": ["fit_score", "tier", "reasoning"]
+    }
+  }
 }' --json
 ```
 
-Use the **prebuilt** `agent:icp_fit` — it ships with a tested prompt and returns
-`fit_score` (0–100), `tier` (A/B/C), `reasoning`, and matched/missing criteria. Pin the ICP
-asset to the playbook first or the research runs without your criteria.
+That is the `agent:icp_fit` preset, copied in — read it from `workspace_capabilities` rather
+than retyping it, and keep `output_schema`: it is what makes `fit_score` a number you can gate
+on. Pin the ICP asset to the playbook first or the research runs without your criteria.
 
-The Maps entry itself carries signal worth keeping as columns:
-
-Then, and only then, the play-specific columns:
+Then, and only then, the play-specific columns. The Maps entry itself carries signal worth
+keeping:
 
 | Column | Kind | Reads | Says |
 |---|---|---|---|
@@ -94,52 +106,77 @@ For local businesses the owner is rarely on LinkedIn but almost always in the im
 
 ```bash
 gtm call workspace_table_add_column --input '{
-  "table": "Accounts", "key": "owner", "kind": "enrichment",
-  "config": { "category": "research_people", "module": "base:research_people" },
+  "table": "Accounts", "key": "owner", "name": "Inhaber",
+  "data_type": "json", "kind": "enrichment",
+  "config": {
+    "category": "research_people",
+    "args_template": { "name": "{{company.name}}", "domain": "{{company.domain}}" }
+  },
   "run_condition": { "column": "icp_fit.fit_score", "op": "gte", "value": 60 }
 }' --json
 ```
 
-`base:research_people` walks imprint → commercial register → LinkedIn — a real person search,
-not an LLM guessing a name. 1 credit. For B2B targets that *are* on LinkedIn, use
-`base:find_leads` instead (job titles + locations).
+`research_people` walks imprint → commercial register → LinkedIn — a real person search, not an
+LLM guessing a name. 1 credit. For B2B targets that *are* on LinkedIn, use category
+`find_leads` instead (job titles + locations as column-level lists, not per-row templates).
 
 Then hand each found person to a contacts table as a linked lead:
 
 ```bash
 gtm call workspace_table_add_column --input '{
-  "table": "Accounts", "key": "create_contact", "kind": "enrichment",
-  "config": { "category": "create_lead", "module": "base:create_lead",
-              "target_table_id": "<Contacts table id>" },
+  "table": "Accounts", "key": "create_contact", "name": "Kontakt anlegen",
+  "data_type": "json", "kind": "enrichment",
+  "config": {
+    "category": "create_lead",
+    "args_template": {},
+    "target_table_id": "<Contacts table id>",
+    "relation_column": "account",
+    "owner_source_column": "owner"
+  },
   "run_condition": { "column": "icp_fit.fit_score", "op": "gte", "value": 60 }
 }' --json
 ```
 
-`base:create_lead` costs 0 and starts the cascade in the target table. It wants **flat**
-`first_name` / `last_name` fields — a single `name` string will not parse.
+`create_lead` costs 0 and starts the cascade in the target table. All three of
+`target_table_id`, `relation_column` and `owner_source_column` are required: the target table,
+the relation column on *that* table pointing back here, and the column whose value names the
+person. Create the relation column on Contacts first, or this call has nothing to point at.
+The owner data it reads wants **flat** `first_name` / `last_name` fields — a single `name`
+string will not parse.
 
 ## 5 — Contacts: qualify, then enrich
 
 In the Contacts table, in this order and not the other:
 
 ```bash
-# 1. persona check — free-ish, prebuilt, references {{asset.persona}}
+# 1. persona check — an ai column, 1 credit, references {{asset.persona}}
 gtm call workspace_table_add_column --input '{
-  "table": "Contacts", "key": "persona_fit", "kind": "ai",
-  "config": { "module": "agent:persona_fit" }
+  "table": "Contacts", "key": "persona_fit", "name": "Persona-Fit",
+  "data_type": "json", "kind": "ai",
+  "config": {
+    "prompt": "Prüfe, ob dieser Kontakt zur Ziel-Persona passt.\n\nKontakt: {{lead.first_name}} {{lead.last_name}} — Position: {{lead.title}}\nUnternehmen: {{company.name}}\nZiel-Persona: {{asset.persona}}\n\nAntworte als JSON mit matches_persona (boolean), confidence (0-1) und reasoning.",
+    "output_schema": {
+      "type": "object",
+      "properties": { "matches_persona": { "type": "boolean" },
+                      "confidence": { "type": "number" }, "reasoning": { "type": "string" } },
+      "required": ["matches_persona", "confidence"]
+    }
+  }
 }' --json
 
-# 2. ONLY THEN the 25-credit column, gated
+# 2. ONLY THEN the expensive column, gated
 gtm call workspace_table_add_column --input '{
-  "table": "Contacts", "key": "contact_data", "kind": "enrichment",
-  "config": { "category": "contact_enrichment" },
+  "table": "Contacts", "key": "contact_data", "name": "Kontaktdaten",
+  "data_type": "json", "kind": "enrichment",
+  "config": { "category": "contact_enrichment", "args_template": {} },
   "run_condition": { "column": "persona_fit.matches_persona", "op": "equals", "value": true }
 }' --json
 
 # 3. validate before you ever send
 gtm call workspace_table_add_column --input '{
-  "table": "Contacts", "key": "email_valid", "kind": "enrichment",
-  "config": { "category": "email_validation" },
+  "table": "Contacts", "key": "email_valid", "name": "E-Mail geprüft",
+  "data_type": "text", "kind": "enrichment",
+  "config": { "category": "email_validation", "args_template": {} },
   "run_condition": { "column": "contact_data.email", "op": "is_not_empty" }
 }' --json
 ```
@@ -147,8 +184,9 @@ gtm call workspace_table_add_column --input '{
 Validation is not optional: validated versus unvalidated lists bounce at 0.4 % against 7.7 %
 on identical infrastructure, and a domain is spent at 8 %.
 
-Then `base:resolve_contact` writes the final sending address onto the lead: personal address
-first, optionally a company fallback like `info@`. For local businesses that fallback is often
+Then a `resolve_contact` column writes the final sending address onto the lead: the personal
+address from `personal_email_column` first, optionally a company fallback via
+`company_email_fallback` + `company_email_prefix` (`info`). For local businesses that fallback is often
 the only address there is; decide deliberately whether `info@` is worth writing to.
 
 ## 6 — Copy fills, not messages
@@ -217,11 +255,13 @@ The next region is then a new source run against the same template.
 | Stage | Rows | Credits/row | Total |
 |---|---|---|---|
 | Maps source | 500 | ~0.3 | ~150 |
-| `agent:icp_fit` | 500 | 1 | 500 |
+| `icp_fit` (company_research) | 500 | 1 | 500 |
 | `research_people` (gated, ~40 %) | 200 | 1 | 200 |
-| `contact_enrichment` (gated, ~60 % of those) | 120 | **25** | **3,000** |
+| `contact_enrichment` (gated, ~60 % of those) | 120 | **up to 25** | **≤ 3,000** |
 | validation | 120 | 1 | 120 |
 | copy fills | 120 | ~1 | ~120 |
 
-~4,100 credits for ~120 contactable, qualified, validated leads. Ungated, the same 500 rows
+~4,100 credits worst case for ~120 contactable, qualified, validated leads — less in
+practice, because enrichment bills only what it finds (10 for an email, 15 for a phone), but
+budget the worst case or the cap stops the run half way. Ungated, the same 500 rows
 through contact enrichment alone would be 12,500 — for a list that is 60 % wrong.
