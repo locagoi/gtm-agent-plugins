@@ -1,6 +1,6 @@
 ---
 name: gtm-operate
-description: Use when an AI agent (Claude Code, Codex, a customer's own agent) needs to OPERATE a GTM Automation workspace over its tools — read tables/Wissen, source and enrich rows, run columns, spend credits safely — via either the `gtm` CLI (shell) or the workspace MCP tools (docked at /api/mcp/<key>). The agent operating guide: the object model, CLI-vs-MCP choice, exact commands/tool names/args, copyable recipes, and the guardrails (paid runs need max_credits, sends are gated, never cross workspaces). To BUILD a repeatable workflow-as-a-table (create table → columns → cascade → template), use build-gtm-workflow instead.
+description: Use when an AI agent (Claude Code, Codex, a customer's own agent) needs to OPERATE a GTM Automation workspace over its tools — read tables/Wissen, source and enrich rows, run columns, spend credits safely — via either the `gtm` CLI (shell) or the workspace MCP tools (docked at /api/mcp, key as Bearer header). The agent operating guide: the object model, CLI-vs-MCP choice, exact commands/tool names/args, copyable recipes, and the guardrails (paid runs need max_credits, sends are gated, never cross workspaces). To BUILD a repeatable workflow-as-a-table (create table → columns → cascade → template), use build-gtm-workflow instead.
 allowed-tools: Bash, Read, Grep, Glob
 ---
 
@@ -47,7 +47,7 @@ Object model in one line: *Sources fill Tabellen; Playbooks bind Tabelle segment
 
 ## Which surface: CLI vs MCP
 
-Both speak to the SAME workspace endpoint (`/api/mcp/<key>`) and expose the SAME tools. Pick by where you run:
+Both speak to the SAME workspace endpoint (`/api/mcp`, key as `Authorization: Bearer <key>`; the older `/api/mcp/<key>` form still works) and expose the SAME tools. Pick by where you run:
 
 | You are… | Use | Why |
 |---|---|---|
@@ -67,7 +67,7 @@ gtm <command> --help       # per-command flags
 gtm tools                  # every tool on THIS workspace (name + description)
 gtm tools --json           # machine-readable
 
-# Auth (key from workspace settings → MCP integration; Starter plan+)
+# Auth (key from workspace settings → MCP integration)
 gtm login --key <key>      # stored in ~/.gtm/config.json (0600)
 gtm whoami                 # verify key + show workspace, no credits spent
 
