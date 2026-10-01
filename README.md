@@ -8,7 +8,7 @@ the limits that decide whether outbound produces meetings or burns domains.
 Free to install and free to read. The method inside is the same one used to run campaigns
 across every workspace on the platform.
 
-Brand: **GTM Automation / cegtec**. CLI: **`gtm`**. Endpoint: `https://app.cegtec.net/api/mcp/<your-key>`.
+Brand: **GTM Automation / cegtec**. CLI: **`gtm`**. Endpoint: `https://app.cegtec.net/api/mcp` (key as `Authorization: Bearer <your-key>`).
 
 ---
 
@@ -111,8 +111,7 @@ reference points to argue with.
 
 ## Prerequisites
 
-1. A **GTM Automation workspace** on the **Starter plan or higher** (MCP access is plan-gated;
-   only a trial workspace is refused).
+1. A **GTM Automation workspace**. MCP access is included in every plan.
 2. Your **workspace MCP key** — in the app (`https://app.cegtec.net`): **Erweiterungen /
    Extensions → MCP**. Per workspace and secret; treat it like a password.
 3. **Node 18+** for the `gtm` CLI.
@@ -128,8 +127,56 @@ No workspace yet? The skills are still worth reading — `outbound-playbook`,
 ```
 
 Claude Code prompts for your **workspace MCP key** (`workspace_mcp_key`) when the plugin is
-enabled. It is stored in secure storage and used to connect the `gtm` MCP server at
-`https://app.cegtec.net/api/mcp/<your-key>`. No key is ever hardcoded in this repo.
+enabled. It is stored in secure storage and sent as an `Authorization: Bearer` header to
+`https://app.cegtec.net/api/mcp` — never as part of the URL, so it doesn't end up in proxy logs
+or shell history. No key is ever hardcoded in this repo.
+
+### Connecting without the plugin
+
+Any MCP client that can send a header works. Keep the key in an environment variable:
+
+```bash
+export GTM_MCP_KEY=mcp_...        # your workspace MCP key
+claude mcp add --transport http gtm https://app.cegtec.net/api/mcp \
+  --header "Authorization: Bearer $GTM_MCP_KEY"
+```
+
+Or in a project `.mcp.json` (Claude Code expands `${GTM_MCP_KEY}` from the environment, so the
+file holds no secret):
+
+```json
+{
+  "mcpServers": {
+    "gtm": {
+      "type": "http",
+      "url": "https://app.cegtec.net/api/mcp",
+      "headers": { "Authorization": "Bearer ${GTM_MCP_KEY}" }
+    }
+  }
+}
+```
+
+Clients that can only send `X-API-Key` may use that header instead.
+
+### Migrating from the key-in-the-URL setup
+
+Earlier versions connected to `https://app.cegtec.net/api/mcp/<your-key>`. **That URL keeps
+working** — nothing breaks if you change nothing. Moving to the header is still worth it,
+because a key in a URL lands in logs and history.
+
+- **Installed through this plugin:** nothing to do. After the plugin updates, the key you
+  already entered is reused and sent as a header. Check with `/mcp` that `gtm` is connected.
+- **Added by hand** (`claude mcp add … /api/mcp/<key>` or a `.mcp.json` with the key in the
+  URL): remove the old entry and add the header form above.
+
+  ```bash
+  claude mcp remove gtm
+  export GTM_MCP_KEY=mcp_...
+  claude mcp add --transport http gtm https://app.cegtec.net/api/mcp \
+    --header "Authorization: Bearer $GTM_MCP_KEY"
+  ```
+- **Key was ever pasted somewhere public** (a shared config, a screenshot, a ticket):
+  regenerate it in the app first. The old key stops working on regeneration.
 
 Then say **"set up gtm"** and your agent runs the `setup` skill, or **"build my first
 campaign"** for `gtm-quickstart`.
