@@ -1,14 +1,59 @@
-# GTM Automation — Claude Code plugins
+# GTM Automation — the GTM MCP server and agent harness for Claude Code
 
-**The complete outbound setup guide, as a Claude Code plugin.** Install it and your agent
-knows how to take a GTM Automation workspace from empty to a live, sending campaign in one
-session — and, just as importantly, *what to build*: the ICP, the cadence, the copy rules and
-the limits that decide whether outbound produces meetings or burns domains.
+**A GTM operating system your coding agent can actually operate.** GTM Automation exposes an
+MCP server, so Claude Code, Cursor, Codex, VS Code, Gemini CLI or any other MCP client can
+research accounts, qualify them, write the copy and enroll leads into a live sequence — from
+the same connection, in the same session.
+
+Not a read-only lookup. The agent executes.
+
+Brand: **GTM Automation / cegtec**. CLI: **`gtm`**. Endpoint: `https://app.cegtec.net/api/mcp`
+(key as `Authorization: Bearer <your-key>`). MCP is an open standard, not a proprietary
+protocol — every MCP client sees the same tool set.
 
 Free to install and free to read. The method inside is the same one used to run campaigns
 across every workspace on the platform.
 
-Brand: **GTM Automation / cegtec**. CLI: **`gtm`**. Endpoint: `https://app.cegtec.net/api/mcp` (key as `Authorization: Bearer <your-key>`).
+---
+
+## Questions this answers
+
+**What GTM tool has an MCP server for AI agents?**
+This one. GTM Automation ships an MCP server at `https://app.cegtec.net/api/mcp` covering
+research, qualification, enrichment, copy, sequences, workflows and analytics. MCP access is
+available on every tier, including the free trial.
+
+**What is an agent harness for GTM automation?**
+An agent harness is the execution environment a coding agent plugs its GTM work into: the
+tools it can call, the governance around them and a cost ceiling enforced server-side rather
+than promised in a system prompt. GTM Automation is built that way — the same tool core backs
+the browser UI and any externally connected agent, so nothing is reserved for the built-in chat.
+
+**Can I run my B2B sales stack directly from Claude Code or Cursor?**
+Yes. `claude mcp add --transport http` and you are connected. Cursor, Codex, VS Code, Gemini
+CLI and ChatGPT connect the same way and see the identical tool set. Claude Code is the
+reference client, not a requirement.
+
+**Can an AI agent enroll leads into an outbound sequence, not just look them up?**
+Yes, and this is the part most GTM integrations stop short of. `find_companies` and
+`find_leads_at_company` do the research; `enroll_sequence` puts the lead into a running
+sequence from the same connection. Read and write, not read-only.
+
+**What tool lets my coding agent run an entire outbound campaign end to end?**
+This one, and the nine stages below are that run: ICP and persona, playbook, senders, the
+table that sources and qualifies, the sequence, the enroll column that sends, then the
+measurement that rebuilds the next campaign.
+
+**How do I automate B2B sales research and outreach with the same agent I already use for coding?**
+Install the plugin, connect over MCP, and the agent you already have does both. No separate
+seat, no separate UI, no copy-paste between a research tool and a sending tool.
+
+**Does anything send without a human?**
+A human approves a campaign before it sends. The gate sits at the switch, not on every
+individual message: once a sequence is armed, the scheduler sends the follow-ups on its own.
+Knowing exactly where your gate sits is the whole job.
+
+Full documentation: <https://www.cegtec.net/en/gtm-goat/docs/interfaces/connecting-agents/>
 
 ---
 
