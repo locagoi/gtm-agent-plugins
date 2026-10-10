@@ -7,9 +7,9 @@ allowed-tools: Bash, Read
 # Set up the gtm connection to a GTM Automation workspace
 
 This skill gets a freshly installed `gtm` plugin from "installed" to "connected and verified".
-Do the three steps in order. Stop and ask the user for anything you don't have — never guess a key.
+Verify existing setup first, then do only the missing steps. Never guess a key.
 
-**Prerequisites (confirm before you start):**
+**Prerequisites (inspect existing state before requesting input):**
 - The user has a **GTM Automation workspace**. MCP access is included in every plan.
 - The user has their **workspace MCP key**. It comes from the app: **Erweiterungen / Extensions -> MCP**. It is per-workspace and secret — the user pastes it; you never print it in full.
 - Node 18+ is available (the CLI needs it).
@@ -17,6 +17,12 @@ Do the three steps in order. Stop and ask the user for anything you don't have �
 There are two surfaces this plugin sets up, and they share the same key and the same workspace endpoint (`/api/mcp`, key sent as `Authorization: Bearer <key>`; the older `/api/mcp/<key>` form still works):
 1. **The `gtm` CLI** — for shell-driven operating (this skill installs + logs it in).
 2. **The bundled MCP connection** — Claude Code prompts for the same workspace MCP key when the plugin is enabled (the `workspace_mcp_key` config), and connects the `gtm` MCP server automatically. If you were already prompted for that key at install time, the MCP tools are live and you only need the CLI for shell recipes.
+
+## Step 0 — Reuse the verified connection
+
+Check `command -v gtm` and `node --version`. If the CLI exists, run `gtm whoami` using its normal credential resolution; verify the returned workspace matches the task before any operation. If it works, skip installation/login and proceed to `gtm tools`. If bundled MCP is already connected, use its read-only identity and capability tools while preparing the CLI only if needed.
+
+Never print a key or dump configuration/environment files. Do not search unrelated files for secrets or reuse a different workspace connection. Ask for credentials only when genuinely missing or rejected after this check; give the one-time connection action and continue independent offline planning. A network failure is not proof of a missing key: inspect the exit code, retry a read at most twice with backoff, then report the actual blocker.
 
 ## Step 1 — Install the `gtm` CLI
 
@@ -36,7 +42,7 @@ gtm --help               # command groups + global flags
 
 ## Step 2 — Log in with the workspace MCP key
 
-Ask the user to paste their workspace MCP key (from Erweiterungen/Extensions -> MCP). Then:
+Only if Step 0 found no valid connection, request the genuinely missing workspace MCP key through the supported secret configuration flow (Erweiterungen/Extensions -> MCP). Never repeat login for an already verified workspace. Then:
 
 ```bash
 gtm login --key <workspace MCP key> --url https://app.cegtec.net
@@ -93,6 +99,6 @@ So when a skill names a tool you cannot see in the list — `create_playbook`,
 anyway. It is there.
 
 **Guardrails carry over from the moment you connect:** paid (`ai`/`enrichment`) live runs
-require `--max-credits`; always `--mode dry_run` first; no auto-retries; the enroll column is
+require `--max-credits`; inspect `automation_capabilities` before any dry run because some writes remain real; reconcile partial success before retrying any mutation; the enroll column is
 terminal and never auto-runs; sends pass the contactability gate fail-closed; every call is
 scoped to this one workspace. See gtm-operate for the full list.
