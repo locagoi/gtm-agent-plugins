@@ -1,6 +1,6 @@
 ---
 name: agents-loops-goals
-description: Use to make a workspace run itself and to build it iteratively rather than in one pass — set a goal as a mission, create workspace agents with scoped tools, and close the loops (scheduled sources, signal watches, event workflows, the await_rows return edge, reply triage, approval gates). Covers what a dry run actually simulates and which config is stored but never executed. Read after gtm-quickstart, when the first campaign runs and the question becomes "what keeps running without me".
+description: Use to make a workspace run itself and to build it iteratively rather than in one pass — translate an outcome goal into a build and measurement loop, create workspace agents with scoped tools, and close the loops (scheduled sources, signal watches, event workflows, the await_rows return edge, reply triage, approval gates). Covers what a dry run actually simulates and which config is stored but never executed. Read after gtm-quickstart, when the first campaign runs and the question becomes "what keeps running without me".
 allowed-tools: Bash, Read, Grep, Glob
 ---
 
@@ -14,7 +14,7 @@ Three primitives, and they are not interchangeable:
 
 | | What it is | Use it for |
 |---|---|---|
-| **Goal** (mission) | a long-running agent that plans toward an outcome | open-ended work: "find out why this playbook underperforms and propose a fix" |
+| **Goal** | a measurable outcome contract executed through Command and existing workspace tools | target, owner, deadline, baseline, review date and a running measurement loop |
 | **Agent** | a named worker with its own prompt, model and tool allowlist | judgement inside a workflow step, or a triggered responder |
 | **Loop** | a schedule, a watch or an event that fires without anyone | everything that must keep happening |
 
@@ -36,32 +36,32 @@ Each numbered step is verifiable on its own, and each one is cheap to throw away
 failure is the reverse order: an agent wired into a scheduled loop over a source nobody read,
 which produces confident output nobody checks until the credits are gone.
 
-**Never automate a judgement you have not watched a human make twenty times.** That is the
-whole rule.
+**Validate judgment against representative examples and explicit acceptance criteria.** Reuse evidence from approved templates and comparable evaluations. Record sample size, failures and uncertainty; a fixed number of human repetitions is not evidence of quality. Keep the first send and scale decisions gated.
 
 ---
 
-## Goals: missions
+## Goals: plan, build, observe, improve
+
+An explicit goal is the mandate for reversible preparation within the named workspace, not blanket permission to spend or send. Discover `get_goal_plan` via `find_tools`, then inspect its schema:
 
 ```bash
-gtm call create_mission --input '{
-  "goal": "Analysiere, warum das Playbook X unter 2 % Antwortquote liegt, und schlage drei konkrete Änderungen vor."
-}' --json
-gtm call get_mission --input '{"mission_id":"<id>"}' --json
+gtm call find_tools --input '{"query":"get_goal_plan"}' --json
+gtm call get_goal_plan --input '{"positives_week":5,"segment":"B2B SaaS","steps":3}' --json
 ```
 
-A mission is an autonomous agent working on the background worker toward a stated outcome. Its
-boundaries are the point:
+The plan uses onboarding step-0 back-calculation: a combined meeting/positive goal takes the maximum, not the sum; email volume comes from the measured emails-per-positive rate (400 only as a labeled planning hypothesis), capacity from the actual touch count and conservative sender limits. Unknown preflight cost stays unknown. An email capacity scenario is not evidence that email is the right channel, a purchasing decision or a launch date.
 
-- **Read-only workspace tools.** Research, lead/company analytics, funnel reads.
-- **It cannot send, enrol or book.** When the work needs one of those, it **pauses and asks**,
-  and the platform executes what a human approved.
-- **It returns a deliverable**, not a running system. A mission proposes; you build.
+**The tool is read-only and creates nothing. Continue in the same turn:**
+1. Read setup, Wissen, ICP/persona, existing linked objects, sender health and product capabilities. Resolve an unambiguous scope; otherwise prepare an unbound draft and keep independent work moving. Never invent IDs or attach to an arbitrary workspace/object.
+2. Follow `get_play` with `{"play_id":"full_gtm_chain"}`. Reuse the existing objects, build inert assets/tables/sources/columns and a sequence, and label assumptions. Derive LinkedIn search inputs from ICP through the current product source planner; never request a Sales Navigator URL as a prerequisite.
+3. Use current product preflight before paid runs, with `max_credits` inside the existing approved budget. Budget not available: prepare the build and the cost decision, keep the paid step held. A balance is not authorization.
+4. Validate the read-only measurement blueprint first with `get_timeline`, freeze the real playbook/sequence cohort and then create/reuse the scheduled workflow. Verify the first actual scheduled run through `get_workflow_history`. Configuration alone is not proof of a running loop; missing attribution remains unknown.
+5. Present concrete copy, recipients, sender, volume and consequences for the **first send of new copy**. Retain money, legal, first-send, deletion and post-result scaling gates and existing per-action approvals. Do not re-ask for an already approved action within the same verifiable scope.
+6. Incorporate feedback, release only within authorization, measure mature windows, propose stop/keep/scale, obtain the scale decision, then measure the revised version. Record owner, implementation deadline, baseline, target, review date and measured results in the operator's decision system.
 
-Good goals are specific about the deliverable: *"research 20 lookalikes of our converted
-customers and propose one segment, with the criteria"* beats *"improve our targeting"*.
+If discovery returns **no tool named get_goal_plan**, the release is not available on this workspace yet. Use the current `full_gtm_chain` house play with a clearly labeled local capacity draft; do not call removed mission tools or imply a background goal worker exists.
 
-Use a mission when you do not yet know the shape of the answer. Use a workflow when you do.
+Evaluate **works / does not / unclear**. Small samples, changing cohorts, missing prices or immature replies mean unclear, never success. The default seven-day progress review is an assumption; outcome comparison starts at actual launch. Do not wait for a human to supply naming, language or a routine draft deadline.
 
 ## Agents
 
