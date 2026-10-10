@@ -13,15 +13,15 @@ measurable.
 **What this replaces.** Built by hand, this is a two-to-four week engagement: a discovery
 call, a CRM analysis, an ICP workshop, persona mapping, value-prop drafting, sequence
 writing, QA. The stages below are that same process, with the same quality bars, run by an
-agent in a session. The bars did not move — you still cannot skip the interview, and a
+agent in a session. The bars did not move — you still cannot skip grounding in evidence, and a
 campaign built on invented positioning still fails in week two.
 
-**Nine stages, roughly 2–4 hours** if the human is available to answer questions:
+**Stages with explicit checkpoints**; actual launch depends on sender readiness, budget and protected release decisions:
 
 | # | Stage | Output | Deep dive |
 |---|---|---|---|
 | 0 | Connect and orient | a verified connection, a read model | `setup` |
-| 1 | Intake interview | answers you did not invent | `intake.md` (next to this file) |
+| 1 | Evidence and assumptions | facts with provenance, gaps labeled | `intake.md` (next to this file) |
 | 2 | Wissen assets | ICP · persona · offer · proof · angle · signals | `draft-gtm-play` |
 | 3 | Playbook | the strategy, bound | `draft-gtm-play` |
 | 4 | Senders & channel | one channel, verified, within limits | `sequences` |
@@ -61,7 +61,10 @@ actually run. If `workspace_capabilities` lists no source you can use, stop and 
 
 ---
 
-## Stage 1 — The intake interview
+## Stage 1 — Evidence before questions
+
+**Context first — derive before asking.** Read the active goal, workspace Wissen, existing plays and authorized evidence. Reuse answers already present. For reversible choices such as naming, language, draft channel or deadline, use a visible assumption and continue. Unknown facts remain unknown; never invent positioning, proof, credentials, budgets or approvals. Build an inert draft from supported evidence, then present concrete protected decisions (money, legal, first send, deletion, scaling) with scope. Existing authorization persists. If target identity remains ambiguous, prepare an unbound draft rather than mutating an arbitrary object.
+
 
 **Never invent positioning.** A campaign built on what the agent guessed the customer sells
 produces confident, specific, wrong copy — worse than generic, because it is wrong at
@@ -72,11 +75,9 @@ the build actually consumes: offer in one sentence, ICP with good-fit *and* bad-
 criteria, buying signals, case studies with real numbers, 2–4 personas with challenges and
 benefits, channel preference, sender identities, blacklist.
 
-Ask for what is missing. If the human cannot answer "which customer had the most striking
-result, with the number", that is not a blocked build — it is the finding that the proof
-asset will be weak, and you should say so.
+Read existing assets and permitted evidence for missing facts. If no source supports a customer result with its number and timeframe, leave that proof claim out and state the evidence gap. Continue the supported draft; do not manufacture a claim.
 
-**Checkpoint:** you can answer, from their words and not yours: who exactly, why now, what
+**Checkpoint:** separate evidenced facts, labeled draft assumptions and unresolved release facts: who exactly, why now, what
 you sell, what it produced for someone comparable, and who must not be contacted.
 
 ---
