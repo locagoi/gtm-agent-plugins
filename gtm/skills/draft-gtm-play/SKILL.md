@@ -22,13 +22,11 @@ A **play** is not a table with columns — it's a strategy that a table executes
 > an ICP or a channel. Table mechanics: `build-gtm-workflow`. Touch plans: `sequences`.
 > Operating basics: `gtm-operate`.
 
-**Never invent the substance.** Interview the human for anything missing —
-`gtm-quickstart/intake.md` is the question list. A play built on guessed positioning produces
-copy that is specific, confident and wrong, at volume. That is worse than generic.
+**Context first — derive before asking.** Read the active goal, workspace Wissen, existing plays and authorized evidence. Reuse answers already present. For reversible choices such as naming, language, draft channel or deadline, use a visible assumption and continue. Unknown facts remain unknown; never invent positioning, proof, credentials, budgets or approvals. Build an inert draft from supported evidence, then present concrete protected decisions (money, legal, first send, deletion, scaling) with scope. Existing authorization persists. If target identity remains ambiguous, prepare an unbound draft rather than mutating an arbitrary object.
 
 ## Phase 1 — Draft the knowledge (Wissen assets)
 
-Interview the user if the substance is missing — never invent positioning. Create with `wissen_asset_create`, revise with `wissen_asset_revise` (immutable versions).
+Read the evidence before filling missing substance; never invent positioning. Create with `wissen_asset_create`, revise with `wissen_asset_revise` (immutable versions).
 
 Draft in this order (each builds on the previous):
 

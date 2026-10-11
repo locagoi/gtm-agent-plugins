@@ -1,8 +1,6 @@
 # The intake interview
 
-Everything the build consumes, and nothing it does not. Work through it with the human
-before creating a single asset. **Do not fill a gap with a guess** — an invented positioning
-produces copy that is specific, confident and wrong, at volume.
+Use this as an evidence checklist. Read existing Wissen, goal and authorized context before any interview. Create supported draft assets within the mandate; label reversible assumptions and leave unknown facts unresolved. Never invent positioning or proof. Bundle only the unresolved facts needed at a protected release decision, with the concrete draft ready for review.
 
 Where an answer is missing, say what it costs: "without a case study number, the proof asset
 will be weak and step two of the sequence has nothing to carry."

@@ -1,0 +1,10 @@
+name: Autonomy contract
+on: [pull_request, push]
+permissions:
+  contents: read
+jobs:
+  offline-contract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s tests -p test_autonomy_contract.py -v
