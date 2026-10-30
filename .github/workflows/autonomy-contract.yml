@@ -7,4 +7,4 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s tests -p test_autonomy_contract.py -v
+      - run: PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s tests -p "test_*.py" -v
