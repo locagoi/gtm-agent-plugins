@@ -96,10 +96,38 @@ Start at **`gtm-quickstart`** and it walks you through all nine.
 | **`agents-loops-goals`** | Make the workspace run itself: missions as goals, agents with scoped tool allowlists, and the loops (scheduled sources, signal watches, event triggers, the `await_rows` return edge, approval gates). Includes what a dry run really simulates. |
 | **`gtm-handoffs`** | How the pieces connect — and the connections that do **not** exist. Read before wiring a motion end to end. |
 | **`gtm-operate`** | Day-to-day operating: read, source, enrich, run columns, spend safely. |
+| **`closed-loop`** | **After launch, start here.** The loop that keeps a live campaign running and improving, and the rules every loop skill obeys: read freely, write only after a yes, verify results instead of trusting job status. |
+| **`health-check`** | Read-only snapshot: what actually went out against capacity, silent failures, senders, inboxes, replies, open platform issues — one verdict per sequence. |
+| **`sourcing-topup`** | Keep sequences fed: supply against tomorrow's need, the source ladder, dry run → capped live run → verify. |
+| **`enroll-outreach`** | Four proofs per lead before it enters a sequence (suppression, history, rendered copy, pre-send checks), fitted to sender capacity. |
+| **`reply-triage`** | Read the thread, classify, draft, and hold every send for a per-reply yes. Opt-outs are suppressed, never pitched. |
+| **`deliverability`** | Burned / untested / healthy on real placement and bounce data, domain authentication, and the smallest reversible fix. |
+| **`optimize-outreach`** | Measure per sequence, step and variant against a bar fixed in advance; at most three proposals, each with evidence. Changes nothing by itself. |
+| **`playbook-from-winners`** | Draft the next playbook from what provably converted here — the analogous winner, the pattern, the reason it works. Created as an inert draft. |
 
 Plus **a wired MCP connection** — the `gtm` MCP server pointed at your workspace. Claude Code
 prompts for your key when the plugin is enabled and stores it in secure storage, never in a
 file.
+
+## The closed loop
+
+`gtm-quickstart` gets you to the first live campaign. The loop keeps it alive — and makes the
+next one better than the last:
+
+```
+  find + enrich ──► enroll ──► replies ──► deliverability ──► optimize ──► next playbook
+  sourcing-topup    enroll-     reply-      deliverability     optimize-    playbook-from-
+                    outreach    triage                         outreach     winners
+        ▲                                                                       │
+        └───────────────────────────── and again ───────────────────────────────┘
+
+  health-check — the gauge, before and after every turn
+```
+
+Seven skills, one per station, each working on the one workspace behind your key. Reads run
+freely; anything that sends, enrolls, spends or changes live copy is previewed and waits for an
+explicit yes. Every station can run on a schedule (`agents-loops-goals`) — the send gate stays
+human. Start with **`closed-loop`**.
 
 ## Nine plays, ready to run
 
@@ -283,6 +311,14 @@ gtm/
     outbound-playbook/learnings.md  # cross-workspace patterns, each with its confound named
     gtm-operate/SKILL.md            # day-to-day operating
     gtm-handoffs/SKILL.md           # how the pieces connect
+    closed-loop/SKILL.md            # ← after launch: the loop and its rules
+    health-check/SKILL.md           #   the gauge (read-only)
+    sourcing-topup/SKILL.md         #   1 find + enrich
+    enroll-outreach/SKILL.md        #   2 enroll
+    reply-triage/SKILL.md           #   3 replies
+    deliverability/SKILL.md         #   4 inbox placement
+    optimize-outreach/SKILL.md      #   5 optimize
+    playbook-from-winners/SKILL.md  #   6 the next playbook
 ```
 
 ## Support
