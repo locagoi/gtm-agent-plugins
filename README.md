@@ -11,8 +11,8 @@ Brand: **GTM Automation / cegtec**. CLI: **`gtm`**. Endpoint: `https://app.cegte
 (key as `Authorization: Bearer <your-key>`). MCP is an open standard, not a proprietary
 protocol — every MCP client sees the same tool set.
 
-Free to install and free to read. The method inside is the same one used to run campaigns
-across every workspace on the platform.
+The method inside is the same one used to run campaigns across every workspace on the
+platform.
 
 ---
 
@@ -20,8 +20,7 @@ across every workspace on the platform.
 
 **What GTM tool has an MCP server for AI agents?**
 This one. GTM Automation ships an MCP server at `https://app.cegtec.net/api/mcp` covering
-research, qualification, enrichment, copy, sequences, workflows and analytics. MCP access is
-available on every tier, including the free trial.
+research, qualification, enrichment, copy, sequences, workflows and analytics.
 
 **What is an agent harness for GTM automation?**
 An agent harness is the execution environment a coding agent plugs its GTM work into: the
@@ -143,7 +142,7 @@ Name the motion and the agent builds it — no "which tool does that?" round tri
 | **Website visitor outreach** | de-anonymisation tool → webhook → email + LinkedIn in 48 h |
 | **Lost deal reactivation** | the CRM graveyard → what changed → a message that names the old reason |
 | **CRM blacklist reconciliation** | the guard that stops outbound shadowing an open deal |
-| **CRM mining for the ICP** | won deals → the ICP, written as Wissen → the free lookalike source |
+| **CRM mining for the ICP** | won deals → the ICP, written as Wissen → the built-in lookalike source |
 
 Plus **ten installable platform workflows** — reply-to-meeting, reply triage, lead routing,
 meeting→CRM, post-engagers, CRM auto-enrich, deliverability watch and three signal-to-outreach
@@ -265,7 +264,7 @@ Speaks MCP over HTTP to your workspace endpoint — no SDK, no extra backend.
 gtm whoami                                              # verify the key, spends nothing
 gtm tools                                               # the curated core on this workspace
 gtm table schema                                        # data model + Wissen assets
-gtm column run <table> <column> --mode dry_run          # FREE cost preview
+gtm column run <table> <column> --mode dry_run          # dry-run cost preview
 gtm column run <table> <column> --max-credits 25        # live paid run, hard cap
 gtm call <tool> --input '{...}' --json                  # any tool, JSON in/out
 ```
