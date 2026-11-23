@@ -1,11 +1,30 @@
 # GTM Automation — the GTM MCP server and agent harness for Claude Code
 
-**A GTM operating system your coding agent can actually operate.** GTM Automation exposes an
-MCP server, so Claude Code, Cursor, Codex, VS Code, Gemini CLI or any other MCP client can
-research accounts, qualify them, write the copy and enroll leads into a live sequence — from
-the same connection, in the same session.
+**Your coding agent builds a complete outbound campaign for you, from an empty workspace to the first reviewed sends, then measures it and rebuilds it.** Plugins and an MCP server for Claude Code, Cursor, Codex, VS Code, Gemini CLI or any other MCP client.
 
-Not a read-only lookup. The agent executes.
+## What you get
+
+- **The knowledge the campaign runs on:** ICP, persona, offer, proof and messaging angle, written as reusable assets from an intake interview.
+- **A working pipeline:** a sourced, qualified and enriched lead table and a sequence that you review before anything sends.
+- **A controlled start:** a first bounded run of 20 rows that a human reads, then a measure-and-rebuild step.
+
+## The loop
+
+```
+Goal (a campaign for this ICP)
+  -> agent builds: ICP, table, copy, sequence      (you approve before anything sends)
+  -> campaign runs
+  -> measure replies
+  -> learn what works -> next version
+```
+
+## Start in 3 steps
+
+1. Install the plugin: `/plugin marketplace add locagoi/gtm-agent-plugins`, then `/plugin install gtm@gtm-plugins` (details under [Install](#install)).
+2. Enter your workspace MCP key when Claude Code asks. It is stored in secure storage and sent as a header, never in the URL.
+3. Tell your agent: `gtm-quickstart`. It walks the nine stages below.
+
+Not a read-only lookup: the agent executes (research, qualify, write, enroll), from the same connection, in the same session.
 
 Brand: **GTM Automation / cegtec**. CLI: **`gtm`**. Endpoint: `https://app.cegtec.net/api/mcp`
 (key as `Authorization: Bearer <your-key>`). MCP is an open standard, not a proprietary
@@ -58,8 +77,8 @@ Full documentation: <https://www.cegtec.net/en/gtm-goat/docs/interfaces/connecti
 
 ## What this actually gives you
 
-Built by hand, a customer outbound playbook is a two-to-four week engagement: discovery call,
-CRM analysis, ICP workshop, persona mapping, value props, sequence writing, QA. The plugin is
+Built by hand, a customer outbound playbook is a sequence of steps: discovery call, CRM
+analysis, ICP workshop, persona mapping, value props, sequence writing, QA. The plugin is
 that process — same stages, same quality bars — executed by your agent against your own
 workspace.
 
@@ -183,7 +202,7 @@ reference points to argue with.
 
 ## Prerequisites
 
-1. A **GTM Automation workspace**. MCP access is included in every plan.
+1. A **GTM Automation workspace**.
 2. Your **workspace MCP key** — in the app (`https://app.cegtec.net`): **Erweiterungen /
    Extensions → MCP**. Per workspace and secret; treat it like a password.
 3. **Node 18+** for the `gtm` CLI.
