@@ -202,7 +202,7 @@ reference points to argue with.
 
 ## Prerequisites
 
-1. A **GTM Automation workspace**.
+1. A **GTM Automation workspace**. There is no self-service access yet: [Book a demo](https://www.cegtec.net/book) to get one.
 2. Your **workspace MCP key** — in the app (`https://app.cegtec.net`): **Erweiterungen /
    Extensions → MCP**. Per workspace and secret; treat it like a password.
 3. **Node 18+** for the `gtm` CLI.
